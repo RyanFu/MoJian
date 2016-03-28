@@ -18,6 +18,7 @@ import java.util.List;
 
 /**
  * Created by roocky on 03/17.
+ * 日记RecyclerView适配器
  */
 public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> {
     private DatabaseHelper databaseHelper;

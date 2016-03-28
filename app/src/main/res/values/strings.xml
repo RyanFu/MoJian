@@ -2,11 +2,11 @@
     <string name="app_name">墨記</string>
 
     <string name="mn_diary">日記</string>
-    <string name="mn_diary_vertical">日\n記</string>
+    <string name="mn_diary_vertical">日記</string>
     <string name="mn_note">便箋</string>
-    <string name="mn_note_vertical">便\n箋</string>
+    <string name="mn_note_vertical">便箋</string>
     <string name="mn_setting">設置</string>
-    <string name="mn_setting_vertical">設\n置</string>
+    <string name="mn_setting_vertical">設置</string>
 
     <string name="set_account">个人信息</string>
     <string name="set_nickname">昵称</string>
@@ -18,10 +18,8 @@
     <string name="tt_add_diary">写日記</string>
     <string name="tt_add_note">记便箋</string>
 
-    <string name="use_explain_diary_1">日记使用说明一</string>
-    <string name="use_explain_diary_2">日记使用说明二</string>
-    <string name="use_explain_note_1">便笺使用说明一</string>
-    <string name="use_explain_note_2">便笺使用说明二</string>
+    <string name="use_explain_diary">日记使用说明一</string>
+    <string name="use_explain_note">便笺使用说明一</string>
 
     <string-array name="number_array">
         <item>一</item>
@@ -34,26 +32,26 @@
         <item>八</item>
         <item>九</item>
         <item>十</item>
-        <item>十\n一</item>
-        <item>十\n二</item>
-        <item>十\n三</item>
-        <item>十\n四</item>
-        <item>十\n五</item>
-        <item>十\n六</item>
-        <item>十\n七</item>
-        <item>十\n八</item>
-        <item>十\n九</item>
+        <item>十一</item>
+        <item>十二</item>
+        <item>十三</item>
+        <item>十四</item>
+        <item>十五</item>
+        <item>十六</item>
+        <item>十七</item>
+        <item>十八</item>
+        <item>十九</item>
         <item>廿</item>
-        <item>廿\n一</item>
-        <item>廿\n二</item>
-        <item>廿\n三</item>
-        <item>廿\n四</item>
-        <item>廿\n五</item>
-        <item>廿\n六</item>
-        <item>廿\n七</item>
-        <item>廿\n八</item>
-        <item>廿\n九</item>
+        <item>廿一</item>
+        <item>廿二</item>
+        <item>廿三</item>
+        <item>廿四</item>
+        <item>廿五</item>
+        <item>廿六</item>
+        <item>廿七</item>
+        <item>廿八</item>
+        <item>廿九</item>
         <item>卅</item>
-        <item>卅\n一</item>
+        <item>卅一</item>
     </string-array>
 </resources>

@@ -71,27 +71,34 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         toolbar.setNavigationOnClickListener(this);
     }
 
+    /**
+     * 只有Toolbar的NavigationIcon绑定了点击事件，所以这里就没有进行id判断
+     * @param v
+     */
     @Override
     public void onClick(View v) {
-        if (etContent.getText().length() == 0) {
-            Snackbar.make(etContent, "日记内容不能为空！", Snackbar.LENGTH_SHORT).show();
-        } else {
 //            int year = Calendar.getInstance().get(Calendar.YEAR);
-            int month = Calendar.getInstance().get(Calendar.MONTH);
-            int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-            
-            ContentValues values = new ContentValues();
-            values.put("time", numbers[month] + "\n · \n" + numbers[day - 1]);
-            values.put("content", etContent.getText().toString());
-            if (intent.getStringExtra("from").equals("diary")) {
-                database.insert("diary", null, values);
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+        int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+        ContentValues values = new ContentValues();
+        if (intent.getStringExtra("from").equals("diary")) {
+            if (etContent.getText().length() == 0) {
+                Snackbar.make(etContent, "日记内容不能为空！", Snackbar.LENGTH_SHORT).show();
             } else {
-                database.insert("note", null, values);
+                //需要判断长度是否为“1”，若不为“1”则需要加“\n”
+                String strMonth = (numbers[month].length() == 1 ? numbers[month] : new StringBuilder(numbers[month]).insert(1, "\n")).toString();
+                String strDay = (numbers[day - 1].length() == 1 ? numbers[day - 1] : new StringBuilder(numbers[day - 1]).insert(1, "\n")).toString();
+                values.put("time", strMonth + "\n · \n" + strDay);
+                values.put("content", etContent.getText().toString());
+                database.insert("diary", null, values);
             }
-            //隐藏软键盘
-            SoftInput.hide(etContent);
-            finish();
+        } else {
+            values.put("time", numbers[month] + " · " + numbers[day - 1]);
+            values.put("content", etContent.getText().toString());
+            database.insert("note", null, values);
         }
+        SoftInput.hide(etContent);
+        finish();
     }
 
     @Override

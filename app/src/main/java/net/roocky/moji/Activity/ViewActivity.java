@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -68,6 +69,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         //显示内容
         tvContent.setText(intent.getStringExtra("content"));
+        tvContent.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     private void setOnClickListener() {

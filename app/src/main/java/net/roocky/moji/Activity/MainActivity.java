@@ -103,18 +103,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             DatabaseHelper databaseHelper = new DatabaseHelper(this, "Moji.db", null, 1);
             SQLiteDatabase database = databaseHelper.getWritableDatabase();
             String[] numbers = getResources().getStringArray(R.array.number_array);
+
             //向数据库中存入使用说明
             ContentValues values = new ContentValues();
-            values.put("time", numbers[Calendar.getInstance().get(Calendar.MONTH)] +
-                    "\n · \n" + numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]);
-            values.put("content", getString(R.string.use_explain_diary_1));
+            //需要判断长度是否为“1”，若不为“1”则需要加“\n”
+            String strMonth = (numbers[Calendar.getInstance().get(Calendar.MONTH)].length() == 1 ?
+                    numbers[Calendar.getInstance().get(Calendar.MONTH)] :
+                    new StringBuilder(numbers[Calendar.getInstance().get(Calendar.MONTH)]).insert(1, "\n")).toString();
+            String strDay = (numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1].length() == 1 ?
+                    numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1] :
+                    new StringBuilder(numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]).insert(1, "\n")).toString();
+            values.put("time", strMonth + "\n · \n" + strDay);
+            values.put("content", getString(R.string.use_explain_diary));
             database.insert("diary", null, values);
-            database.insert("note", null, values);
+            
             values.clear();
             values.put("time", numbers[Calendar.getInstance().get(Calendar.MONTH)] +
-                    "\n · \n" + numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]);
-            values.put("content", getString(R.string.use_explain_diary_2));
-            database.insert("diary", null, values);
+                    " · " + numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]);
+            values.put("content", getString(R.string.use_explain_note));
             database.insert("note", null, values);
         }
     }
