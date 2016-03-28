@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         slidingMenu.setBehindScrollScale(0f);   //菜单缩放
         slidingMenu.setShadowDrawable(R.drawable.shadow);       //阴影设置
         slidingMenu.setShadowWidthRes(R.dimen.slidingmenu_shadow_width);
-        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);     //ToolBar跟随移动()
+        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);     //设置此项可解决虚拟键遮挡问题
         slidingMenu.setMenu(R.layout.menu_slidingmenu);
     }
 
