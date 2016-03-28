@@ -2,9 +2,11 @@ package net.roocky.moji.Activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -46,6 +48,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private final int TAKE_PHOTO = 0;
     private final int SELECT_PHOTO = 1;
     private final int CROP_PHOTO = 2;
+
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
     private Uri imageUri;
 
     @Override
@@ -54,11 +59,24 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
 
-        toolbar.setTitle(getString(R.string.set_account));
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        initView();
         setOnClickListener();
+    }
+
+    private void initView() {
+        preferences = getSharedPreferences("moji", MODE_PRIVATE);
+        editor = preferences.edit();
+        String uriAvatar = preferences.getString("avatar", null);
+
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.set_account));
+        }
+        if (uriAvatar != null) {
+//            sdvAvatar.setImageURI(Uri.parse(uriAvatar));
+        }
     }
 
     private void setOnClickListener() {
@@ -144,6 +162,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             case CROP_PHOTO:        //裁剪完成设置ImageUri
                 if (resultCode == RESULT_OK) {
                     sdvAvatar.setImageURI(imageUri);
+                    editor.putString("avatar", imageUri.toString()).apply();
                 }
                 break;
             default:

@@ -50,6 +50,5 @@
         app:backgroundTint="@color/grey_700"
         app:fabSize="normal"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
-        />
+        android:layout_marginBottom="20dp" />
 </android.support.design.widget.CoordinatorLayout>

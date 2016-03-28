@@ -19,6 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.AccountActivity" />
+        <activity android:name=".Activity.ViewActivity" />
+        <activity android:name=".Activity.AddActivity" />
     </application>
 
 </manifest>

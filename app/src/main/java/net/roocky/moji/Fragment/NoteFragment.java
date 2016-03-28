@@ -17,14 +17,22 @@ import net.roocky.moji.R;
  *
  */
 public class NoteFragment extends Fragment {
+    private NoteAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_note, container, false);
         RecyclerView rvNote = (RecyclerView)view.findViewById(R.id.rv_note);
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        NoteAdapter adapter = new NoteAdapter();
+        adapter = new NoteAdapter();
         rvNote.setLayoutManager(manager);
         rvNote.setAdapter(adapter);
         return view;
+    }
+
+    public void flush() {   //notify函数的参数position是从1开始的
+//        adapter.notifyItemInserted(1);     //在position为1的位置插入
+//        adapter.listRefresh();
+//        adapter.notifyItemRangeChanged(0, adapter.getItemCount());    //刷新时从position为0的位置以后刷新
+        adapter.notifyDataSetChanged();
     }
 }

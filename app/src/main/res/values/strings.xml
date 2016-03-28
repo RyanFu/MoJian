@@ -14,4 +14,46 @@
     <string name="set_birthday">生日</string>
     <string name="set_address">地址</string>
     <string name="set_signature">个性签名</string>
+
+    <string name="tt_add_diary">写日記</string>
+    <string name="tt_add_note">记便箋</string>
+
+    <string name="use_explain_diary_1">日记使用说明一</string>
+    <string name="use_explain_diary_2">日记使用说明二</string>
+    <string name="use_explain_note_1">便笺使用说明一</string>
+    <string name="use_explain_note_2">便笺使用说明二</string>
+
+    <string-array name="number_array">
+        <item>一</item>
+        <item>二</item>
+        <item>三</item>
+        <item>四</item>
+        <item>五</item>
+        <item>六</item>
+        <item>七</item>
+        <item>八</item>
+        <item>九</item>
+        <item>十</item>
+        <item>十\n一</item>
+        <item>十\n二</item>
+        <item>十\n三</item>
+        <item>十\n四</item>
+        <item>十\n五</item>
+        <item>十\n六</item>
+        <item>十\n七</item>
+        <item>十\n八</item>
+        <item>十\n九</item>
+        <item>廿</item>
+        <item>廿\n一</item>
+        <item>廿\n二</item>
+        <item>廿\n三</item>
+        <item>廿\n四</item>
+        <item>廿\n五</item>
+        <item>廿\n六</item>
+        <item>廿\n七</item>
+        <item>廿\n八</item>
+        <item>廿\n九</item>
+        <item>卅</item>
+        <item>卅\n一</item>
+    </string-array>
 </resources>
