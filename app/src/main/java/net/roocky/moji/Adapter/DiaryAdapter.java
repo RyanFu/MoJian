@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.roocky.moji.Database.DatabaseHelper;
+import net.roocky.moji.Model.Diary;
 import net.roocky.moji.R;
 
 import java.util.ArrayList;
@@ -22,8 +23,7 @@ import java.util.List;
  */
 public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> {
     private DatabaseHelper databaseHelper;
-    private List<String> listDate = new ArrayList<>();
-    private List<String> listContent = new ArrayList<>();
+    private List<Diary> diaryList = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
 
     public DiaryAdapter(Context context) {
@@ -39,19 +39,21 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         //数据在数据库中是倒序排列的，即日期最早的数据在最前面，所以此处的index需要减去position
-        holder.tvDate.setText(listDate.get(listDate.size() - position - 1));
-        holder.tvContent.setText(listContent.get(listContent.size() - position - 1));
+        holder.tvDate.setText(diaryList.get(diaryList.size() - position - 1).getDate());
+        holder.tvContent.setText(diaryList.get(diaryList.size() - position - 1).getContent());
         holder.cvDiaryItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemClickListener.onItemClick(v, holder.getLayoutPosition());
             }
         });
+        //将该item在数据库中的id存入CardView中
+        holder.cvDiaryItem.setTag(diaryList.get(diaryList.size() - position - 1).getId());
     }
 
     @Override
     public int getItemCount() {
-        return listDate.size();
+        return diaryList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,12 +72,13 @@ public class DiaryAdapter extends RecyclerView.Adapter<DiaryAdapter.ViewHolder> 
     public void listRefresh() {
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         Cursor cursor = database.query("diary", null, null, null, null, null, null);
-        listDate.clear();
-        listContent.clear();
+        diaryList.clear();
         if (cursor.moveToFirst()) {
             do {
-                listDate.add(cursor.getString(cursor.getColumnIndex("time")));
-                listContent.add(cursor.getString(cursor.getColumnIndex("content")));
+                diaryList.add(new Diary(
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("date")),
+                        cursor.getString(cursor.getColumnIndex("content"))));
             } while (cursor.moveToNext());
         }
         cursor.close();

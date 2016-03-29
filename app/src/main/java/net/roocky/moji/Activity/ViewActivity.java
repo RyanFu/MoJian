@@ -134,9 +134,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     if (intent.getStringExtra("from").equals("diary")) {
-                        database.update("diary", values, "content = ?", new String[]{tvContent.getText().toString()});
+                        database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
                     } else {
-                        database.update("note", values, "content = ?", new String[]{tvContent.getText().toString()});
+                        database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
                     }
 
                     toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
@@ -160,10 +160,22 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (dialog.equals(dialogDiary)) {   //删除日记
-            database.delete("diary", "content = ?", new String[]{tvContent.getText().toString()});
+            database.delete("diary", "id = ?", new String[]{intent.getStringExtra("id")});
         } else {                            //删除便笺
-            database.delete("note", "content = ?", new String[]{tvContent.getText().toString()});
+            database.delete("note", "id = ?", new String[]{intent.getStringExtra("id")});
         }
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isEdit) {
+            ContentValues values = new ContentValues();
+            values.put("content", etContent.getText().toString());
+            if (intent.getStringExtra("from").equals("note")) {
+                database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+            }
+        }
+        super.onBackPressed();
     }
 }

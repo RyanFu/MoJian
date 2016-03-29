@@ -4,12 +4,10 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +25,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
-import net.roocky.moji.R;
 import net.roocky.moji.Fragment.SettingFragment;
+import net.roocky.moji.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -113,12 +111,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String strDay = (numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1].length() == 1 ?
                     numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1] :
                     new StringBuilder(numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]).insert(1, "\n")).toString();
-            values.put("time", strMonth + "\n · \n" + strDay);
+            values.put("date", strMonth + "\n · \n" + strDay);
             values.put("content", getString(R.string.use_explain_diary));
             database.insert("diary", null, values);
-            
+
             values.clear();
-            values.put("time", numbers[Calendar.getInstance().get(Calendar.MONTH)] +
+            values.put("date", numbers[Calendar.getInstance().get(Calendar.MONTH)] +
                     " · " + numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]);
             values.put("content", getString(R.string.use_explain_note));
             database.insert("note", null, values);

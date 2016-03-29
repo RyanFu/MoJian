@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class DiaryFragment extends Fragment implements DiaryAdapter.OnItemClickL
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(getActivity(), ViewActivity.class);
         intent.putExtra("from", "diary");
+        intent.putExtra("id", (view.findViewById(R.id.cv_diary_item)).getTag().toString());     //id作为删除和修改的标识
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
         startActivity(intent);
     }

@@ -25,7 +25,8 @@
             android:layout_height="match_parent"
             android:background="@android:color/white"
             android:gravity="center"
-            android:textColor="@color/grey_700"
+            android:textSize="15sp"
+            android:lineSpacingMultiplier="1.5"
             android:maxLines="3"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"/>

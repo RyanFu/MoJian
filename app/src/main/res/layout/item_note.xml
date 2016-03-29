@@ -25,7 +25,9 @@
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:gravity="center"
-            android:textColor="@color/grey_700"/>
+            android:textSize="15sp"
+            android:lineSpacingMultiplier="1.5"
+            android:padding="10dp"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

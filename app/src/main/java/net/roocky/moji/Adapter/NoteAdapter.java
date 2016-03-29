@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.roocky.moji.Database.DatabaseHelper;
+import net.roocky.moji.Model.Note;
 import net.roocky.moji.R;
 
 import java.util.ArrayList;
@@ -22,8 +23,7 @@ import java.util.List;
  */
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     private DatabaseHelper databaseHelper;
-    private List<String> listDate = new ArrayList<>();
-    private List<String> listContent = new ArrayList<>();
+    private List<Note> noteList = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
 
     public NoteAdapter(Context context) {
@@ -39,19 +39,21 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         //数据在数据库中是倒序排列的，即日期最早的数据在最前面，所以此处的index需要减去position
-        holder.tvDate.setText(listDate.get(listDate.size() - position - 1));
-        holder.tvContent.setText(listContent.get(listContent.size() - position - 1));
+        holder.tvDate.setText(noteList.get(noteList.size() - position - 1).getDate());
+        holder.tvContent.setText(noteList.get(noteList.size() - position - 1).getContent());
         holder.cvNoteItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemClickListener.onItemClick(v, holder.getLayoutPosition());
             }
         });
+        //将该item在数据库中的id存入CardView中
+        holder.cvNoteItem.setTag(noteList.get(noteList.size() - position - 1).getId());
     }
 
     @Override
     public int getItemCount() {
-        return listDate.size();
+        return noteList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -70,12 +72,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     public void listRefresh() {
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         Cursor cursor = database.query("note", null, null, null, null, null, null);
-        listDate.clear();
-        listContent.clear();
+        noteList.clear();
         if (cursor.moveToFirst()) {
             do {
-                listDate.add(cursor.getString(cursor.getColumnIndex("time")));
-                listContent.add(cursor.getString(cursor.getColumnIndex("content")));
+                noteList.add(new Note(
+                        cursor.getInt(cursor.getColumnIndex("id")),
+                        cursor.getString(cursor.getColumnIndex("date")),
+                        cursor.getString(cursor.getColumnIndex("content"))));
             } while (cursor.moveToNext());
         }
         cursor.close();

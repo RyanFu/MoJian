@@ -88,12 +88,12 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
                 //需要判断长度是否为“1”，若不为“1”则需要加“\n”
                 String strMonth = (numbers[month].length() == 1 ? numbers[month] : new StringBuilder(numbers[month]).insert(1, "\n")).toString();
                 String strDay = (numbers[day - 1].length() == 1 ? numbers[day - 1] : new StringBuilder(numbers[day - 1]).insert(1, "\n")).toString();
-                values.put("time", strMonth + "\n · \n" + strDay);
+                values.put("date", strMonth + "\n · \n" + strDay);
                 values.put("content", etContent.getText().toString());
                 database.insert("diary", null, values);
             }
         } else {
-            values.put("time", numbers[month] + " · " + numbers[day - 1]);
+            values.put("date", numbers[month] + " · " + numbers[day - 1]);
             values.put("content", etContent.getText().toString());
             database.insert("note", null, values);
         }
@@ -109,7 +109,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
             ContentValues values = new ContentValues();
-            values.put("time", numbers[month] + " · " + numbers[day - 1]);
+            values.put("date", numbers[month] + " · " + numbers[day - 1]);
             values.put("content", etContent.getText().toString());
             database.insert("note", null, values);
         }

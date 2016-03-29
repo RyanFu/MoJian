@@ -13,12 +13,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     //日记表
     public static final String CREATE_DIARY = "create table diary ("
             + "id integer primary key autoincrement, "
-            + "time text, "
+            + "date text, "
             + "content text)";
     //便笺表
     public static final String CREATE_NOTE = "create table note ("
             + "id integer primary key autoincrement, "
-            + "time text, "
+            + "date text, "
             + "content text)";
 
     /**
