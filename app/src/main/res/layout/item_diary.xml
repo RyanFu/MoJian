@@ -17,6 +17,7 @@
             android:layout_height="match_parent"
             android:background="@color/grey_700"
             android:gravity="center"
+            android:textSize="17sp"
             android:textColor="@android:color/white"
             android:ems="1"/>
         <TextView
@@ -26,6 +27,7 @@
             android:background="@android:color/white"
             android:gravity="center"
             android:textSize="15sp"
+            android:textColor="@android:color/black"
             android:lineSpacingMultiplier="1.5"
             android:maxLines="3"
             android:paddingLeft="5dp"

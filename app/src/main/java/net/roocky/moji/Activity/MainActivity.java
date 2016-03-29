@@ -3,11 +3,16 @@ package net.roocky.moji.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +20,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,8 +31,8 @@ import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
-import net.roocky.moji.Fragment.SettingFragment;
 import net.roocky.moji.R;
+import net.roocky.moji.Fragment.SettingFragment;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     new StringBuilder(numbers[Calendar.getInstance().get(Calendar.MONTH)]).insert(1, "\n")).toString();
             String strDay = (numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1].length() == 1 ?
                     numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1] :
-                    new StringBuilder(numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]).insert(1, "\n")).toString();
+                    new StringBuilder(numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]).insert(1, "\n").toString());
             values.put("date", strMonth + "\n · \n" + strDay);
             values.put("content", getString(R.string.use_explain_diary));
             database.insert("diary", null, values);
@@ -135,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (uriAvatar != null) {
 //            sdvAvatar.setImageURI(Uri.parse(uriAvatar));
         }
-
+        
         fragmentManager.beginTransaction().replace(R.id.fl_content, diaryFragment).commit();
         fragmentList.add(diaryFragment);
         fragmentList.add(noteFragment);

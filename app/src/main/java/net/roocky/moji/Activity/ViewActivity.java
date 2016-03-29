@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +29,9 @@ import butterknife.ButterKnife;
  * Created by roocky on 03/28.
  * 查看内容
  */
-public class ViewActivity extends AppCompatActivity implements View.OnClickListener, DialogInterface.OnClickListener {
+public class ViewActivity extends AppCompatActivity implements View.OnClickListener,
+        DialogInterface.OnClickListener,
+        NestedScrollView.OnScrollChangeListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
@@ -53,7 +56,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
 
         initView();
-        setOnClickListener();
+        setListener();
+
     }
 
     private void initView() {
@@ -72,8 +76,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         tvContent.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
-    private void setOnClickListener() {
+    private void setListener() {
         fabEdit.setOnClickListener(this);
+        NestedScrollView scrollView = (NestedScrollView)findViewById(R.id.nsv_content);
+        scrollView.setOnScrollChangeListener(this);
     }
 
     @Override
@@ -165,6 +171,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             database.delete("note", "id = ?", new String[]{intent.getStringExtra("id")});
         }
         finish();
+    }
+
+    //NestedScrollView滚动事件
+    @Override
+    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        if (scrollY - oldScrollY > 0) {
+            fabEdit.hide();
+        } else {
+            fabEdit.show();
+        }
     }
 
     @Override
