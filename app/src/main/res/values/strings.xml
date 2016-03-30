@@ -25,7 +25,8 @@
     <string name="tt_add_diary">写日記</string>
     <string name="tt_add_note">记便箋</string>
 
-    <string name="use_explain_diary">日记使用说明一</string>
+    <string name="use_explain_diary">「墨記」是一款用来写日记[表情]和记便笺[表情]的app[表情]
+  它是Roocky🤓上线的第一款app[表情]</string>
     <string name="use_explain_note">便笺使用说明一</string>
 
     <string name="per_success">获取权限成功，再次点击完成操作</string>

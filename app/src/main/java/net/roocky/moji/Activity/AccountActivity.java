@@ -19,9 +19,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import net.roocky.moji.R;
+import net.roocky.moji.Util.SoftInput;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +31,8 @@ import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cn.finalteam.galleryfinal.FunctionConfig;
+import cn.finalteam.galleryfinal.ImageLoader;
 
 /**
  * Created by roocky on 03/18.
@@ -84,6 +88,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+//        Fresco.initialize(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
@@ -104,7 +109,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             actionBar.setTitle(getString(R.string.set_account));
         }
         if (uriAvatar != null) {
-//            sdvAvatar.setImageURI(Uri.parse(uriAvatar));
+            sdvAvatar.setImageURI(Uri.parse(uriAvatar));
         }
     }
 
@@ -139,6 +144,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         .setNegativeButton("取消", null)
                         .show();
                 etNickname.setText(preferences.getString("nickname", ""));
+                SoftInput.show(etNickname);     //自动打开软键盘
+                etNickname.requestFocus();
                 break;
             case R.id.ll_sex:
                 dialogSex = new AlertDialog.Builder(this)
@@ -166,6 +173,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         .setNegativeButton("取消", null)
                         .show();
                 etAddress.setText(preferences.getString("address", ""));
+                SoftInput.show(etAddress);     //自动打开软键盘
+                etAddress.requestFocus();
                 break;
             case R.id.ll_signature:
                 dialogSignature = new AlertDialog.Builder(this)
@@ -175,6 +184,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         .setNegativeButton("取消", null)
                         .show();
                 etSignature.setText(preferences.getString("signature", ""));
+                SoftInput.show(etSignature);     //自动打开软键盘
+                etSignature.requestFocus();
                 break;
             default:
                 break;
@@ -221,6 +232,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     intent_s.setType("image/*");
                     intent_s.putExtra("crop", "true");
                     intent_s.putExtra("scale", true);
+                    intent_s.putExtra("aspectX", 1);
+                    intent_s.putExtra("aspectY", 1);
+                    intent_s.putExtra("outputX", 300);    //保持一个较小的像素，可确保头像文件不会太大以至于界面卡顿。。。
+                    intent_s.putExtra("outputY", 300);
                     intent_s.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent_s, CROP_PHOTO);
                     break;
@@ -251,6 +266,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     Intent intent = new Intent("com.android.camera.action.CROP");
                     intent.setDataAndType(imageUri, "image/*");
                     intent.putExtra("scale", true);
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 1);
+                    intent.putExtra("outputX", 300);    //保持一个较小的像素，可确保头像文件不会太大以至于界面卡顿。。。
+                    intent.putExtra("outputY", 300);
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, CROP_PHOTO);     //启动裁剪Activity
                 }

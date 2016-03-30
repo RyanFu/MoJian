@@ -14,6 +14,7 @@
             android:id="@+id/ctl_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:elevation="10dp"
             app:contentScrim="@color/grey_500"
             app:expandedTitleMarginStart="20dp"
             app:expandedTitleMarginBottom="20dp"

@@ -27,7 +27,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/grey_400">
+                android:background="@color/grey_500">
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/sdv_avatar"
                     android:layout_width="80dp"

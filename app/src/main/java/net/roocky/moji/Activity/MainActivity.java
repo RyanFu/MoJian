@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setSlidingMenu() {
         slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.SLIDING_WINDOW);      //菜单位置
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);    //滑动位置
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);    //滑动位置
         slidingMenu.setBehindWidth((int) (0.75f * getResources().getDisplayMetrics().widthPixels));  //菜单宽度
         slidingMenu.setFadeDegree(0.5f);        //淡入淡出
         slidingMenu.setBehindScrollScale(0f);   //菜单缩放
@@ -250,8 +250,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         //刷新抽屉部分
-        if (uriAvatar != null) {
-//            sdvAvatar.setImageURI(Uri.parse(preferences.getString("avatar", null)));
+        if (preferences.getString("avatar", null) != null) {
+            sdvAvatar.setImageURI(Uri.parse(preferences.getString("avatar", null)));
         }
         tvNickname.setText(preferences.getString("nickname", "昵称"));
         tvSignature.setText(preferences.getString("signature", "还没有个性签名"));
