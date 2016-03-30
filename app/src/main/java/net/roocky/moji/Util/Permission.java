@@ -1,15 +1,8 @@
 package net.roocky.moji.Util;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v13.app.FragmentCompat;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-
-import java.util.ArrayList;
 
 /**
  * Created by roocky on 03/29.

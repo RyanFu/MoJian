@@ -20,6 +20,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int FRAGMENT_SETTING = 2;
 
     private SlidingMenu slidingMenu;        //侧滑菜单
-    private CardView cvAccount;             //信息展示卡片
+    private LinearLayout llAccount;             //信息展示卡片
     private SimpleDraweeView sdvAvatar;     //用户头像
     private TextView tvNickname;            //用户昵称
     private TextView tvSignature;           //个性签名
@@ -131,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //初始化View
     private void initView() {
-        cvAccount = (CardView)findViewById(R.id.cv_account);
+        llAccount = (LinearLayout)findViewById(R.id.ll_account);
         sdvAvatar = (SimpleDraweeView)findViewById(R.id.sdv_avatar);
         tvNickname = (TextView)findViewById(R.id.tv_nickname);
         tvSignature = (TextView)findViewById(R.id.tv_signature);
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //绑定控件点击事件
     private void setOnClickListener() {
-        cvAccount.setOnClickListener(this);
+        llAccount.setOnClickListener(this);
         fabAdd.setOnClickListener(this);
         //日记、便笺、设置三项
         for (int idMenu : idMenus) {
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.cv_account:
+            case R.id.ll_account:
                 startActivity(new Intent(this, AccountActivity.class));
                 break;
             case R.id.fab_add:
