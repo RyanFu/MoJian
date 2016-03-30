@@ -6,6 +6,16 @@
         <item name="colorPrimary">@color/grey_500</item>
         <item name="colorPrimaryDark">@color/grey_700</item>
         <item name="colorAccent">@color/grey_500</item>
+        <!-- 头像裁剪器-->
+        <item name="cropImageStyle">@style/Widget.CropImageView</item>
+    </style>
+
+    <!-- 裁剪器-->
+    <style name="Widget.CropImageView" parent="android:Widget">
+        <item name="showThirds">true</item>
+        <item name="showCircle">false</item>
+        <item name="showHandles">always</item>
+        <item name="highlightColor">#f3f3f3</item>
     </style>
 
 </resources>

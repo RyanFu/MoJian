@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.soundcloud.android.crop.Crop;
 
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
@@ -31,8 +32,6 @@ import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import cn.finalteam.galleryfinal.FunctionConfig;
-import cn.finalteam.galleryfinal.ImageLoader;
 
 /**
  * Created by roocky on 03/18.
@@ -88,7 +87,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-//        Fresco.initialize(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
@@ -227,17 +225,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                      * 设置Action为ACTION_PICK的话可以直接从图库中选取图片，ACTION_GET_CONTENT是从“打开文件”处
                      * 选取，此处选取的图片会跳过截图步骤，具体原因不清楚
                      * Android 6.0系统没有Gallery应用，所以默认打开的是Google Photos，然而似乎Photos并没有裁剪功能
+                     *
+                     * 此处调用第三方裁剪库android-crop实现选择&裁剪图片（选择图片基于原生的选择器）
                      */
-                    Intent intent_s = new Intent(Intent.ACTION_PICK);
-                    intent_s.setType("image/*");
-                    intent_s.putExtra("crop", "true");
-                    intent_s.putExtra("scale", true);
-                    intent_s.putExtra("aspectX", 1);
-                    intent_s.putExtra("aspectY", 1);
-                    intent_s.putExtra("outputX", 300);    //保持一个较小的像素，可确保头像文件不会太大以至于界面卡顿。。。
-                    intent_s.putExtra("outputY", 300);
-                    intent_s.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent_s, CROP_PHOTO);
+                    Crop.pickImage(this);   //选择完成的resultCode是Crop.REQUEST_CROP
                     break;
                 default:
                     break;
@@ -274,13 +265,21 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     startActivityForResult(intent, CROP_PHOTO);     //启动裁剪Activity
                 }
                 break;
-            case CROP_PHOTO:        //裁剪完成设置ImageUri
+            case Crop.REQUEST_PICK:
+                if (data != null) {
+                    Crop.of(data.getData(), imageUri).asSquare().start(this);   //data.getData()为选择图片后得到的Uri
+                }
+            default:        //requestCode == CROP_PHOTO || Crop.REQUEST_CROP
                 if (resultCode == RESULT_OK) {
-                    sdvAvatar.setImageURI(imageUri);
+                    /**
+                     * 拍照更改头像的情况下，在拍照完成调向裁剪的过程中会崩溃，提示SimpleDraweeView未初始化
+                     * 所以只好在这里提前检测一下是否为空指针，目前是不会再崩溃了，原因不明
+                     */
+                    if (sdvAvatar != null) {
+                        sdvAvatar.setImageURI(imageUri);
+                    }
                     editor.putString("avatar", imageUri.toString()).apply();
                 }
-                break;
-            default:
                 break;
         }
     }
