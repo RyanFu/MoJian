@@ -28,6 +28,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.umeng.analytics.MobclickAgent;
 
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Fragment.DiaryFragment;
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onResume() {
+        super.onResume();
         //刷新内容部分
         switch (fragmentId) {
             case FRAGMENT_DIARY:
@@ -255,9 +257,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         tvNickname.setText(preferences.getString("nickname", "昵称"));
         tvSignature.setText(preferences.getString("signature", "还没有个性签名"));
-
-        super.onResume();
+        MobclickAgent.onResume(this);
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
+    }
+
 
     @Override
     public void onBackPressed() {

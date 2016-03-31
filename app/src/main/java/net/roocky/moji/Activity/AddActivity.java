@@ -11,6 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
+import com.umeng.analytics.MobclickAgent;
+
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
@@ -115,5 +117,17 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             database.insert("note", null, values);
         }
         super.onBackPressed();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 }

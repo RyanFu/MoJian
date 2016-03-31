@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.umeng.analytics.MobclickAgent;
+
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
@@ -181,6 +183,18 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             fabEdit.show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override

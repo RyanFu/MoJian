@@ -43,6 +43,10 @@
                     android:layout_margin="20dp"
                     app:placeholderImage="@drawable/avatar"
                     app:placeholderImageScaleType="centerCrop"/>
+                <!--<ImageView-->
+                    <!--android:id="@+id/sdv_avatar"-->
+                    <!--android:layout_width="80dp"-->
+                    <!--android:layout_height="80dp" />-->
             </FrameLayout>
             <LinearLayout
                 android:id="@+id/ll_nickname"

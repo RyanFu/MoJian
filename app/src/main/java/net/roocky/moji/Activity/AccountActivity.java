@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.soundcloud.android.crop.Crop;
+import com.umeng.analytics.MobclickAgent;
 
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
@@ -76,7 +77,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private AlertDialog dialogAvatar;
     private AlertDialog dialogNickname;
     private AlertDialog dialogSex;
-//    private DatePickerDialog dialogBirthday;
     private AlertDialog dialogAddress;
     private AlertDialog dialogSignature;
 
@@ -215,11 +215,14 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             }
             imageUri = Uri.fromFile(outputImage);
             switch (which) {
+                //启动相机Activity，resultCode == TAKE_PHOTO
                 case TAKE_PHOTO:
                     Intent intent_t = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent_t.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent_t, TAKE_PHOTO);       //启动相机Activity
+                    startActivityForResult(intent_t, TAKE_PHOTO);
                     break;
+
+                //启动文件选择器，resultCode == Crop.REQUEST_PICK
                 case SELECT_PHOTO:
                     /**
                      * 设置Action为ACTION_PICK的话可以直接从图库中选取图片，ACTION_GET_CONTENT是从“打开文件”处
@@ -228,7 +231,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                      *
                      * 此处调用第三方裁剪库android-crop实现选择&裁剪图片（选择图片基于原生的选择器）
                      */
-                    Crop.pickImage(this);   //选择完成的resultCode是Crop.REQUEST_CROP
+                    Crop.pickImage(this);
                     break;
                 default:
                     break;
@@ -252,34 +255,30 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case TAKE_PHOTO:        //拍照完成，启动裁剪程序
+            //拍照完成，启动裁剪程序
+            case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    Intent intent = new Intent("com.android.camera.action.CROP");
-                    intent.setDataAndType(imageUri, "image/*");
-                    intent.putExtra("scale", true);
-                    intent.putExtra("aspectX", 1);
-                    intent.putExtra("aspectY", 1);
-                    intent.putExtra("outputX", 300);    //保持一个较小的像素，可确保头像文件不会太大以至于界面卡顿。。。
-                    intent.putExtra("outputY", 300);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent, CROP_PHOTO);     //启动裁剪Activity
+                    Crop.of(imageUri, imageUri).withMaxSize(300, 300)     //第一个参数imageUri是拍照生成的原始图片Uri
+                            .asSquare().start(this);                      //第二个参数imageUri是裁剪完成生成的图片Uri
                 }
                 break;
+
+            //选择完成，启动裁剪程序
             case Crop.REQUEST_PICK:
-                if (data != null) {
-                    Crop.of(data.getData(), imageUri).asSquare().start(this);   //data.getData()为选择图片后得到的Uri
+                if (resultCode == RESULT_OK && data != null) {
+                    Crop.of(data.getData(), imageUri).withMaxSize(300, 300)   //data.getData()为选择图片后得到的Uri
+                            .asSquare().start(this);                          //resultCode == Crop.REQUEST_CROP
                 }
-            default:        //requestCode == CROP_PHOTO || Crop.REQUEST_CROP
+                break;
+
+            //裁剪完成，设置图片Uri
+            case Crop.REQUEST_CROP:
                 if (resultCode == RESULT_OK) {
-                    /**
-                     * 拍照更改头像的情况下，在拍照完成调向裁剪的过程中会崩溃，提示SimpleDraweeView未初始化
-                     * 所以只好在这里提前检测一下是否为空指针，目前是不会再崩溃了，原因不明
-                     */
-                    if (sdvAvatar != null) {
-                        sdvAvatar.setImageURI(imageUri);
-                    }
+                    sdvAvatar.setImageURI(imageUri);
                     editor.putString("avatar", imageUri.toString()).apply();
                 }
+                break;
+            default:
                 break;
         }
     }
@@ -305,6 +304,13 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 preferences.getInt("birthdayDay", calendar.get(Calendar.DAY_OF_MONTH)));
         tvAddress.setText(preferences.getString("address", ""));
         tvSignature.setText(preferences.getString("signature", ""));
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
