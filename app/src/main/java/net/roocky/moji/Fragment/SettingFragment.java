@@ -32,6 +32,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     LinearLayout llRestore;
     @Bind(R.id.ll_update)
     LinearLayout llUpdate;
+    @Bind(R.id.ll_feedback)
+    LinearLayout llFeedback;
 
     private final int EXTERNAL_STORAGE = 0;
     private int idClick;
@@ -50,6 +52,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         llBackup.setOnClickListener(this);
         llRestore.setOnClickListener(this);
         llUpdate.setOnClickListener(this);
+        llFeedback.setOnClickListener(this);
     }
 
     @Override
@@ -57,6 +60,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ll_update:
                 UmengUpdateAgent.forceUpdate(getActivity());
+                break;
+            case R.id.ll_feedback:
+
                 break;
             default:
                 /**

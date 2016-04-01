@@ -21,7 +21,9 @@
     <string name="set_restore">恢复</string>
     <string name="set_restore_detail">（备份文件需提前移动到“/sdcard/Moji.db”路径下）</string>
     <string name="set_update">更新</string>
-    <string name="set_update_detail">检查「墨記」是否有新版本可更新</string>
+    <string name="set_update_detail">看看「墨記」有没有进步 : )</string>
+    <string name="set_feedback">反馈</string>
+    <string name="set_feedback_detail">「墨記」需要听到你的声音~</string>
     <string name="path_databases">/data/data/net.roocky.moji/databases/Moji.db</string>
     <string name="path_sdcard">/sdcard/Moji.db</string>
 

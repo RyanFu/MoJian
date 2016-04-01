@@ -1,0 +1,53 @@
+apply plugin: 'com.android.application'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '21.1.0'
+    defaultConfig {
+        applicationId 'com.umeng.fb.example'
+        minSdkVersion 8
+        targetSdkVersion 21
+        versionCode 1
+        versionName '1.0'
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    productFlavors {
+    }
+    lintOptions {
+        abortOnError false
+    }
+    dexOptions {
+        preDexLibraries = false
+    }
+
+    sourceSets.main {
+        jniLibs.srcDir 'libs'
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:21.0.0'
+    compile 'com.umeng:message:2.4.1@aar'
+    compile 'com.umeng:fb:latest.integration'
+}
+
+repositories {
+    jcenter()
+    maven { url "https://raw.githubusercontent.com/umeng/mvn-repo-umeng/master/repository" }
+}
+
+

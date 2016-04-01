@@ -50,7 +50,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@drawable/divideline_horizontal"/>
+            android:background="@color/grey_300"/>
         <LinearLayout
             android:id="@+id/ll_update"
             android:layout_width="match_parent"
@@ -59,14 +59,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/set_update"
+                android:text="@string/set_feedback"
                 android:textSize="17sp"
                 android:textColor="@android:color/black"
                 android:padding="10dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/set_update_detail"
+                android:text="@string/set_feedback_detail"
                 android:paddingLeft="10dp"
                 android:paddingBottom="10dp"/>
         </LinearLayout>

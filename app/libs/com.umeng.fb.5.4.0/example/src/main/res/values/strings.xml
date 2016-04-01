@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">用户反馈Demo</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_feedback">Feedback</string>
+    <string name="action_new_conversation">新建会话</string>
+    <string name="feedback_title">用户反馈</string>
+    <string name="fb_fragment_activity">使用 SDK Fragment</string>
+    <string name="sdk_fb_activity">使用 SDK Activity</string>
+    <string name="multi_conversation_activity">多会话模式</string>
+    <string name="title_item_list">反馈列表</string>
+    <string name="fb_help_activity">帮助页面</string>
+
+</resources>
