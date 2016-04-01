@@ -1,7 +1,6 @@
 package net.roocky.moji.Fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,8 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
+import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 import net.roocky.moji.R;
@@ -38,11 +37,14 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private final int EXTERNAL_STORAGE = 0;
     private int idClick;
 
+    private FeedbackAgent agent;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         ButterKnife.bind(this, view);
 
+        agent = new FeedbackAgent(getActivity());   //友盟反馈
         setOnClickListener();
 
         return view;
@@ -62,7 +64,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 UmengUpdateAgent.forceUpdate(getActivity());
                 break;
             case R.id.ll_feedback:
-
+                agent.startFeedbackActivity();
                 break;
             default:
                 /**

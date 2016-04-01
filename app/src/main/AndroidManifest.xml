@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data android:value="	56fbd72be0f55a493c00288d" android:name="UMENG_APPKEY"/>
-        <meta-data android:value="coolapk" android:name="UMENG_CHANNEL"/>
+        <meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/>
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +37,9 @@
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
+        <!-- 友盟反馈SDK-->
+        <activity
+            android:name="com.umeng.fb.ConversationActivity"/>
     </application>
 
 </manifest>
