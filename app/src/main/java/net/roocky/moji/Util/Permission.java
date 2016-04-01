@@ -1,6 +1,9 @@
 package net.roocky.moji.Util;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
@@ -24,6 +27,15 @@ public class Permission {
 //            } else {
             fragment.requestPermissions(new String[]{permission}, REQUEST_CODE);        //请求权限
 //            }
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static boolean checkA(Activity activity, String permission, int REQUEST_CODE) {
+        if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(activity, new String[]{permission}, REQUEST_CODE);
             return false;
         } else {
             return true;

@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.umeng.update.UmengUpdateAgent;
+
 import net.roocky.moji.R;
 import net.roocky.moji.Util.FileCopy;
 import net.roocky.moji.Util.Permission;
@@ -28,6 +30,8 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     LinearLayout llBackup;
     @Bind(R.id.ll_restore)
     LinearLayout llRestore;
+    @Bind(R.id.ll_update)
+    LinearLayout llUpdate;
 
     private final int EXTERNAL_STORAGE = 0;
     private int idClick;
@@ -45,11 +49,15 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private void setOnClickListener() {
         llBackup.setOnClickListener(this);
         llRestore.setOnClickListener(this);
+        llUpdate.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.ll_update:
+                UmengUpdateAgent.forceUpdate(getActivity());
+                break;
             default:
                 /**
                  * check()方法判断是否已经拥有该权限，若已拥有则直接进行备份&恢复操作，否则向用户发出请求

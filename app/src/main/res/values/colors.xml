@@ -12,4 +12,6 @@
     <color name="grey_text">#363636</color>
     <!-- 背景颜色-->
     <color name="blue_grey_50">#ECEFF1</color>
+    <!-- Android 5.0主题色-->
+    <color name="teal_500">#009688</color>
 </resources>

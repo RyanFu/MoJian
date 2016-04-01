@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -29,6 +31,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.update.UmengUpdateAgent;
 
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Fragment.DiaryFragment;
@@ -89,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        UmengUpdateAgent.setDeltaUpdate(false); //设置为全量更新
+        UmengUpdateAgent.update(this);  //友盟更新检查
 
         initExplain();          //使用说明初始化
         setSlidingMenu();       //设置SlidingMenu
@@ -219,7 +225,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
              */
             if (idMenus[i] == id) {
                 ((TextView) findViewById(idMenus[i]))
-                        .setTextColor(getResources().getColor(android.R.color.black));  //在API 23中被弃用
+                        .setTextColor(Color.BLACK);
                 if (getSupportActionBar() != null) {
                     ctlMain.setTitle(ttMenus[i]);       //Toolbar包裹在CollapsingToolbarLayout里面时需要
                                                         //通过CollapsingToolbarLayout来设置title
@@ -233,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     fabAdd.setVisibility(View.VISIBLE);
                 }
             } else {    //如果取到的ID不是被点击的ID，直接把该菜单颜色设置为浅色以表示未选中即可
-                ((TextView) findViewById(idMenus[i])).setTextColor(getResources().getColor(R.color.grey_500));
+                ((TextView) findViewById(idMenus[i])).setTextColor(0xff9e9e9e);     //grey_500
             }
         }
         slidingMenu.showContent();
@@ -257,13 +263,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         tvNickname.setText(preferences.getString("nickname", "昵称"));
         tvSignature.setText(preferences.getString("signature", "还没有个性签名"));
-        MobclickAgent.onResume(this);
+        MobclickAgent.onResume(this);        //友盟用户统计
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+        MobclickAgent.onPause(this);        //友盟用户统计
     }
 
 

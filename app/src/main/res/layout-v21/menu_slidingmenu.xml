@@ -68,7 +68,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/divideline"/>
+            android:src="@drawable/divideline_vertical"/>
         <TextView
             android:id="@+id/btn_note"
             android:layout_width="0dp"
@@ -83,7 +83,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/divideline"/>
+            android:src="@drawable/divideline_vertical"/>
         <TextView
             android:id="@+id/btn_setting"
             android:layout_width="0dp"
