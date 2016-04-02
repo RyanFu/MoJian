@@ -98,6 +98,29 @@
                 android:paddingLeft="10dp"
                 android:paddingBottom="10dp"/>
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+        <LinearLayout
+            android:id="@+id/ll_about"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_about"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:padding="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_about_detail"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"/>
+        </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </android.support.v4.widget.NestedScrollView>

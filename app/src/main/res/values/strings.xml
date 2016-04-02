@@ -1,5 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
+    <string name="baichuan_app_key">23336545</string>
+
     <string name="app_name">墨記</string>
 
     <string name="mn_diary">日記</string>
@@ -24,6 +26,8 @@
     <string name="set_update_detail">看看「墨記」有没有进步 : )</string>
     <string name="set_feedback">反馈</string>
     <string name="set_feedback_detail">「墨記」需要听到你的声音~</string>
+    <string name="set_about">关于</string>
+    <string name="set_about_detail">「墨記」的故事</string>
     <string name="path_databases">/data/data/net.roocky.moji/databases/Moji.db</string>
     <string name="path_sdcard">/sdcard/Moji.db</string>
 

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -87,6 +88,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_view, menu);
+        if (intent.getStringExtra("from").equals("diary")) {    //日记无需设置提醒
+            menu.findItem(R.id.action_remind).setVisible(false);
+        }
         return true;
     }
 
@@ -95,6 +99,11 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:     //返回箭头
+                if (intent.getStringExtra("from").equals("note") && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
+                    ContentValues values = new ContentValues();
+                    values.put("content", etContent.getText().toString());
+                    database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                }
                 finish();
                 break;
             case R.id.action_delete:    //删除
@@ -114,6 +123,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                             .show();
                 }
                 break;
+            case R.id.action_remind:
+                Toast.makeText(this, "s", Toast.LENGTH_SHORT).show();
+                break;
             default:
                 break;
         }
@@ -125,8 +137,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_edit:
-                toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
-                toolbar.setNavigationOnClickListener(this);
+                if (intent.getStringExtra("from").equals("diary")) {    //日记编辑状态需要改变Navigation图标
+                    toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
+                    toolbar.setNavigationOnClickListener(this);
+                }
 
                 tvContent.setVisibility(View.GONE);
                 etContent.setText(tvContent.getText());
@@ -137,8 +151,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
                 isEdit = true;
                 break;
-            default:
-                if (isEdit) {       //保存点击事件
+            default:       //保存点击事件
+                if (isEdit) {
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     if (intent.getStringExtra("from").equals("diary")) {

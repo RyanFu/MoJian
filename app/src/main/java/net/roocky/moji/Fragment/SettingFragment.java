@@ -1,6 +1,7 @@
 package net.roocky.moji.Fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -10,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.umeng.fb.FeedbackAgent;
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.umeng.update.UmengUpdateAgent;
 
+import net.roocky.moji.Activity.AbountActivity;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.FileCopy;
 import net.roocky.moji.Util.Permission;
@@ -33,18 +35,17 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     LinearLayout llUpdate;
     @Bind(R.id.ll_feedback)
     LinearLayout llFeedback;
+    @Bind(R.id.ll_about)
+    LinearLayout llAbout;
 
     private final int EXTERNAL_STORAGE = 0;
     private int idClick;
-
-    private FeedbackAgent agent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         ButterKnife.bind(this, view);
 
-        agent = new FeedbackAgent(getActivity());   //友盟反馈
         setOnClickListener();
 
         return view;
@@ -55,6 +56,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         llRestore.setOnClickListener(this);
         llUpdate.setOnClickListener(this);
         llFeedback.setOnClickListener(this);
+        llAbout.setOnClickListener(this);
     }
 
     @Override
@@ -64,7 +66,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 UmengUpdateAgent.forceUpdate(getActivity());
                 break;
             case R.id.ll_feedback:
-                agent.startFeedbackActivity();
+                FeedbackAPI.openFeedbackActivity(getActivity());    //百川反馈
+                break;
+            case R.id.ll_about:
+                startActivity(new Intent(getActivity(), AbountActivity.class));
                 break;
             default:
                 /**

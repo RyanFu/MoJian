@@ -6,4 +6,8 @@
         android:title="删除"
         android:icon="@mipmap/ic_delete_black_24dp"
         app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_remind"
+        android:title="提醒我"
+        app:showAsAction="never" />
 </menu>

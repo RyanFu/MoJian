@@ -10,12 +10,13 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
+        android:name=".Moji"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data android:value="	56fbd72be0f55a493c00288d" android:name="UMENG_APPKEY"/>
+        <meta-data android:value="56fbd72be0f55a493c00288d" android:name="UMENG_APPKEY"/>
         <meta-data android:value="Channel ID" android:name="UMENG_CHANNEL"/>
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
@@ -28,6 +29,7 @@
         <activity android:name=".Activity.AccountActivity" />
         <activity android:name=".Activity.ViewActivity" />
         <activity android:name=".Activity.AddActivity" />
+        <activity android:name=".Activity.AbountActivity" />
         <!--友盟更新SDK-->
         <service
             android:name="com.umeng.update.net.DownloadingService"
@@ -37,9 +39,6 @@
             android:name="com.umeng.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
-        <!-- 友盟反馈SDK-->
-        <activity
-            android:name="com.umeng.fb.ConversationActivity"/>
     </application>
 
 </manifest>

@@ -10,29 +10,27 @@ import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.fb.FeedbackAgent;
 import com.umeng.update.UmengUpdateAgent;
 
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
-import net.roocky.moji.R;
 import net.roocky.moji.Fragment.SettingFragment;
+import net.roocky.moji.R;
 import net.roocky.moji.Util.UmengUpdate;
 
 import java.util.ArrayList;
@@ -92,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UmengUpdateAgent.setDeltaUpdate(false); //设置为全量更新
         UmengUpdate.set(this);                  //设置友盟检查更新结果的处理
         UmengUpdateAgent.update(this);          //友盟检查更新
-        new FeedbackAgent(this).sync(); //友盟反馈回复检查
 
         initExplain();          //使用说明初始化
         setSlidingMenu();       //设置SlidingMenu

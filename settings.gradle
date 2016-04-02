@@ -1,2 +1,3 @@
-include ':app', ':slidingmenu'
+include ':app', ':slidingmenu', ':OneSDK'
 project(':slidingmenu').projectDir = new File('app/libs/slidingmenu')
+project(':OneSDK').projectDir = new File('app/libs/OneSDK')
