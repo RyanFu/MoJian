@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.umeng.update.UmengUpdateAgent;
 
-import net.roocky.moji.Activity.AbountActivity;
+import net.roocky.moji.Activity.AboutActivity;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.FileCopy;
 import net.roocky.moji.Util.Permission;
@@ -69,7 +69,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 FeedbackAPI.openFeedbackActivity(getActivity());    //百川反馈
                 break;
             case R.id.ll_about:
-                startActivity(new Intent(getActivity(), AbountActivity.class));
+                startActivity(new Intent(getActivity(), AboutActivity.class));
                 break;
             default:
                 /**

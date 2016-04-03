@@ -9,7 +9,7 @@ import net.roocky.moji.R;
  * Created by roock on 04/02.
  * “关于”Activity
  */
-public class AbountActivity extends AppCompatActivity {
+public class AboutActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

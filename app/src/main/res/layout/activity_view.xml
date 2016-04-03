@@ -59,5 +59,12 @@ android:fitsSystemWindows="true">
         app:fabSize="normal"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp" />
+    <TextView
+        android:id="@+id/tv_remind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/grey_400"
+        android:padding="15dp"
+        android:layout_gravity="left|bottom"/>
 
 </android.support.design.widget.CoordinatorLayout>

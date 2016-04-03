@@ -290,7 +290,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         editor.putInt("birthdayMonth", monthOfYear);    //月份从0开始
         editor.putInt("birthdayDay", dayOfMonth);
         editor.commit();
-        tvBirthday.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+        String birthday = year + "-" + (monthOfYear + 1) + "-" + dayOfMonth;
+        tvBirthday.setText(birthday);
     }
 
     @Override
@@ -299,9 +300,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         Calendar calendar = Calendar.getInstance();
         tvNickname.setText(preferences.getString("nickname", ""));
         tvSex.setText(sexs[preferences.getInt("sex", 0)]);
-        tvBirthday.setText(preferences.getInt("birthdayYear", calendar.get(Calendar.YEAR)) + "-" +
+        String birthday = preferences.getInt("birthdayYear", calendar.get(Calendar.YEAR)) + "-" +
                 (preferences.getInt("birthdayMonth", calendar.get(Calendar.MONTH)) + 1) + "-" +
-                preferences.getInt("birthdayDay", calendar.get(Calendar.DAY_OF_MONTH)));
+                preferences.getInt("birthdayDay", calendar.get(Calendar.DAY_OF_MONTH));
+        tvBirthday.setText(birthday);
         tvAddress.setText(preferences.getString("address", ""));
         tvSignature.setText(preferences.getString("signature", ""));
         MobclickAgent.onResume(this);

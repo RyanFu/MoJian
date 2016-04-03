@@ -27,9 +27,11 @@
         </activity>
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <activity android:name=".Activity.AccountActivity" />
-        <activity android:name=".Activity.ViewActivity" />
+        <activity android:name=".Activity.ViewActivity"
+            android:parentActivityName=".Activity.MainActivity"/>
         <activity android:name=".Activity.AddActivity" />
-        <activity android:name=".Activity.AbountActivity" />
+        <activity android:name=".Activity.AboutActivity" />
+        <receiver android:name=".BroadcastReceiver.RemindReceiver" />
         <!--友盟更新SDK-->
         <service
             android:name="com.umeng.update.net.DownloadingService"

@@ -1,29 +1,46 @@
 package net.roocky.moji.Activity;
 
+import android.app.AlarmManager;
+import android.app.DatePickerDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.TimePickerDialog;
+import android.content.ComponentName;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
+import net.roocky.moji.BroadcastReceiver.RemindReceiver;
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
+
+import java.sql.Time;
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,7 +51,9 @@ import butterknife.ButterKnife;
  */
 public class ViewActivity extends AppCompatActivity implements View.OnClickListener,
         DialogInterface.OnClickListener,
-        NestedScrollView.OnScrollChangeListener{
+        NestedScrollView.OnScrollChangeListener,
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
@@ -43,6 +62,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     TextView tvContent;
     @Bind(R.id.fab_edit)
     FloatingActionButton fabEdit;
+    @Bind(R.id.tv_remind)
+    TextView tvRemind;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -76,7 +97,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         //显示内容
         tvContent.setText(intent.getStringExtra("content"));
-        tvContent.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
     private void setListener() {
@@ -124,7 +144,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.action_remind:
-                Toast.makeText(this, "s", Toast.LENGTH_SHORT).show();
+                Calendar calendar = Calendar.getInstance();
+                new DatePickerDialog(
+                        this,
+                        this,
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH)).show();
                 break;
             default:
                 break;
@@ -187,6 +213,39 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             database.delete("note", "id = ?", new String[]{intent.getStringExtra("id")});
         }
         finish();
+    }
+
+    //便笺提醒选择器设置监听
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        new TimePickerDialog(
+                this,
+                this,
+                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
+                Calendar.getInstance().get(Calendar.MINUTE),
+                false).show();
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        tvRemind.setText(getString(R.string.note_remind, hourOfDay, minute));
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.YEAR, 2016);
+        calendar.set(Calendar.MONTH, 3);
+        calendar.set(Calendar.DAY_OF_MONTH, 3);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+
+        Intent intentReceiver = new Intent(this, RemindReceiver.class);
+        intentReceiver.putExtra("from", "note");
+        intentReceiver.putExtra("id", intent.getStringExtra("id"));
+        intentReceiver.putExtra("content", intent.getStringExtra("content"));
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intentReceiver, 0);
+
+        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
     //NestedScrollView滚动事件
