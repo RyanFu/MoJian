@@ -55,6 +55,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         numbers = getResources().getStringArray(R.array.number_array);
 
         setSupportActionBar(toolbar);
+        if (intent.getStringExtra("from").equals("note")) {
+            toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
+        }
         ActionBar actionBar = getSupportActionBar();
 
         if (actionBar != null) {
@@ -84,8 +87,12 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         int day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         ContentValues values = new ContentValues();
         if (etContent.getText().length() == 0) {
-            SoftInput.hide(etContent);
-            Snackbar.make(etContent, "内容不能为空！", Snackbar.LENGTH_SHORT).show();
+            if (intent.getStringExtra("from").equals("diary")) {
+                SoftInput.hide(etContent);
+                Snackbar.make(etContent, "内容不能为空！", Snackbar.LENGTH_SHORT).show();
+            } else {
+                finish();
+            }
         } else {
             if (intent.getStringExtra("from").equals("diary")) {
                 //需要判断长度是否为“1”，若不为“1”则需要加“\n”

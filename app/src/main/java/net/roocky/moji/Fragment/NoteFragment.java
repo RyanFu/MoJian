@@ -55,6 +55,8 @@ public class NoteFragment extends Fragment implements NoteAdapter.OnItemClickLis
         intent.putExtra("from", "note");
         intent.putExtra("id", (view.findViewById(R.id.cv_note_item)).getTag().toString());     //id作为删除和修改的标识
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
+        //如果提醒时间未设置的话，此处取得的文本为""
+        intent.putExtra("remind", ((TextView) (view.findViewById(R.id.tv_remind))).getText().toString());
         startActivity(intent);
     }
 

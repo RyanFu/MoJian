@@ -41,6 +41,10 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         //数据在数据库中是倒序排列的，即日期最早的数据在最前面，所以此处的index需要减去position
         holder.tvDate.setText(noteList.get(noteList.size() - position - 1).getDate());
         holder.tvContent.setText(noteList.get(noteList.size() - position - 1).getContent());
+        if (noteList.get(noteList.size() - position - 1).getRemind() != null) {
+            holder.tvRemind.setVisibility(View.VISIBLE);
+            holder.tvRemind.setText(noteList.get(noteList.size() - position - 1).getRemind());
+        }
         holder.cvNoteItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,11 +63,13 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView tvDate;
         private TextView tvContent;
+        private TextView tvRemind;
         private CardView cvNoteItem;
         public ViewHolder(View itemView) {
             super(itemView);
             tvDate = (TextView)itemView.findViewById(R.id.tv_date);
             tvContent = (TextView)itemView.findViewById(R.id.tv_content);
+            tvRemind = (TextView)itemView.findViewById(R.id.tv_remind);
             cvNoteItem = (CardView)itemView.findViewById(R.id.cv_note_item);
         }
     }
@@ -78,7 +84,8 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
                 noteList.add(new Note(
                         cursor.getInt(cursor.getColumnIndex("id")),
                         cursor.getString(cursor.getColumnIndex("date")),
-                        cursor.getString(cursor.getColumnIndex("content"))));
+                        cursor.getString(cursor.getColumnIndex("content")),
+                        cursor.getString(cursor.getColumnIndex("remind"))));
             } while (cursor.moveToNext());
         }
         cursor.close();

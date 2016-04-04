@@ -73,6 +73,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private AlertDialog dialogDiary;
     private AlertDialog dialogNote;
 
+    private int yearRemind;
+    private int monthRemind;
+    private int dayRemind;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +101,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         //显示内容
         tvContent.setText(intent.getStringExtra("content"));
+        if (!intent.getStringExtra("remind").equals("")) {
+            tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
+        }
     }
 
     private void setListener() {
@@ -218,34 +225,66 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //便笺提醒选择器设置监听
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        new TimePickerDialog(
+        yearRemind = year;
+        monthRemind = monthOfYear;
+        dayRemind = dayOfMonth;
+        TimePickerDialog timePickerDialog = new TimePickerDialog(
                 this,
                 this,
                 Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
                 Calendar.getInstance().get(Calendar.MINUTE),
-                false).show();
+                false);
+        timePickerDialog.setCancelable(false);
+        timePickerDialog.show();
     }
 
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        tvRemind.setText(getString(R.string.note_remind, hourOfDay, minute));
+    public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {
+        String requestCode = intent.getStringExtra("id");
+
+        int month = monthRemind + 1;
+        String hour = String.valueOf(hourOfDay);
+        String minute = String.valueOf(minuteOfHour);
+        //如果小时或分钟为个位数，需补“0”
+        if (hourOfDay < 10) {
+            hour = "0" + hourOfDay;
+        }
+        if (minuteOfHour < 10) {
+            minute = "0" + minuteOfHour;
+        }
+        String strRemind =                  //存入数据库的提醒时间
+                yearRemind + "年"
+                + month + "月"
+                + dayRemind + "日"
+                + " "
+                + hour
+                + " : "
+                + minute;
+        tvRemind.setText(getString(R.string.note_remind, strRemind));
+        ContentValues values = new ContentValues();
+        values.put("remind", strRemind);
+        database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});   //更新数据库中便笺提醒时间
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.YEAR, 2016);
-        calendar.set(Calendar.MONTH, 3);
-        calendar.set(Calendar.DAY_OF_MONTH, 3);
+        calendar.set(Calendar.YEAR, yearRemind);
+        calendar.set(Calendar.MONTH, monthRemind);
+        calendar.set(Calendar.DAY_OF_MONTH, dayRemind);
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.MINUTE, minuteOfHour);          //设置提醒时间
 
         Intent intentReceiver = new Intent(this, RemindReceiver.class);
         intentReceiver.putExtra("from", "note");
-        intentReceiver.putExtra("id", intent.getStringExtra("id"));
+        intentReceiver.putExtra("id", requestCode);
         intentReceiver.putExtra("content", intent.getStringExtra("content"));
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intentReceiver, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,       //Context
+                Integer.parseInt(requestCode),      //requestCode
+                intentReceiver,     //Intent
+                PendingIntent.FLAG_UPDATE_CURRENT);     //Flag
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);   //开启定时
     }
 
     //NestedScrollView滚动事件
