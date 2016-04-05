@@ -41,12 +41,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        List<? extends Diary> baseList;
-        if (type.equals("diary")) {
-            baseList = diaryList;
-        } else {
-            baseList = noteList;
-        }
+        List<? extends Diary> baseList = type.equals("diary") ? diaryList : noteList;
         //数据在数据库中是倒序排列的，即日期最早的数据在最前面，所以此处的index需要减去position
         holder.tvDate.setText(baseList.get(baseList.size() - position - 1).getDate());
         holder.tvContent.setText(baseList.get(baseList.size() - position - 1).getContent());
@@ -74,7 +69,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
             super(itemView);
             tvDate = (TextView)itemView.findViewById(R.id.tv_date);
             tvContent = (TextView)itemView.findViewById(R.id.tv_content);
-            if (type.equals("note")) {
+            if (type.equals("note")) {      //只有当前处于NoteFragment时才可以得到tvRemind
                 tvRemind = (TextView) itemView.findViewById(R.id.tv_remind);
             }
             cvItem = (CardView)itemView.findViewById(R.id.cv_item);

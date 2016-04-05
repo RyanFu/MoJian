@@ -22,7 +22,7 @@ import net.roocky.moji.R;
  * Created by roocky on 03/16.
  * 日記Fragment
  */
-public class DiaryFragment extends Fragment implements DiaryAdapter.OnItemClickListener {
+public class DiaryFragment extends BaseFragment {
     private DiaryAdapter adapter;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -35,35 +35,12 @@ public class DiaryFragment extends Fragment implements DiaryAdapter.OnItemClickL
         rvDiary.setLayoutManager(manager);
         rvDiary.setAdapter(adapter);
         //根据滚动方向决定FAB是否显示
-        rvDiary.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
-                    ((FloatingActionButton)getActivity().findViewById(R.id.fab_add)).hide();
-                } else {
-                    ((FloatingActionButton)getActivity().findViewById(R.id.fab_add)).show();
-                }
-            }
-        });
+        super.addOnScrollListener(rvDiary);
         adapter.setOnItemClickListener(this);
         return view;
     }
 
-    //CardView点击事件
-    @Override
-    public void onItemClick(View view, int position) {
-        Intent intent = new Intent(getActivity(), ViewActivity.class);
-        intent.putExtra("from", "diary");
-        intent.putExtra("id", (view.findViewById(R.id.cv_item)).getTag().toString());     //id作为删除和修改的标识
-        intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
-        startActivity(intent);
-    }
-
-    public void flush() {   //notify函数的参数position是从1开始的
-//        adapter.notifyItemInserted(1);     //在position为1的位置插入
-        adapter.listRefresh("diary");
-//        adapter.notifyItemRangeChanged(0, adapter.getItemCount());    //刷新时从position为0的位置以后刷新
-        adapter.notifyDataSetChanged();
+    public void flush() {
+        super.flush(adapter, "diary");
     }
 }

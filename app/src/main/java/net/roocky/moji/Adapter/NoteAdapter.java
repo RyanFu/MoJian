@@ -27,8 +27,6 @@ public class NoteAdapter extends BaseAdapter {
      *
      * tvRemind默认是不显示的，只有下面的判断中不是null时才会显示
      * 但是实际情况是如果没有设置remind的话，调试可以看到list里面的remind就是null，但是会显示以前的remind
-     * @param holder
-     * @param position
      */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
