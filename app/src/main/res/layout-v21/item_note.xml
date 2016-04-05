@@ -29,6 +29,7 @@
             android:textSize="15sp"
             android:textColor="@android:color/black"
             android:lineSpacingMultiplier="1.5"
+            android:maxLines="7"
             android:padding="10dp"/>
         <TextView
             android:id="@+id/tv_remind"

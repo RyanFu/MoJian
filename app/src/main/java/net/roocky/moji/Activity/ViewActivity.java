@@ -102,7 +102,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         //显示内容
         tvContent.setText(intent.getStringExtra("content"));
-        if (!intent.getStringExtra("remind").equals("")) {
+        if (intent.getStringExtra("from").equals("note") && !intent.getStringExtra("remind").equals("")) {
             tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
         }
     }
