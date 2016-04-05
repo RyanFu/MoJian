@@ -55,14 +55,14 @@ public class DiaryFragment extends Fragment implements DiaryAdapter.OnItemClickL
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(getActivity(), ViewActivity.class);
         intent.putExtra("from", "diary");
-        intent.putExtra("id", (view.findViewById(R.id.cv_diary_item)).getTag().toString());     //id作为删除和修改的标识
+        intent.putExtra("id", (view.findViewById(R.id.cv_item)).getTag().toString());     //id作为删除和修改的标识
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
         startActivity(intent);
     }
 
     public void flush() {   //notify函数的参数position是从1开始的
 //        adapter.notifyItemInserted(1);     //在position为1的位置插入
-        adapter.listRefresh();
+        adapter.listRefresh("diary");
 //        adapter.notifyItemRangeChanged(0, adapter.getItemCount());    //刷新时从position为0的位置以后刷新
         adapter.notifyDataSetChanged();
     }

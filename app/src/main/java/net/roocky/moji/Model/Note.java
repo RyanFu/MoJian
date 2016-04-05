@@ -4,7 +4,7 @@ package net.roocky.moji.Model;
  * Created by roocky on 03/29.
  * 便箋
  */
-public class Note extends Base {
+public class Note extends Diary {
     private String remind;
     public Note() {
 

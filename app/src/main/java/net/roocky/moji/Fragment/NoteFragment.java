@@ -53,7 +53,7 @@ public class NoteFragment extends Fragment implements NoteAdapter.OnItemClickLis
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(getActivity(), ViewActivity.class);
         intent.putExtra("from", "note");
-        intent.putExtra("id", (view.findViewById(R.id.cv_note_item)).getTag().toString());     //id作为删除和修改的标识
+        intent.putExtra("id", (view.findViewById(R.id.cv_item)).getTag().toString());     //id作为删除和修改的标识
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
         //如果提醒时间未设置的话，此处取得的文本为""
         intent.putExtra("remind", ((TextView) (view.findViewById(R.id.tv_remind))).getText().toString());
@@ -62,7 +62,7 @@ public class NoteFragment extends Fragment implements NoteAdapter.OnItemClickLis
 
     public void flush() {   //notify函数的参数position是从1开始的
 //        adapter.notifyItemInserted(1);     //在position为1的位置插入
-        adapter.listRefresh();
+        adapter.listRefresh("note");
 //        adapter.notifyItemRangeChanged(0, adapter.getItemCount());    //刷新时从position为0的位置以后刷新
         adapter.notifyDataSetChanged();
     }
