@@ -1,21 +1,11 @@
 package net.roocky.moji.Adapter;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import net.roocky.moji.Database.DatabaseHelper;
-import net.roocky.moji.Model.Note;
 import net.roocky.moji.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by roocky on 03/17.
@@ -32,6 +22,14 @@ public class NoteAdapter extends BaseAdapter {
         return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_note, parent, false));
     }
 
+    /**
+     * 如果不设置else的话，会自动将上一条的tvRemind拿来显示，原因不清楚。。。
+     *
+     * tvRemind默认是不显示的，只有下面的判断中不是null时才会显示
+     * 但是实际情况是如果没有设置remind的话，调试可以看到list里面的remind就是null，但是会显示以前的remind
+     * @param holder
+     * @param position
+     */
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
@@ -39,6 +37,9 @@ public class NoteAdapter extends BaseAdapter {
         if (noteList.get(noteList.size() - position - 1).getRemind() != null) {
             holder.tvRemind.setVisibility(View.VISIBLE);
             holder.tvRemind.setText(noteList.get(noteList.size() - position - 1).getRemind());
+        } else {
+            holder.tvRemind.setText("");
+            holder.tvRemind.setVisibility(View.GONE);
         }
     }
 }
