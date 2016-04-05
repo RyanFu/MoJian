@@ -1,17 +1,24 @@
 package net.roocky.moji.Activity;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,12 +28,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
+import com.alibaba.sdk.android.feedback.util.IWxCallback;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
 import com.umeng.update.UmengUpdateAgent;
 
+import net.roocky.moji.BroadcastReceiver.FeedbackReceiver;
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
@@ -41,7 +51,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, IWxCallback {
 
     @Bind(R.id.iv_background)
     ImageView ivBackground;
@@ -91,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         UmengUpdateAgent.setDeltaUpdate(false); //设置为全量更新
         UmengUpdate.set(this);                  //设置友盟检查更新结果的处理
         UmengUpdateAgent.update(this);          //友盟检查更新
+        FeedbackAPI.getFeedbackUnreadCount(this, null, this);   //检查百川反馈未读消息
 
         initExplain();          //使用说明初始化
         setSlidingMenu();       //设置SlidingMenu
@@ -277,4 +288,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             super.onBackPressed();
         }
     }
+
+    //反馈消息未读数目成功获取后需要发出一条Notification
+    @Override
+    public void onSuccess(Object... objects) {
+        if ((int)objects[0] > 0) {
+            //创建Notification的跳转Intent
+            Intent intentNotify = new Intent(this, FeedbackReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                    this,
+                    0,
+                    intentNotify,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+            //创建Notification
+            Notification notification = new NotificationCompat.Builder(this)
+                    .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.small_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
+                    .setContentTitle(getString(R.string.app_name))
+                    .setContentText(getString(R.string.feedback_notify, (int)objects[0]))
+                    .setAutoCancel(true)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .build();
+            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+            //发出Notification
+            NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.notify(0, notification);
+        }
+    }
+    @Override
+    public void onError(int i, String s) {}
+    @Override
+    public void onProgress(int i) {}
 }

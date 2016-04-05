@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -264,14 +265,14 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         ContentValues values = new ContentValues();
         values.put("remind", strRemind);
         database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});   //更新数据库中便笺提醒时间
-
+        //设置提醒时间
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.YEAR, yearRemind);
         calendar.set(Calendar.MONTH, monthRemind);
         calendar.set(Calendar.DAY_OF_MONTH, dayRemind);
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        calendar.set(Calendar.MINUTE, minuteOfHour);          //设置提醒时间
+        calendar.set(Calendar.MINUTE, minuteOfHour);
 
         Intent intentReceiver = new Intent(this, RemindReceiver.class);
         intentReceiver.putExtra("from", "note");
@@ -284,7 +285,11 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 PendingIntent.FLAG_UPDATE_CURRENT);     //Flag
 
         AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);   //开启定时
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        } else {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);   //开启定时
+        }
     }
 
     //NestedScrollView滚动事件

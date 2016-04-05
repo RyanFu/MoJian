@@ -42,6 +42,7 @@
     <string name="per_fail">获取权限失败</string>
 
     <string name="note_remind">「墨記」会在%1$s提醒你：）</string>
+    <string name="feedback_notify">您有%1$d条反馈未读消息</string>
 
     <string-array name="number_array">
         <item>一</item>

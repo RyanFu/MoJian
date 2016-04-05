@@ -33,6 +33,7 @@ public class Permission {
         }
     }
 
+    //在Activity中判断是否有权限
     public static boolean checkA(Activity activity, String permission, int REQUEST_CODE) {
         if (ContextCompat.checkSelfPermission(activity, permission) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{permission}, REQUEST_CODE);

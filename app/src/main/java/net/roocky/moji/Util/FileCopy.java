@@ -8,6 +8,12 @@ import java.io.FileOutputStream;
  * 拷贝文件工具类
  */
 public class FileCopy {
+    /**
+     * 文件拷贝
+     * @param src       从这里拷贝
+     * @param target    拷贝到这里
+     * @return
+     */
     public static boolean copy(String src, String target) {
         try {
             FileInputStream inputStream = new FileInputStream(src);

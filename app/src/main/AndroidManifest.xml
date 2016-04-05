@@ -32,6 +32,7 @@
         <activity android:name=".Activity.AddActivity" />
         <activity android:name=".Activity.AboutActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
+        <receiver android:name=".BroadcastReceiver.FeedbackReceiver" />
         <!--友盟更新SDK-->
         <service
             android:name="com.umeng.update.net.DownloadingService"
