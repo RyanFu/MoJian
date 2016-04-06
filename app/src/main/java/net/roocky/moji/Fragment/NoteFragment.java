@@ -35,10 +35,11 @@ public class NoteFragment extends BaseFragment {
         //根据滚动方向决定FAB是否显示
         super.addOnScrollListener(rvNote);
         adapter.setOnItemClickListener(this);
+        adapter.setOnItemLongClickListener(this);
         return view;
     }
 
-    public void flush() {
-        super.flush(adapter, "note");
+    public void flush(int action, int position) {
+        super.flush(adapter, "note", action, position);
     }
 }

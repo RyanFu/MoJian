@@ -37,10 +37,11 @@ public class DiaryFragment extends BaseFragment {
         //根据滚动方向决定FAB是否显示
         super.addOnScrollListener(rvDiary);
         adapter.setOnItemClickListener(this);
+        adapter.setOnItemLongClickListener(this);
         return view;
     }
 
-    public void flush() {
-        super.flush(adapter, "diary");
+    public void flush(int action, int position) {
+        super.flush(adapter, "diary", action, position);
     }
 }

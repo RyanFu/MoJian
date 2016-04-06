@@ -23,7 +23,6 @@
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
             android:gravity="center"
             android:textSize="15sp"
             android:textColor="@android:color/black"

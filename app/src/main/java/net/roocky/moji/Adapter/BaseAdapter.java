@@ -3,6 +3,8 @@ package net.roocky.moji.Adapter;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,6 +16,7 @@ import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Model.Diary;
 import net.roocky.moji.Model.Note;
 import net.roocky.moji.R;
+import net.roocky.moji.Util.SDKVersion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +25,12 @@ import java.util.List;
  * Created by roockty on 04/05.
  * DiaryAdapter和NoteAdapter的基类
  */
-public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder>  {
+public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
     protected DatabaseHelper databaseHelper;
     protected List<Diary> diaryList = new ArrayList<>();
     protected List<Note> noteList = new ArrayList<>();
     protected OnItemClickListener onItemClickListener;
+    protected OnItemLongClickListener onItemLongClickListener;
 
     private String type;
 
@@ -51,8 +55,21 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
                 onItemClickListener.onItemClick(v, holder.getLayoutPosition());
             }
         });
+        holder.cvItem.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                onItemLongClickListener.onItemLongClick(v, holder.getLayoutPosition());
+                return true;
+            }
+        });
         //将该item在数据库中的id存入CardView中
         holder.cvItem.setTag(baseList.get(baseList.size() - position - 1).getId());
+        //设置item的点击效果（5.0以上版本）
+        if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
+            holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
+        } else {
+            holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);
+        }
     }
 
     @Override
@@ -105,5 +122,13 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(View view, int position);
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
     }
 }

@@ -27,6 +27,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.IWxCallback;
@@ -38,6 +39,7 @@ import com.umeng.update.UmengUpdateAgent;
 
 import net.roocky.moji.BroadcastReceiver.FeedbackReceiver;
 import net.roocky.moji.Database.DatabaseHelper;
+import net.roocky.moji.Fragment.BaseFragment;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
 import net.roocky.moji.Fragment.SettingFragment;
@@ -46,6 +48,7 @@ import net.roocky.moji.Util.UmengUpdate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -69,9 +72,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final int FRAGMENT_DIARY = 0;
     private final int FRAGMENT_NOTE = 1;
     private final int FRAGMENT_SETTING = 2;
+    private final int ACTIVITY_VIEW = 0;
+    private final int ACTIVITY_ADD = 1;
+    private final int FLUSH_ADD = 0;
+    private final int FLUSH_REMOVE = 1;
+    private final int FLUSH_ALL = 2;
 
     private SlidingMenu slidingMenu;        //侧滑菜单
-    private LinearLayout llAccount;             //信息展示卡片
+    private LinearLayout llAccount;         //信息展示卡片
     private SimpleDraweeView sdvAvatar;     //用户头像
     private TextView tvNickname;            //用户昵称
     private TextView tvSignature;           //个性签名
@@ -87,9 +95,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int[] idMenus = {R.id.btn_diary, R.id.btn_note, R.id.btn_setting};      //日记、便笺、设置三项的ID
     private int[] bgToolbar = {R.drawable.bd_diary, R.drawable.bd_note, R.drawable.bd_setting}; //Toolbar背景图片
 
+    private DatabaseHelper databaseHelper;
+    private SQLiteDatabase database;
+
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor;
-    private String uriAvatar;       //存在SharedPreferences中的头像Uri
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,8 +129,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (preferences.getBoolean("isFirst", true)) {
             editor.putBoolean("isFirst", false).apply();   //设置一个布尔变量标识是否第一次运行App
 
-            DatabaseHelper databaseHelper = new DatabaseHelper(this, "Moji.db", null, 1);
-            SQLiteDatabase database = databaseHelper.getWritableDatabase();
+            databaseHelper = new DatabaseHelper(this, "Moji.db", null, 1);
+            database = databaseHelper.getWritableDatabase();
             String[] numbers = getResources().getStringArray(R.array.number_array);
 
             //向数据库中存入使用说明
@@ -152,10 +162,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvSignature = (TextView)findViewById(R.id.tv_signature);
 
         setSupportActionBar(toolbar);
-        uriAvatar = preferences.getString("avatar", null);
-        if (uriAvatar != null) {
-//            sdvAvatar.setImageURI(Uri.parse(uriAvatar));
-        }
         
         fragmentManager.beginTransaction().replace(R.id.fl_content, diaryFragment).commit();
         fragmentList.add(diaryFragment);
@@ -204,17 +210,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(new Intent(this, AccountActivity.class));
                 break;
             case R.id.fab_add:
-                Intent intent = new Intent(MainActivity.this, AddActivity.class);
-                //新建日记和便笺的Activity为同一个，但是Intent携带参数不同
-                switch (fragmentId) {
-                    case FRAGMENT_DIARY:
-                        intent.putExtra("from", "diary");
-                        break;
-                    case FRAGMENT_NOTE:
-                        intent.putExtra("from", "note");
-                        break;
+                if (diaryFragment.isDeleting || noteFragment.isDeleting) {
+                    SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
+                    BaseFragment baseFragment = fragmentId == FRAGMENT_DIARY ? diaryFragment : noteFragment;
+                    //对list进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
+                    Collections.sort(baseFragment.deleteList);
+                    Collections.sort(baseFragment.positionList);
+                    for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
+                        if (fragmentId == FRAGMENT_DIARY) {
+                            database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                            diaryFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+                        } else {
+                            database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                            noteFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+                        }
+                    }
+                    //情况delete列表，切换回普通状态
+                    baseFragment.deleteList.clear();
+                    baseFragment.positionList.clear();
+                    baseFragment.isDeleting = false;
+                    fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
+                } else {
+                    Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                    //新建日记和便笺的Activity为同一个，但是Intent携带参数不同
+                    switch (fragmentId) {
+                        case FRAGMENT_DIARY:
+                            intent.putExtra("from", "diary");
+                            break;
+                        case FRAGMENT_NOTE:
+                            intent.putExtra("from", "note");
+                            break;
+                    }
+                    startActivity(intent);
                 }
-                startActivity(intent);
                 break;
             default:
                 itemSelected(v.getId());
@@ -258,10 +286,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //刷新内容部分
         switch (fragmentId) {
             case FRAGMENT_DIARY:
-                diaryFragment.flush();
+                diaryFragment.flush(FLUSH_ALL, 0);
                 break;
             case FRAGMENT_NOTE:
-                noteFragment.flush();
+                noteFragment.flush(FLUSH_ALL, 0);
                 break;
         }
         //刷新抽屉部分
