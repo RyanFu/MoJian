@@ -11,6 +11,10 @@
     <string name="mn_setting">設置</string>
     <string name="mn_setting_vertical">設置</string>
 
+    <string name="action_delete">删除</string>
+    <string name="action_remind">提醒我</string>
+    <string name="action_calendar">日历</string>
+
     <string name="set_account">个人信息</string>
     <string name="set_nickname">昵称</string>
     <string name="set_sex">性别</string>
@@ -34,8 +38,7 @@
     <string name="tt_add_diary">写日記</string>
     <string name="tt_add_note">记便箋</string>
 
-    <string name="use_explain_diary">「墨記」是一款用来写日记[表情]和记便笺[表情]的app[表情]
-  它是Roocky🤓上线的第一款app[表情]</string>
+    <string name="use_explain_diary">「墨記」是一款用来写日记</string>
     <string name="use_explain_note">便笺使用说明一</string>
 
     <string name="per_success">获取权限成功，再次点击完成操作</string>

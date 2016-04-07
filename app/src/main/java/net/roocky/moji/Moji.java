@@ -5,6 +5,7 @@ import android.support.v4.util.ArrayMap;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 
+import java.util.Calendar;
 import java.util.Map;
 
 /**
@@ -12,10 +13,31 @@ import java.util.Map;
  *
  */
 public class Moji extends Application {
+    public static String[] numbers;
+    //当前日期&时间
+    public static int year;
+    public static int month;
+    public static int day;
+    public static int hour;
+    public static int minute;
+
     @Override
     public void onCreate() {
         super.onCreate();
 
+        numbers = getResources().getStringArray(R.array.number_array);
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+
+        setBaichuanFb();
+    }
+
+    //百川反馈
+    private void setBaichuanFb() {
         FeedbackAPI.initAnnoy(this, getString(R.string.baichuan_app_key));
         Map<String, String> fbSetting = new ArrayMap<>();
         fbSetting.put("enableAudio", "0");  //关闭语音

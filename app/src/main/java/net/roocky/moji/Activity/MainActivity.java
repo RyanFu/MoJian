@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -19,9 +20,12 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -43,6 +47,7 @@ import net.roocky.moji.Fragment.BaseFragment;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
 import net.roocky.moji.Fragment.SettingFragment;
+import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.UmengUpdate;
 
@@ -54,7 +59,10 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, IWxCallback {
+public class MainActivity extends AppCompatActivity implements
+        View.OnClickListener,
+        IWxCallback,
+        DialogInterface.OnClickListener {
 
     @Bind(R.id.iv_background)
     ImageView ivBackground;
@@ -135,20 +143,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //向数据库中存入使用说明
             ContentValues values = new ContentValues();
-            //需要判断长度是否为“1”，若不为“1”则需要加“\n”
-            String strMonth = (numbers[Calendar.getInstance().get(Calendar.MONTH)].length() == 1 ?
-                    numbers[Calendar.getInstance().get(Calendar.MONTH)] :
-                    new StringBuilder(numbers[Calendar.getInstance().get(Calendar.MONTH)]).insert(1, "\n")).toString();
-            String strDay = (numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1].length() == 1 ?
-                    numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1] :
-                    new StringBuilder(numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]).insert(1, "\n").toString());
-            values.put("date", strMonth + "\n · \n" + strDay);
+            values.put("year", Moji.year);
+            values.put("month", Moji.month);
+            values.put("day", Moji.day);
             values.put("content", getString(R.string.use_explain_diary));
             database.insert("diary", null, values);
 
-            values.clear();
-            values.put("date", numbers[Calendar.getInstance().get(Calendar.MONTH)] +
-                    " · " + numbers[Calendar.getInstance().get(Calendar.DAY_OF_MONTH) - 1]);
+            values.remove("content");
             values.put("content", getString(R.string.use_explain_note));
             database.insert("note", null, values);
         }
@@ -211,25 +212,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.fab_add:
                 if (diaryFragment.isDeleting || noteFragment.isDeleting) {
-                    SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
-                    BaseFragment baseFragment = fragmentId == FRAGMENT_DIARY ? diaryFragment : noteFragment;
-                    //对list进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
-                    Collections.sort(baseFragment.deleteList);
-                    Collections.sort(baseFragment.positionList);
-                    for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
-                        if (fragmentId == FRAGMENT_DIARY) {
-                            database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                            diaryFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
-                        } else {
-                            database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                            noteFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
-                        }
-                    }
-                    //情况delete列表，切换回普通状态
-                    baseFragment.deleteList.clear();
-                    baseFragment.positionList.clear();
-                    baseFragment.isDeleting = false;
-                    fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
+                    new AlertDialog.Builder(this)
+                            .setTitle("删除")
+                            .setMessage("确定删除吗？")
+                            .setPositiveButton("确定", this)
+                            .setNegativeButton("取消", null)
+                            .show();
                 } else {
                     Intent intent = new Intent(MainActivity.this, AddActivity.class);
                     //新建日记和便笺的Activity为同一个，但是Intent携带参数不同
@@ -267,6 +255,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 fragmentManager.beginTransaction().replace(R.id.fl_content, fragmentList.get(i)).commit();
                 fragmentId = i;
+                invalidateOptionsMenu();    //完成fragmentId的设置后刷新菜单
                 ivBackground.setImageResource(bgToolbar[i]);
                 if (id == R.id.btn_setting) {
                     fabAdd.setVisibility(View.GONE);
@@ -278,6 +267,50 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         slidingMenu.showContent();
+    }
+
+    //删除提示弹窗点击事件
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
+        BaseFragment baseFragment = fragmentId == FRAGMENT_DIARY ? diaryFragment : noteFragment;
+        //对list进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
+        Collections.sort(baseFragment.deleteList);
+        Collections.sort(baseFragment.positionList);
+        for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
+            if (fragmentId == FRAGMENT_DIARY) {
+                database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                diaryFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+            } else {
+                database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                noteFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+            }
+        }
+        //情况delete列表，切换回普通状态
+        baseFragment.deleteList.clear();
+        baseFragment.positionList.clear();
+        baseFragment.isDeleting = false;
+        fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        if (fragmentId != FRAGMENT_DIARY) {    //非日记无需设置日历
+            menu.findItem(R.id.action_calendar).setVisible(false);
+        }
+        return true;
+    }
+
+    //ActionBar菜单点击事件
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_calendar:
+                startActivity(new Intent(this, CalendarActivity.class));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

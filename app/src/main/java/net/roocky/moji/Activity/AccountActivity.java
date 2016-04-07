@@ -24,6 +24,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.soundcloud.android.crop.Crop;
 import com.umeng.analytics.MobclickAgent;
 
+import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
 
@@ -152,10 +153,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         .show();
                 break;
             case R.id.ll_birthday:
-                Calendar calendar = Calendar.getInstance();
-                int year = preferences.getInt("birthdayYear", calendar.get(Calendar.YEAR));
-                int month = preferences.getInt("birthdayMonth", calendar.get(Calendar.MONTH));
-                int day = preferences.getInt("birthdayDay", calendar.get(Calendar.DAY_OF_MONTH));
+                int year = preferences.getInt("birthdayYear", Moji.year);
+                int month = preferences.getInt("birthdayMonth", Moji.month);
+                int day = preferences.getInt("birthdayDay", Moji.day);
                 new DatePickerDialog(
                         this,
                         this,
@@ -297,12 +297,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onResume() {
         super.onResume();
-        Calendar calendar = Calendar.getInstance();
         tvNickname.setText(preferences.getString("nickname", ""));
         tvSex.setText(sexs[preferences.getInt("sex", 0)]);
-        String birthday = preferences.getInt("birthdayYear", calendar.get(Calendar.YEAR)) + "-" +
-                (preferences.getInt("birthdayMonth", calendar.get(Calendar.MONTH)) + 1) + "-" +
-                preferences.getInt("birthdayDay", calendar.get(Calendar.DAY_OF_MONTH));
+        String birthday = preferences.getInt("birthdayYear", Moji.year) + "-" +
+                (preferences.getInt("birthdayMonth", Moji.month) + 1) + "-" +
+                preferences.getInt("birthdayDay", Moji.day);
         tvBirthday.setText(birthday);
         tvAddress.setText(preferences.getString("address", ""));
         tvSignature.setText(preferences.getString("signature", ""));

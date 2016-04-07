@@ -37,6 +37,7 @@ import com.umeng.analytics.MobclickAgent;
 
 import net.roocky.moji.BroadcastReceiver.RemindReceiver;
 import net.roocky.moji.Database.DatabaseHelper;
+import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
 
@@ -152,13 +153,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.action_remind:
-                Calendar calendar = Calendar.getInstance();
                 new DatePickerDialog(
                         this,
                         this,
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)).show();
+                        Moji.year,
+                        Moji.month,
+                        Moji.day).show();
                 break;
             default:
                 break;
@@ -232,8 +232,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         TimePickerDialog timePickerDialog = new TimePickerDialog(
                 this,
                 this,
-                Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-                Calendar.getInstance().get(Calendar.MINUTE),
+                Moji.hour,
+                Moji.minute,
                 false);
         timePickerDialog.setCancelable(false);
         timePickerDialog.show();

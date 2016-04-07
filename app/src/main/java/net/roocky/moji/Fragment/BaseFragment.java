@@ -102,7 +102,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
      * @param <T>
      */
     protected <T extends BaseAdapter> void flush(T adapter, String type, int action, int position) {
-        adapter.listRefresh(type);
+        adapter.listRefresh(type, null, null, null);
         switch (action) {
             case 0:         //插入刷新
                 adapter.notifyItemInserted(position);

@@ -38,6 +38,7 @@
             android:gravity="center"
             android:textSize="15sp"
             android:textColor="@color/grey_500"
+            android:paddingTop="3dp"
             android:paddingBottom="10dp"
             android:visibility="gone"/>
     </LinearLayout>

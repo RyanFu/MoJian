@@ -31,6 +31,7 @@
         <activity android:name=".Activity.ViewActivity" />
         <activity android:name=".Activity.AddActivity" />
         <activity android:name=".Activity.AboutActivity" />
+        <activity android:name=".Activity.CalendarActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
         <receiver android:name=".BroadcastReceiver.FeedbackReceiver" />
         <!--友盟更新SDK-->

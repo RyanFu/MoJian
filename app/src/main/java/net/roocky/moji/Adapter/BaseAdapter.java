@@ -15,6 +15,7 @@ import android.widget.TextView;
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Model.Diary;
 import net.roocky.moji.Model.Note;
+import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SDKVersion;
 
@@ -36,7 +37,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     public BaseAdapter(Context context, String type) {
         databaseHelper = new DatabaseHelper(context, "Moji.db", null, 1);
-        listRefresh(type);
+        listRefresh(type, null, null, null);
         this.type = type;
     }
 
@@ -94,22 +95,26 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     }
 
     //刷新listDate&listContent
-    public void listRefresh(String type) {
+    public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
-        Cursor cursor = database.query(type, null, null, null, null, null, null);
+        Cursor cursor = database.query(type, columns, selection, selectionArgs, null, null, null);
         diaryList.clear();
         noteList.clear();
         if (cursor.moveToFirst()) {
             do {
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
-                String date = cursor.getString(cursor.getColumnIndex("date"));
+                int month = cursor.getInt(cursor.getColumnIndex("month"));
+                int day = cursor.getInt(cursor.getColumnIndex("day"));
                 String content = cursor.getString(cursor.getColumnIndex("content"));
                 //根据type来决定存入哪个list中
                 if (type.equals("diary")) {
-                    diaryList.add(new Diary(id, date, content));
+                    //如果“月”或“日”的长度不为“1”，需要添加“/n”
+                    String strMonth = (Moji.numbers[month].length() == 1 ? Moji.numbers[month] : new StringBuilder(Moji.numbers[month]).insert(1, "\n")).toString();
+                    String strDay = (Moji.numbers[day - 1].length() == 1 ? Moji.numbers[day - 1] : new StringBuilder(Moji.numbers[day - 1]).insert(1, "\n")).toString();
+                    diaryList.add(new Diary(id, strMonth + "\n · \n" + strDay, content));
                 } else {
                     String remind = cursor.getString(cursor.getColumnIndex("remind"));
-                    noteList.add(new Note(id, date, content, remind));
+                    noteList.add(new Note(id, Moji.numbers[month] + " · " + Moji.numbers[day - 1], content, remind));
                 }
             } while (cursor.moveToNext());
         }
