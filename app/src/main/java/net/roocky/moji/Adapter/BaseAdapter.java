@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Model.Diary;
 import net.roocky.moji.Model.Note;
@@ -27,7 +29,7 @@ import java.util.List;
  * DiaryAdapter和NoteAdapter的基类
  */
 public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewHolder> {
-    protected DatabaseHelper databaseHelper;
+    protected SQLiteDatabase database;
     protected List<Diary> diaryList = new ArrayList<>();
     protected List<Note> noteList = new ArrayList<>();
     protected OnItemClickListener onItemClickListener;
@@ -35,9 +37,16 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     private String type;
 
-    public BaseAdapter(Context context, String type) {
-        databaseHelper = new DatabaseHelper(context, "Moji.db", null, 1);
-        listRefresh(type, null, null, null);
+    /**
+     * @param context
+     * @param type              "diary" or "note"
+     * @param columns           数据库query的列（需要把所有列写进去）
+     * @param selection         查询条件
+     * @param selectionArgs     查询参数
+     */
+    public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs) {
+        database = new DatabaseHelper(context, "Moji.db", null, 1).getWritableDatabase();
+        listRefresh(type, columns, selection, selectionArgs);
         this.type = type;
     }
 
@@ -95,13 +104,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     }
 
     //刷新listDate&listContent
-    public boolean listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
-        SQLiteDatabase database = databaseHelper.getWritableDatabase();
+    public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
         Cursor cursor = database.query(type, columns, selection, selectionArgs, null, null, null);
         diaryList.clear();
         noteList.clear();
-        if (cursor.moveToFirst()) {
-            do {
+        while (cursor.moveToNext()) {
                 int id = cursor.getInt(cursor.getColumnIndex("id"));
                 int month = cursor.getInt(cursor.getColumnIndex("month"));
                 int day = cursor.getInt(cursor.getColumnIndex("day"));
@@ -116,14 +123,23 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
                     String remind = cursor.getString(cursor.getColumnIndex("remind"));
                     noteList.add(new Note(id, Moji.numbers[month] + " · " + Moji.numbers[day - 1], content, remind));
                 }
-            } while (cursor.moveToNext());
         }
         cursor.close();
-        if (diaryList.size() == 0 && noteList.size() == 0) {    //CalendarActivity中刷新需要得到list是否为空
-            return true;
-        } else {
-            return false;
+    }
+
+    //获取哪些天记了日记
+    public List<CalendarDay> getDayList() {
+        List<CalendarDay> dayList = new ArrayList<>();
+        dayList.clear();
+        Cursor cursor = database.query(type, null, null, null, null, null, null);
+        while (cursor.moveToNext()) {
+                int year = cursor.getInt(cursor.getColumnIndex("year"));
+                int month = cursor.getInt(cursor.getColumnIndex("month"));
+                int day = cursor.getInt(cursor.getColumnIndex("day"));
+                dayList.add(CalendarDay.from(year, month, day));
         }
+        cursor.close();
+        return dayList;
     }
 
     public interface OnItemClickListener {

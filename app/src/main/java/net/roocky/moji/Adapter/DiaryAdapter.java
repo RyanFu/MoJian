@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class DiaryAdapter extends BaseAdapter {
 
-    public DiaryAdapter(Context context) {
-        super(context, "diary");
+    public DiaryAdapter(Context context, String[] columns, String selection, String[] selectionArgs) {
+        super(context, "diary", columns, selection, selectionArgs);
     }
 
     @Override

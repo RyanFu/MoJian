@@ -30,7 +30,7 @@ public class DiaryFragment extends BaseFragment {
 
         RecyclerView rvDiary = (RecyclerView)view.findViewById(R.id.rv_diary);
         LinearLayoutManager manager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.VERTICAL, false);
-        adapter = new DiaryAdapter(getContext());
+        adapter = new DiaryAdapter(getContext(), null, null, null);
 
         rvDiary.setLayoutManager(manager);
         rvDiary.setAdapter(adapter);

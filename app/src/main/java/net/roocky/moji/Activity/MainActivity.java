@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements
     private void setSlidingMenu() {
         slidingMenu = new SlidingMenu(this);
         slidingMenu.setMode(SlidingMenu.SLIDING_WINDOW);      //菜单位置
-        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);    //滑动位置
+        slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);    //滑动位置
         slidingMenu.setBehindWidth((int) (0.75f * getResources().getDisplayMetrics().widthPixels));  //菜单宽度
         slidingMenu.setFadeDegree(0.5f);        //淡入淡出
         slidingMenu.setBehindScrollScale(0f);   //菜单缩放

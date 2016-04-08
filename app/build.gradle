@@ -37,13 +37,14 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
-    compile 'com.facebook.fresco:fresco:0.9.0'
+    compile 'com.facebook.fresco:fresco:0.9.0'                  //图片加载
     compile 'com.android.support:cardview-v7:23.1.1'
     compile 'com.android.support:recyclerview-v7:23.1.1'
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile project(':slidingmenu')
-    compile project(':OneSDK')
-    compile 'com.soundcloud.android:android-crop:1.0.1@aar'
-    compile files('libs/umeng-update-v2.7.0.jar')
-    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'com.jakewharton:butterknife:7.0.1'                 //View绑定
+    compile project(':slidingmenu')                             //侧滑菜单
+    compile project(':OneSDK')                                  //百川
+    compile 'com.soundcloud.android:android-crop:1.0.1@aar'     //图片裁剪
+    compile files('libs/umeng-update-v2.7.0.jar')               //友盟更新
+    compile 'com.umeng.analytics:analytics:latest.integration'  //友盟用户统计
+    compile 'com.prolificinteractive:material-calendarview:1.2.0'   //日历
 }

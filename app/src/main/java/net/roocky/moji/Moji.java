@@ -1,6 +1,7 @@
 package net.roocky.moji;
 
 import android.app.Application;
+import android.content.Context;
 import android.support.v4.util.ArrayMap;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
@@ -13,6 +14,8 @@ import java.util.Map;
  *
  */
 public class Moji extends Application {
+    public static Context context;
+
     public static String[] numbers;
     //当前日期&时间
     public static int year;
@@ -25,6 +28,7 @@ public class Moji extends Application {
     public void onCreate() {
         super.onCreate();
 
+        context = getApplicationContext();
         numbers = getResources().getStringArray(R.array.number_array);
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);

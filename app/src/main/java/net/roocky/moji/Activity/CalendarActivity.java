@@ -1,8 +1,6 @@
 package net.roocky.moji.Activity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -10,20 +8,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.CalendarView;
 import android.widget.TextView;
 
+import com.prolificinteractive.materialcalendarview.CalendarDay;
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+
 import net.roocky.moji.Adapter.BaseAdapter;
+import net.roocky.moji.Decorator.CalendarDecorator;
 import net.roocky.moji.Adapter.DiaryAdapter;
-import net.roocky.moji.Database.DatabaseHelper;
-import net.roocky.moji.Model.Diary;
 import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -35,18 +33,21 @@ import butterknife.ButterKnife;
  * 根据日期查看日记
  */
 public class CalendarActivity extends AppCompatActivity implements
-        CalendarView.OnDateChangeListener,
+        OnDateSelectedListener,
         BaseAdapter.OnItemClickListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.cld_diary)
-    CalendarView cldDiary;
+    MaterialCalendarView cldDiary;
     @Bind(R.id.rv_diary)
     RecyclerView rvDiary;
 
     private DiaryAdapter adapter;
 
-    private int year, month, day;   //日历中当前所选择的日期
+    //日历中当前所选择的日期
+    private int year = Moji.year;
+    private int month = Moji.month;
+    private int day = Moji.day;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,17 +68,26 @@ public class CalendarActivity extends AppCompatActivity implements
             actionBar.setTitle(getString(R.string.action_calendar));
         }
 
+        //设置RecyclerView
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        adapter = new DiaryAdapter(this);
+        adapter = new DiaryAdapter(this,
+                new String[]{"id", "year", "month", "day", "content"},
+                "year=? and month=? and day=?",
+                new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)});
         rvDiary.setLayoutManager(manager);
         rvDiary.setAdapter(adapter);
 
-        flush(Moji.year, Moji.month, Moji.day);
+        //设置CalendarView的当前日期
+        cldDiary.setSelectedDate(Calendar.getInstance());
+
+        //向Decorator传入一个包含所有记了日记的CalendarDay的list
+        List<CalendarDay> dayList = adapter.getDayList();
+        cldDiary.addDecorator(new CalendarDecorator(dayList));
     }
 
     //绑定点击监听事件
     private void setOnClickListener() {
-        cldDiary.setOnDateChangeListener(this);     //日历
+        cldDiary.setOnDateChangedListener(this);     //日历
         adapter.setOnItemClickListener(this);       //RecyclerView
         adapter.setOnItemLongClickListener(new BaseAdapter.OnItemLongClickListener() {
             @Override
@@ -87,22 +97,23 @@ public class CalendarActivity extends AppCompatActivity implements
     }
 
     //日历选择监听事件
+    //刷新RecyclerView & 判断当天是否有日记
     @Override
-    public void onSelectedDayChange(CalendarView view, int year, int month, int day) {
-        flush(year, month, day);
+    public void onDateSelected(MaterialCalendarView widget, CalendarDay date, boolean selected) {
+        flush(date);
     }
 
     //RecyclerView刷新&设置日期
-    private void flush(int year, int month, int day) {
-        this.year = year;
-        this.month = month;
-        this.day = day;
-        boolean isNull = adapter.listRefresh("diary",
+    private void flush(CalendarDay date) {
+        this.year = date.getYear();
+        this.month = date.getMonth();
+        this.day = date.getDay();
+        adapter.listRefresh("diary",
                 new String[]{"id", "year", "month", "day", "content"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)});
         adapter.notifyDataSetChanged();
-        if (isNull) {
+        if (adapter.getItemCount() == 0) {
             Snackbar.make(cldDiary, getString(R.string.toast_null), Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -137,6 +148,6 @@ public class CalendarActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        flush(year, month, day);        //当在CalendarActivity中完成日记的删除or编辑操作后需要刷新日记列表
+        flush(CalendarDay.from(year, month, day));        //当在CalendarActivity中完成日记的删除or编辑操作后需要刷新日记列表
     }
 }
