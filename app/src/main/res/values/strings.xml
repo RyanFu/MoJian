@@ -41,6 +41,7 @@
     <string name="use_explain_diary">「墨記」是一款用来写日记</string>
     <string name="use_explain_note">便笺使用说明一</string>
 
+    <string name="toast_null">这天你没写日記呀~</string>
     <string name="per_success">获取权限成功，再次点击完成操作</string>
     <string name="per_fail">获取权限失败</string>
 

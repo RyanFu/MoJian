@@ -29,7 +29,8 @@
             android:lineSpacingMultiplier="1.5"
             android:maxLines="3"
             android:paddingLeft="5dp"
-            android:paddingRight="5dp"/>
+            android:paddingRight="5dp"
+            android:ellipsize="end"/>
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

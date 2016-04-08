@@ -55,13 +55,13 @@
         android:layout_below="@id/cv_account"
         android:layout_marginTop="20dp">
         <TextView
-            android:id="@+id/btn_diary"
+            android:id="@+id/btn_note"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:text="@string/mn_diary_vertical"
+            android:text="@string/mn_note_vertical"
             android:textSize="16sp"
-            android:textColor="@android:color/black"
+            android:textColor="@color/grey_600"
             android:gravity="center"
             android:background="@drawable/bg_ripple_blue_grey"/>
         <!-- 分隔线-->
@@ -70,13 +70,13 @@
             android:layout_height="wrap_content"
             android:src="@drawable/divideline_vertical"/>
         <TextView
-            android:id="@+id/btn_note"
+            android:id="@+id/btn_diary"
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_weight="1"
-            android:text="@string/mn_note_vertical"
+            android:text="@string/mn_diary_vertical"
             android:textSize="16sp"
-            android:textColor="@color/grey_600"
+            android:textColor="@android:color/black"
             android:gravity="center"
             android:background="@drawable/bg_ripple_blue_grey"/>
         <!-- 分隔线-->

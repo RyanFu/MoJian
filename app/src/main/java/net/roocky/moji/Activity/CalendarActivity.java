@@ -92,15 +92,19 @@ public class CalendarActivity extends AppCompatActivity implements
         flush(year, month, day);
     }
 
+    //RecyclerView刷新&设置日期
     private void flush(int year, int month, int day) {
         this.year = year;
         this.month = month;
         this.day = day;
-        adapter.listRefresh("diary",
+        boolean isNull = adapter.listRefresh("diary",
                 new String[]{"id", "year", "month", "day", "content"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)});
         adapter.notifyDataSetChanged();
+        if (isNull) {
+            Snackbar.make(cldDiary, getString(R.string.toast_null), Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     //Recycler子项点击
@@ -133,6 +137,6 @@ public class CalendarActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        flush(year, month, day);
+        flush(year, month, day);        //当在CalendarActivity中完成日记的删除or编辑操作后需要刷新日记列表
     }
 }

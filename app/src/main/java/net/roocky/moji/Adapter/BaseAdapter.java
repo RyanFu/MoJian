@@ -95,7 +95,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     }
 
     //刷新listDate&listContent
-    public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
+    public boolean listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
         SQLiteDatabase database = databaseHelper.getWritableDatabase();
         Cursor cursor = database.query(type, columns, selection, selectionArgs, null, null, null);
         diaryList.clear();
@@ -119,6 +119,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
             } while (cursor.moveToNext());
         }
         cursor.close();
+        if (diaryList.size() == 0 && noteList.size() == 0) {    //CalendarActivity中刷新需要得到list是否为空
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public interface OnItemClickListener {

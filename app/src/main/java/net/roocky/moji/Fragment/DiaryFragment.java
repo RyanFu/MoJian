@@ -34,6 +34,9 @@ public class DiaryFragment extends BaseFragment {
 
         rvDiary.setLayoutManager(manager);
         rvDiary.setAdapter(adapter);
+        //当由当前fragment切换至其他fragment时需要清空删除list
+        deleteList.clear();
+        positionList.clear();
         //根据滚动方向决定FAB是否显示
         super.addOnScrollListener(rvDiary);
         adapter.setOnItemClickListener(this);

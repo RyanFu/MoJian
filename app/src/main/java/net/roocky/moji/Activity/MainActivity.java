@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements
     @Bind(R.id.cl_main)
     CoordinatorLayout clMain;
 
-    private final int FRAGMENT_DIARY = 0;
-    private final int FRAGMENT_NOTE = 1;
+    private final int FRAGMENT_NOTE = 0;
+    private final int FRAGMENT_DIARY = 1;
     private final int FRAGMENT_SETTING = 2;
     private final int ACTIVITY_VIEW = 0;
     private final int ACTIVITY_ADD = 1;
@@ -93,15 +93,15 @@ public class MainActivity extends AppCompatActivity implements
     private TextView tvSignature;           //个性签名
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private DiaryFragment diaryFragment = new DiaryFragment();
     private NoteFragment noteFragment = new NoteFragment();
+    private DiaryFragment diaryFragment = new DiaryFragment();
     private SettingFragment settingFragment = new SettingFragment();
 
-    private int fragmentId = FRAGMENT_DIARY;         //记录当前所在的Fragment
-    private List<Fragment> fragmentList = new ArrayList<>();        //存放日记、便笺、设置三个Fragment
-    private String[] ttMenus = {"日記", "便箋", "設置"};
-    private int[] idMenus = {R.id.btn_diary, R.id.btn_note, R.id.btn_setting};      //日记、便笺、设置三项的ID
-    private int[] bgToolbar = {R.drawable.bd_diary, R.drawable.bd_note, R.drawable.bd_setting}; //Toolbar背景图片
+    private int fragmentId = FRAGMENT_NOTE;         //记录当前所在的Fragment
+    private List<Fragment> fragmentList = new ArrayList<>();        //存放便笺、日记、设置三个Fragment
+    private String[] ttMenus = {"便箋", "日記", "設置"};
+    private int[] idMenus = {R.id.btn_note, R.id.btn_diary, R.id.btn_setting};      //便笺、日记、设置三项的ID
+    private int[] bgToolbar = {R.drawable.bd_note, R.drawable.bd_diary, R.drawable.bd_setting}; //Toolbar背景图片
 
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase database;
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements
         initView();             //View初始化
         setOnClickListener();
 
-        itemSelected(R.id.btn_diary);   //设置默认“日记”项被选中
+        itemSelected(R.id.btn_note);   //设置默认“便笺”项被选中
     }
 
     //初始化使用说明
@@ -146,12 +146,12 @@ public class MainActivity extends AppCompatActivity implements
             values.put("year", Moji.year);
             values.put("month", Moji.month);
             values.put("day", Moji.day);
-            values.put("content", getString(R.string.use_explain_diary));
-            database.insert("diary", null, values);
-
-            values.remove("content");
             values.put("content", getString(R.string.use_explain_note));
             database.insert("note", null, values);
+
+            values.remove("content");
+            values.put("content", getString(R.string.use_explain_diary));
+            database.insert("diary", null, values);
         }
     }
 
@@ -164,9 +164,9 @@ public class MainActivity extends AppCompatActivity implements
 
         setSupportActionBar(toolbar);
         
-        fragmentManager.beginTransaction().replace(R.id.fl_content, diaryFragment).commit();
-        fragmentList.add(diaryFragment);
+        fragmentManager.beginTransaction().replace(R.id.fl_content, noteFragment).commit();
         fragmentList.add(noteFragment);
+        fragmentList.add(diaryFragment);
         fragmentList.add(settingFragment);
     }
 
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements
                 startActivity(new Intent(this, AccountActivity.class));
                 break;
             case R.id.fab_add:
-                if (diaryFragment.isDeleting || noteFragment.isDeleting) {
+                if (noteFragment.isDeleting || diaryFragment.isDeleting) {
                     new AlertDialog.Builder(this)
                             .setTitle("删除")
                             .setMessage("确定删除吗？")
@@ -222,11 +222,11 @@ public class MainActivity extends AppCompatActivity implements
                     Intent intent = new Intent(MainActivity.this, AddActivity.class);
                     //新建日记和便笺的Activity为同一个，但是Intent携带参数不同
                     switch (fragmentId) {
-                        case FRAGMENT_DIARY:
-                            intent.putExtra("from", "diary");
-                            break;
                         case FRAGMENT_NOTE:
                             intent.putExtra("from", "note");
+                            break;
+                        case FRAGMENT_DIARY:
+                            intent.putExtra("from", "diary");
                             break;
                     }
                     startActivity(intent);
@@ -273,17 +273,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(DialogInterface dialog, int which) {
         SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
-        BaseFragment baseFragment = fragmentId == FRAGMENT_DIARY ? diaryFragment : noteFragment;
+        BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
         //对list进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
         Collections.sort(baseFragment.deleteList);
         Collections.sort(baseFragment.positionList);
         for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
-            if (fragmentId == FRAGMENT_DIARY) {
-                database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                diaryFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
-            } else {
+            if (fragmentId == FRAGMENT_NOTE) {
                 database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
                 noteFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+            } else {
+                database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                diaryFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
             }
         }
         //情况delete列表，切换回普通状态
@@ -316,13 +316,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
+        //当由当前fragment切换至其他fragment时需要清空删除list
+        BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
+        baseFragment.deleteList.clear();
+        baseFragment.positionList.clear();
         //刷新内容部分
         switch (fragmentId) {
-            case FRAGMENT_DIARY:
-                diaryFragment.flush(FLUSH_ALL, 0);
-                break;
             case FRAGMENT_NOTE:
                 noteFragment.flush(FLUSH_ALL, 0);
+                break;
+            case FRAGMENT_DIARY:
+                diaryFragment.flush(FLUSH_ALL, 0);
                 break;
         }
         //刷新抽屉部分
