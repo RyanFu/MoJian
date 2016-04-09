@@ -122,7 +122,7 @@ public class CalendarActivity extends AppCompatActivity implements
     @Override
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(this, ViewActivity.class);
-        intent.putExtra("id", (view.findViewById(R.id.cv_item)).getTag().toString());     //id作为删除和修改的标识
+        intent.putExtra("id", (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString());     //id作为删除和修改的标识
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
         if (view.findViewById(R.id.tv_remind) != null) {    //判断当前的Fragment是diary还是note
             intent.putExtra("from", "note");

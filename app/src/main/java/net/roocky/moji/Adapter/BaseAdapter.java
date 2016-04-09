@@ -57,8 +57,18 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     public void onBindViewHolder(final ViewHolder holder, int position) {
         List<? extends Diary> baseList = type.equals("diary") ? diaryList : noteList;
         //数据在数据库中是倒序排列的，即日期最早的数据在最前面，所以此处的index需要减去position
-        holder.tvDate.setText(baseList.get(baseList.size() - position - 1).getDate());
+        int month = baseList.get(baseList.size() - position - 1).getMonth();
+        int day = baseList.get(baseList.size() - position - 1).getDay();
+        //设置显示
+        if (type.equals("diary")) {
+            String strMonth = (Moji.numbers[month].length() == 1 ? Moji.numbers[month] : new StringBuilder(Moji.numbers[month]).insert(1, "\n")).toString();
+            String strDay = (Moji.numbers[day - 1].length() == 1 ? Moji.numbers[day - 1] : new StringBuilder(Moji.numbers[day - 1]).insert(1, "\n")).toString();
+            holder.tvDate.setText(strMonth + "\n · \n" + strDay);
+        } else {
+            holder.tvDate.setText(Moji.numbers[month] + " · " + Moji.numbers[day - 1]);
+        }
         holder.tvContent.setText(baseList.get(baseList.size() - position - 1).getContent());
+        //绑定监听事件
         holder.cvItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,8 +82,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
                 return true;
             }
         });
-        //将该item在数据库中的id存入CardView中
-        holder.cvItem.setTag(baseList.get(baseList.size() - position - 1).getId());
+        //将该item在数据库中的数据存入CardView中
+        holder.cvItem.setTag(R.id.tag_id, baseList.get(baseList.size() - position - 1).getId());
+        holder.cvItem.setTag(R.id.tag_year, baseList.get(baseList.size() - position - 1).getYear());
+        holder.cvItem.setTag(R.id.tag_month, baseList.get(baseList.size() - position - 1).getMonth());
+        holder.cvItem.setTag(R.id.tag_day, baseList.get(baseList.size() - position - 1).getDay());
         //设置item的点击效果（5.0以上版本）
         if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
             holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
@@ -105,26 +118,13 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     //刷新listDate&listContent
     public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
-        Cursor cursor = database.query(type, columns, selection, selectionArgs, null, null, null);
-        diaryList.clear();
-        noteList.clear();
-        while (cursor.moveToNext()) {
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
-                int month = cursor.getInt(cursor.getColumnIndex("month"));
-                int day = cursor.getInt(cursor.getColumnIndex("day"));
-                String content = cursor.getString(cursor.getColumnIndex("content"));
-                //根据type来决定存入哪个list中
-                if (type.equals("diary")) {
-                    //如果“月”或“日”的长度不为“1”，需要添加“/n”
-                    String strMonth = (Moji.numbers[month].length() == 1 ? Moji.numbers[month] : new StringBuilder(Moji.numbers[month]).insert(1, "\n")).toString();
-                    String strDay = (Moji.numbers[day - 1].length() == 1 ? Moji.numbers[day - 1] : new StringBuilder(Moji.numbers[day - 1]).insert(1, "\n")).toString();
-                    diaryList.add(new Diary(id, strMonth + "\n · \n" + strDay, content));
-                } else {
-                    String remind = cursor.getString(cursor.getColumnIndex("remind"));
-                    noteList.add(new Note(id, Moji.numbers[month] + " · " + Moji.numbers[day - 1], content, remind));
-                }
+        if (type.equals("diary")) {
+            diaryList.clear();
+            diaryList = (List<Diary>)DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
+        } else {
+            noteList.clear();
+            noteList = (List<Note>)DatabaseHelper.query(database, "note", columns, selection, selectionArgs);
         }
-        cursor.close();
     }
 
     //获取哪些天记了日记

@@ -8,8 +8,8 @@ android {
         applicationId "net.roocky.moji"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 4
-        versionName "1.4"
+        versionCode 1
+        versionName "1.0.0"
     }
     buildTypes {
         release {

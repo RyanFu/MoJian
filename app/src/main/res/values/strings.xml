@@ -42,6 +42,7 @@
     <string name="use_explain_note">便笺使用说明一</string>
 
     <string name="toast_null">这天你没写日記呀~</string>
+    <string name="toast_delete_success">已成功删除</string>
     <string name="per_success">获取权限成功，再次点击完成操作</string>
     <string name="per_fail">获取权限失败</string>
 
@@ -81,4 +82,9 @@
         <item>卅</item>
         <item>卅一</item>
     </string-array>
+
+    <item type="id" name="tag_id" />
+    <item type="id" name="tag_year" />
+    <item type="id" name="tag_month"/>
+    <item type="id" name="tag_day" />
 </resources>

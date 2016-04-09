@@ -10,8 +10,8 @@ public class Note extends Diary {
 
     }
 
-    public Note(int id, String date, String content, String remind) {
-        super(id, date, content);
+    public Note(int id, int year, int month, int day, String content, String remind) {
+        super(id, year, month, day, content);
         this.remind = remind;
     }
 

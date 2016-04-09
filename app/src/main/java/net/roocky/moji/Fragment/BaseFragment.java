@@ -16,6 +16,9 @@ import android.widget.Toast;
 import net.roocky.moji.Activity.ViewActivity;
 import net.roocky.moji.Adapter.BaseAdapter;
 import net.roocky.moji.Adapter.NoteAdapter;
+import net.roocky.moji.Model.Diary;
+import net.roocky.moji.Model.Note;
+import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SDKVersion;
 
@@ -29,13 +32,17 @@ import java.util.List;
 public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickListener,
         BaseAdapter.OnItemLongClickListener {
     public boolean isDeleting = false;
+    private String idSelect;
+
     public List<String> deleteList = new ArrayList<>();
     public List<Integer> positionList = new ArrayList<>();
+    public List<Diary> diaryList = new ArrayList<>();
+    public List<Note> noteList = new ArrayList<>();
 
     //CardView点击事件
     @Override
     public void onItemClick(View view, int position) {
-        String idSelect = (view.findViewById(R.id.cv_item)).getTag().toString();
+        idSelect = (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString();
         if (!isDeleting) {      //若未处于删除状态，直接进行跳转
             Intent intent = new Intent(getActivity(), ViewActivity.class);
             intent.putExtra("id", idSelect);     //id作为删除和修改的标识
@@ -60,10 +67,39 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                     isDeleting = false;     //当最后一个被选中的项被取消时需退出删除状态
                     ((FloatingActionButton) getActivity().findViewById(R.id.fab_add)).setImageResource(R.mipmap.ic_add_white_24dp);
                 }
+                if (view.findViewById(R.id.tv_remind) != null) {
+                    noteList.remove(new Note(Integer.parseInt(idSelect),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                            ((TextView)view.findViewById(R.id.tv_remind)).getText().toString()));
+                } else {
+                    diaryList.remove(new Diary(Integer.parseInt(idSelect),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
+                }
+
             } else {        //如果未选则设置为已选
                 view.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);    //grey_500
                 deleteList.add(idSelect);
                 positionList.add(position);
+                if (view.findViewById(R.id.tv_remind) != null) {
+                    noteList.add(new Note(Integer.parseInt(idSelect),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                            ((TextView)view.findViewById(R.id.tv_remind)).getText().toString()));
+                } else {
+                    diaryList.add(new Diary(Integer.parseInt(idSelect),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
+                }
             }
         }
     }
@@ -71,11 +107,30 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
     //长按删除事件
     @Override
     public void onItemLongClick(View view, int position) {
+        idSelect = (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString();
         isDeleting = true;
+        deleteList.clear();
+        positionList.clear();
+        diaryList.clear();
+        noteList.clear();
         view.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);    //grey_500
         ((FloatingActionButton) getActivity().findViewById(R.id.fab_add)).setImageResource(R.mipmap.ic_delete_white_24dp);
-        deleteList.add((view.findViewById(R.id.cv_item)).getTag().toString());
+        deleteList.add((view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString());
         positionList.add(position);
+        if (view.findViewById(R.id.tv_remind) != null) {
+            noteList.add(new Note(Integer.parseInt(idSelect),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                    ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                    ((TextView)view.findViewById(R.id.tv_remind)).getText().toString()));
+        } else {
+            diaryList.add(new Diary(Integer.parseInt(idSelect),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                    ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
+        }
     }
 
     //根据滚动方向决定FAB是否显示

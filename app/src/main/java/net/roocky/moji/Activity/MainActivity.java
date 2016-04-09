@@ -47,6 +47,8 @@ import net.roocky.moji.Fragment.BaseFragment;
 import net.roocky.moji.Fragment.DiaryFragment;
 import net.roocky.moji.Fragment.NoteFragment;
 import net.roocky.moji.Fragment.SettingFragment;
+import net.roocky.moji.Model.Diary;
+import net.roocky.moji.Model.Note;
 import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.UmengUpdate;
@@ -54,6 +56,7 @@ import net.roocky.moji.Util.UmengUpdate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import butterknife.Bind;
@@ -272,11 +275,26 @@ public class MainActivity extends AppCompatActivity implements
     //删除提示弹窗点击事件
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
-        BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
+        final SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
+        final BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
         //对list进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
         Collections.sort(baseFragment.deleteList);
         Collections.sort(baseFragment.positionList);
+        if (fragmentId == FRAGMENT_NOTE) {
+            Collections.sort(baseFragment.noteList, new Comparator<Note>() {
+                @Override
+                public int compare(Note lhs, Note rhs) {
+                    return lhs.getId() - rhs.getId();
+                }
+            });
+        } else {
+            Collections.sort(baseFragment.diaryList, new Comparator<Diary>() {
+                @Override
+                public int compare(Diary lhs, Diary rhs) {
+                    return lhs.getId() - rhs.getId();
+                }
+            });
+        }
         for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
             if (fragmentId == FRAGMENT_NOTE) {
                 database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
@@ -287,10 +305,37 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
         //情况delete列表，切换回普通状态
-        baseFragment.deleteList.clear();
-        baseFragment.positionList.clear();
         baseFragment.isDeleting = false;
         fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
+        Snackbar.make(toolbar, getString(R.string.toast_delete_success), Snackbar.LENGTH_LONG)
+                .setAction("撤销", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        ContentValues values = new ContentValues();
+                        //恢复已删除的数据即再次将数据添加到数据库中
+                        if (fragmentId == FRAGMENT_NOTE) {
+                            for (int i = 0; i < baseFragment.noteList.size(); i ++) {
+                                values.put("id", baseFragment.noteList.get(i).getId());
+                                values.put("year", baseFragment.noteList.get(i).getYear());
+                                values.put("month", baseFragment.noteList.get(i).getMonth());
+                                values.put("day", baseFragment.noteList.get(i).getDay());
+                                values.put("content", baseFragment.noteList.get(i).getContent());
+                                database.insert("note", null, values);
+                                noteFragment.flush(FLUSH_ADD, baseFragment.positionList.get(i));
+                            }
+                        } else {
+                            for (int i = 0; i < baseFragment.diaryList.size(); i ++) {
+                                values.put("id", baseFragment.diaryList.get(i).getId());
+                                values.put("year", baseFragment.diaryList.get(i).getYear());
+                                values.put("month", baseFragment.diaryList.get(i).getMonth());
+                                values.put("day", baseFragment.diaryList.get(i).getDay());
+                                values.put("content", baseFragment.diaryList.get(i).getContent());
+                                database.insert("diary", null, values);
+                                diaryFragment.flush(FLUSH_ADD, baseFragment.positionList.get(i));
+                            }
+                        }
+                    }
+                }).show();
     }
 
     @Override
