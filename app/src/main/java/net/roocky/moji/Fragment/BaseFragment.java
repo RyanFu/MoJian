@@ -36,6 +36,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
 
     public List<String> deleteList = new ArrayList<>();
     public List<Integer> positionList = new ArrayList<>();
+    //保存被选中的数据（用于撤销）
     public List<Diary> diaryList = new ArrayList<>();
     public List<Note> noteList = new ArrayList<>();
 
@@ -88,11 +89,11 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                 positionList.add(position);
                 if (view.findViewById(R.id.tv_remind) != null) {
                     noteList.add(new Note(Integer.parseInt(idSelect),
-                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
-                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
-                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
-                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
-                            ((TextView)view.findViewById(R.id.tv_remind)).getText().toString()));
+                            (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
+                            (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
+                            (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            ((TextView) view.findViewById(R.id.tv_content)).getText().toString(),
+                            ((TextView) view.findViewById(R.id.tv_remind)).getText().toString()));
                 } else {
                     diaryList.add(new Diary(Integer.parseInt(idSelect),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
@@ -109,10 +110,12 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
     public void onItemLongClick(View view, int position) {
         idSelect = (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString();
         isDeleting = true;
+
         deleteList.clear();
         positionList.clear();
         diaryList.clear();
         noteList.clear();
+
         view.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);    //grey_500
         ((FloatingActionButton) getActivity().findViewById(R.id.fab_add)).setImageResource(R.mipmap.ic_delete_white_24dp);
         deleteList.add((view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString());
@@ -155,9 +158,10 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
      * @param action    具体的刷新行为
      * @param position  位置（插入的位置）
      * @param <T>
+     * @param count     第几次获取数据(-1表示获取全部数据，主页=要用于日记fragment分次刷新数据)
      */
-    protected <T extends BaseAdapter> void flush(T adapter, String type, int action, int position) {
-        adapter.listRefresh(type, null, null, null);
+    protected <T extends BaseAdapter> void flush(T adapter, String type, int action, int position, int count) {
+        adapter.listRefresh(type, null, null, null, count);
         switch (action) {
             case 0:         //插入刷新
                 adapter.notifyItemInserted(position);

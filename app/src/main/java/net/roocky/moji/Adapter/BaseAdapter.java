@@ -22,6 +22,8 @@ import net.roocky.moji.R;
 import net.roocky.moji.Util.SDKVersion;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,6 +38,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     protected OnItemLongClickListener onItemLongClickListener;
 
     private String type;
+    private List<Diary> tempList = new ArrayList<>();
 
     /**
      * @param context
@@ -43,10 +46,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
      * @param columns           数据库query的列（需要把所有列写进去）
      * @param selection         查询条件
      * @param selectionArgs     查询参数
+     * @param count             第几次获取数据(-1表示获取全部数据，主页=要用于日记fragment分次刷新数据)
      */
-    public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs) {
+    public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs, int count) {
         database = new DatabaseHelper(context, "Moji.db", null, 1).getWritableDatabase();
-        listRefresh(type, columns, selection, selectionArgs);
+        listRefresh(type, columns, selection, selectionArgs, count);
         this.type = type;
     }
 
@@ -117,10 +121,23 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     }
 
     //刷新listDate&listContent
-    public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs) {
+    public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs, int count) {
         if (type.equals("diary")) {
-            diaryList.clear();
-            diaryList = (List<Diary>)DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
+            if (count == -1) {
+                diaryList.clear();
+                diaryList = (List<Diary>)DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
+            } else {
+                if (count == 0) {       //第一次需要查询数据库
+                    diaryList.clear();
+                    tempList = (List<Diary>) DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
+                }
+                if (tempList.size() - count * 10 > 0) {     //判断是否还有新数据可以添加到diaryList中
+                    //如果此次添加的数据不足10个，则把start设置为0
+                    int start = tempList.size() - (count + 1) * 10 > 0 ? tempList.size() - (count + 1) * 10 : 0;
+                    int end = tempList.size() - count * 10;
+                    diaryList.addAll(0, tempList.subList(start, end));
+                }
+            }
         } else {
             noteList.clear();
             noteList = (List<Note>)DatabaseHelper.query(database, "note", columns, selection, selectionArgs);

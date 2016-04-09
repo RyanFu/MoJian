@@ -73,7 +73,8 @@ public class CalendarActivity extends AppCompatActivity implements
         adapter = new DiaryAdapter(this,
                 new String[]{"id", "year", "month", "day", "content"},
                 "year=? and month=? and day=?",
-                new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)});
+                new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
+                -1);
         rvDiary.setLayoutManager(manager);
         rvDiary.setAdapter(adapter);
 
@@ -111,7 +112,8 @@ public class CalendarActivity extends AppCompatActivity implements
         adapter.listRefresh("diary",
                 new String[]{"id", "year", "month", "day", "content"},
                 "year=? and month=? and day=?",
-                new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)});
+                new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
+                -1);
         adapter.notifyDataSetChanged();
         if (adapter.getItemCount() == 0) {
             Snackbar.make(cldDiary, getString(R.string.toast_null), Snackbar.LENGTH_SHORT).show();

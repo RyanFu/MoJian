@@ -68,7 +68,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String content = cursor.getString(cursor.getColumnIndex("content"));
             //根据type来决定存入哪个list中
             if (type.equals("diary")) {
-                //如果“月”或“日”的长度不为“1”，需要添加“/n”
                 diaryList.add(new Diary(id, year, month, day, content));
             } else {
                 String remind = cursor.getString(cursor.getColumnIndex("remind"));

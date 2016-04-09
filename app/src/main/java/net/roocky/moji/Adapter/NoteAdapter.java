@@ -13,8 +13,8 @@ import net.roocky.moji.R;
  */
 public class NoteAdapter extends BaseAdapter {
 
-    public NoteAdapter(Context context, String[] columns, String selection, String[] selectionArgs) {
-        super(context, "note", columns, selection, selectionArgs);
+    public NoteAdapter(Context context, String[] columns, String selection, String[] selectionArgs, int count) {
+        super(context, "note", columns, selection, selectionArgs, count);
     }
 
     @Override

@@ -28,7 +28,7 @@ public class NoteFragment extends BaseFragment {
 
         RecyclerView rvNote = (RecyclerView)view.findViewById(R.id.rv_note);
         StaggeredGridLayoutManager manager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        adapter = new NoteAdapter(getContext(), null, null, null);
+        adapter = new NoteAdapter(getContext(), null, null, null, -1);
 
         rvNote.setLayoutManager(manager);
         rvNote.setAdapter(adapter);
@@ -43,6 +43,6 @@ public class NoteFragment extends BaseFragment {
     }
 
     public void flush(int action, int position) {
-        super.flush(adapter, "note", action, position);
+        super.flush(adapter, "note", action, position, -1);
     }
 }

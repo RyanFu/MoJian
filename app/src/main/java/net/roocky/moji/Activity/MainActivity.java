@@ -85,9 +85,6 @@ public class MainActivity extends AppCompatActivity implements
     private final int FRAGMENT_SETTING = 2;
     private final int ACTIVITY_VIEW = 0;
     private final int ACTIVITY_ADD = 1;
-    private final int FLUSH_ADD = 0;
-    private final int FLUSH_REMOVE = 1;
-    private final int FLUSH_ALL = 2;
 
     private SlidingMenu slidingMenu;        //侧滑菜单
     private LinearLayout llAccount;         //信息展示卡片
@@ -277,9 +274,10 @@ public class MainActivity extends AppCompatActivity implements
     public void onClick(DialogInterface dialog, int which) {
         final SQLiteDatabase database = new DatabaseHelper(this, "Moji.db", null, 1).getWritableDatabase();
         final BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
-        //对list进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
+        //对List进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
         Collections.sort(baseFragment.deleteList);
         Collections.sort(baseFragment.positionList);
+        //对存放了被删除数据的List进行id升序排序，以便撤销时可以根据positionList来刷新RecyclerView
         if (fragmentId == FRAGMENT_NOTE) {
             Collections.sort(baseFragment.noteList, new Comparator<Note>() {
                 @Override
@@ -295,13 +293,14 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
         }
+        //从数据库中删除数据并刷新RecyclerView
         for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
             if (fragmentId == FRAGMENT_NOTE) {
                 database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                noteFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+                noteFragment.flush(Moji.FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
             } else {
                 database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                diaryFragment.flush(FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+                diaryFragment.flush(Moji.FLUSH_REMOVE, baseFragment.positionList.get(i) - i, 0);
             }
         }
         //情况delete列表，切换回普通状态
@@ -321,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements
                                 values.put("day", baseFragment.noteList.get(i).getDay());
                                 values.put("content", baseFragment.noteList.get(i).getContent());
                                 database.insert("note", null, values);
-                                noteFragment.flush(FLUSH_ADD, baseFragment.positionList.get(i));
+                                noteFragment.flush(Moji.FLUSH_ADD, baseFragment.positionList.get(i));
                             }
                         } else {
                             for (int i = 0; i < baseFragment.diaryList.size(); i ++) {
@@ -331,7 +330,7 @@ public class MainActivity extends AppCompatActivity implements
                                 values.put("day", baseFragment.diaryList.get(i).getDay());
                                 values.put("content", baseFragment.diaryList.get(i).getContent());
                                 database.insert("diary", null, values);
-                                diaryFragment.flush(FLUSH_ADD, baseFragment.positionList.get(i));
+                                diaryFragment.flush(Moji.FLUSH_ADD, baseFragment.positionList.get(i), 0);
                             }
                         }
                     }
@@ -368,10 +367,10 @@ public class MainActivity extends AppCompatActivity implements
         //刷新内容部分
         switch (fragmentId) {
             case FRAGMENT_NOTE:
-                noteFragment.flush(FLUSH_ALL, 0);
+                noteFragment.flush(Moji.FLUSH_ALL, 0);
                 break;
             case FRAGMENT_DIARY:
-                diaryFragment.flush(FLUSH_ALL, 0);
+                diaryFragment.flush(Moji.FLUSH_ALL, 0, 0);
                 break;
         }
         //刷新抽屉部分

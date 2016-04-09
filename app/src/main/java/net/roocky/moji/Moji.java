@@ -23,6 +23,10 @@ public class Moji extends Application {
     public static int day;
     public static int hour;
     public static int minute;
+    //RecyclerView刷新类型
+    public static final int FLUSH_ADD = 0;
+    public static final int FLUSH_REMOVE = 1;
+    public static final int FLUSH_ALL = 2;
 
     @Override
     public void onCreate() {
