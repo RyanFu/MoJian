@@ -110,9 +110,11 @@ public class CalendarActivity extends AppCompatActivity implements
         this.month = date.getMonth();
         this.day = date.getDay();
         adapter.listRefresh("diary",
+                Moji.FLUSH_ALL,
                 new String[]{"id", "year", "month", "day", "content"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
+                -1,
                 -1);
         adapter.notifyDataSetChanged();
         if (adapter.getItemCount() == 0) {

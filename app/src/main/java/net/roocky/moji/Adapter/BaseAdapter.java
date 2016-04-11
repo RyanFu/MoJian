@@ -38,7 +38,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     protected OnItemLongClickListener onItemLongClickListener;
 
     private String type;
-    private List<Diary> tempList = new ArrayList<>();
+    public List<Diary> tempList = new ArrayList<>();
 
     /**
      * @param context
@@ -50,7 +50,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
      */
     public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs, int count) {
         database = new DatabaseHelper(context, "Moji.db", null, 1).getWritableDatabase();
-        listRefresh(type, columns, selection, selectionArgs, count);
+        listRefresh(type, Moji.FLUSH_ALL, columns, selection, selectionArgs, count, -1);
         this.type = type;
     }
 
@@ -121,21 +121,38 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     }
 
     //刷新listDate&listContent
-    public void listRefresh(String type, String[] columns, String selection, String[] selectionArgs, int count) {
+    public void listRefresh(String type, int action, String[] columns, String selection, String[] selectionArgs, int count, int position) {
         if (type.equals("diary")) {
             if (count == -1) {
                 diaryList.clear();
                 diaryList = (List<Diary>)DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
             } else {
-                if (count == 0) {       //第一次需要查询数据库
-                    diaryList.clear();
-                    tempList = (List<Diary>) DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
-                }
-                if (tempList.size() - count * 10 > 0) {     //判断是否还有新数据可以添加到diaryList中
-                    //如果此次添加的数据不足10个，则把start设置为0
-                    int start = tempList.size() - (count + 1) * 10 > 0 ? tempList.size() - (count + 1) * 10 : 0;
-                    int end = tempList.size() - count * 10;
-                    diaryList.addAll(0, tempList.subList(start, end));
+                switch (action) {   //根据刷新的行为来决定更新diaryList的具体方式
+                    case Moji.FLUSH_ALL:
+                        if (count == 0) {       //第一次需要查询数据库
+                            diaryList.clear();
+                            tempList = (List<Diary>) DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
+                        }
+                        if (tempList.size() - count * 10 > 0) {     //判断是否还有新数据可以添加到diaryList中
+                            //如果此次添加的数据不足10个，则把start设置为0
+                            int start = tempList.size() - (count + 1) * 10 > 0 ? tempList.size() - (count + 1) * 10 : 0;
+                            int end = tempList.size() - count * 10;
+                            diaryList.addAll(0, tempList.subList(start, end));
+                        }
+                        break;
+                    case Moji.FLUSH_REMOVE:
+                        diaryList.clear();
+                        tempList.remove(tempList.size() - position - 1);
+                        int start = tempList.size() - (count + 1) * 10 > 0 ? tempList.size() - (count + 1) * 10 : 0;
+                        diaryList.addAll(tempList.subList(start, tempList.size()));
+                        break;
+                    case Moji.FLUSH_ADD:
+                        //listRefresh方法并没有将恢复的日记对象传进来，所以此处每恢复一条查询一次
+                        tempList = (List<Diary>) DatabaseHelper.query(database, "diary", columns, selection, selectionArgs);
+                        diaryList.clear();
+                        int begin = tempList.size() - (count + 1) * 10 > 0 ? tempList.size() - (count + 1) * 10 : 0;
+                        diaryList.addAll(tempList.subList(begin, tempList.size()));
+                        break;
                 }
             }
         } else {

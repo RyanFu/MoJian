@@ -292,6 +292,8 @@ public class MainActivity extends AppCompatActivity implements
                     return lhs.getId() - rhs.getId();
                 }
             });
+            //提前先获取到完整的tempList为后面删除刷新做准备
+            diaryFragment.getAdapter().tempList = (List<Diary>)DatabaseHelper.query(database, "diary", null, null, null);
         }
         //从数据库中删除数据并刷新RecyclerView
         for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
@@ -300,7 +302,8 @@ public class MainActivity extends AppCompatActivity implements
                 noteFragment.flush(Moji.FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
             } else {
                 database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                diaryFragment.flush(Moji.FLUSH_REMOVE, baseFragment.positionList.get(i) - i, 0);
+                //刷新至删除前所刷新到的地方
+                diaryFragment.flush(Moji.FLUSH_REMOVE, baseFragment.positionList.get(i) - i, diaryFragment.count);
             }
         }
         //情况delete列表，切换回普通状态
@@ -323,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements
                                 noteFragment.flush(Moji.FLUSH_ADD, baseFragment.positionList.get(i));
                             }
                         } else {
+                            diaryFragment.getAdapter().tempList = (List<Diary>)DatabaseHelper.query(database, "diary", null, null, null);
                             for (int i = 0; i < baseFragment.diaryList.size(); i ++) {
                                 values.put("id", baseFragment.diaryList.get(i).getId());
                                 values.put("year", baseFragment.diaryList.get(i).getYear());
@@ -330,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements
                                 values.put("day", baseFragment.diaryList.get(i).getDay());
                                 values.put("content", baseFragment.diaryList.get(i).getContent());
                                 database.insert("diary", null, values);
-                                diaryFragment.flush(Moji.FLUSH_ADD, baseFragment.positionList.get(i), 0);
+                                diaryFragment.flush(Moji.FLUSH_ADD, baseFragment.positionList.get(i), diaryFragment.count);
                             }
                         }
                     }
@@ -364,15 +368,6 @@ public class MainActivity extends AppCompatActivity implements
         BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
         baseFragment.deleteList.clear();
         baseFragment.positionList.clear();
-        //刷新内容部分
-        switch (fragmentId) {
-            case FRAGMENT_NOTE:
-                noteFragment.flush(Moji.FLUSH_ALL, 0);
-                break;
-            case FRAGMENT_DIARY:
-                diaryFragment.flush(Moji.FLUSH_ALL, 0, 0);
-                break;
-        }
         //刷新抽屉部分
         if (preferences.getString("avatar", null) != null) {
             sdvAvatar.setImageURI(Uri.parse(preferences.getString("avatar", null)));

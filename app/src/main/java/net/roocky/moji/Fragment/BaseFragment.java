@@ -156,12 +156,12 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
      * @param adapter   RecyclerView的适配器
      * @param type      “diary”或者“note”
      * @param action    具体的刷新行为
-     * @param position  位置（插入的位置）
+     * @param position  位置（插入的位置）（-1表示该参数没用）
      * @param <T>
-     * @param count     第几次获取数据(-1表示获取全部数据，主页=要用于日记fragment分次刷新数据)
+     * @param count     第几次获取数据(-1表示普通刷新要获取全部数据，主要用于日记fragment分次刷新数据)
      */
     protected <T extends BaseAdapter> void flush(T adapter, String type, int action, int position, int count) {
-        adapter.listRefresh(type, null, null, null, count);
+        adapter.listRefresh(type, action, null, null, null, count, position);
         switch (action) {
             case 0:         //插入刷新
                 adapter.notifyItemInserted(position);

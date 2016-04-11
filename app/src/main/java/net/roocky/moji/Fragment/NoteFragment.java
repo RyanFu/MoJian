@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import net.roocky.moji.Activity.ViewActivity;
 import net.roocky.moji.Adapter.NoteAdapter;
+import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 
 /**
@@ -44,5 +45,11 @@ public class NoteFragment extends BaseFragment {
 
     public void flush(int action, int position) {
         super.flush(adapter, "note", action, position, -1);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        flush(Moji.FLUSH_ALL, -1);
     }
 }

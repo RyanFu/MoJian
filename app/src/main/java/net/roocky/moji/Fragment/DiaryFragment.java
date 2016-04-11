@@ -27,7 +27,7 @@ import net.roocky.moji.Widget.BottomRecyclerView;
  */
 public class DiaryFragment extends BaseFragment implements BottomRecyclerView.OnBottomListener {
     private DiaryAdapter adapter;
-    private int count = 0;      //第几次刷新RecyclerView（日记的RecyclerView需要分次刷新，每次10条数据）
+    public int count = 0;      //第几次刷新RecyclerView（日记的RecyclerView需要分次刷新，每次10条数据）
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_diary, container, false);
@@ -49,9 +49,13 @@ public class DiaryFragment extends BaseFragment implements BottomRecyclerView.On
         return view;
     }
 
+    public DiaryAdapter getAdapter() {
+        return adapter;
+    }
+
     @Override
     public void OnBottom() {
-        flush(Moji.FLUSH_ALL, 0, ++count);
+        flush(Moji.FLUSH_ALL, -1, ++count);
     }
 
     public void flush(int action, int position, int count) {
@@ -61,6 +65,18 @@ public class DiaryFragment extends BaseFragment implements BottomRecyclerView.On
     @Override
     public void onResume() {
         super.onResume();
-        count = 0;
+        int temp = count;
+        /**
+         * 循环刷新以保证当用户对10条以前的日记进行修改完成后不会直接刷新回最新的10条
+         * 如果还未加载过10条以前的日记，则无需循环刷新
+         */
+        if (count == 0) {
+            flush(Moji.FLUSH_ALL, -1, count);
+        } else {
+            count = 0;
+            for (int i = 0; i <= temp; i++) {
+                flush(Moji.FLUSH_ALL, -1, count++);
+            }
+        }
     }
 }
