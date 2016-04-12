@@ -54,8 +54,22 @@ public class DiaryFragment extends BaseFragment implements BottomRecyclerView.On
     }
 
     @Override
-    public void OnBottom() {
-        flush(Moji.FLUSH_ALL, -1, ++count);
+    public void onItemClick(View view, int position) {
+        super.onItemClick(view, position);
+        if (isDeleting) {
+            adapter.setPositionList(positionList);      //设置Adapter的被选中的item的positionList
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        super.onItemLongClick(view, position);
+        adapter.setPositionList(positionList);          //设置Adapter的被选中的item的positionList
+    }
+
+    @Override
+    public void OnBottom () {
+            flush(Moji.FLUSH_ALL, -1, ++count);
     }
 
     public void flush(int action, int position, int count) {

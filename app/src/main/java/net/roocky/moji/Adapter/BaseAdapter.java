@@ -41,6 +41,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
     private String type;
     public List<Diary> tempList = new ArrayList<>();
 
+    private List<Integer> positionList = new ArrayList<>();
+
     /**
      * @param context
      * @param type              "diary" or "note"
@@ -96,10 +98,14 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
             holder.cvItem.setTag(R.id.tag_weather, ((Diary) baseList.get(baseList.size() - position - 1)).getWeather());
         }
         //设置item的点击效果（5.0以上版本）
-        if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
-            holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
+        if (positionList.contains(position)) {
+            holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);
         } else {
-            holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);
+            if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
+                holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
+            } else {
+                holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);
+            }
         }
     }
 
@@ -122,6 +128,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
             }
             cvItem = (CardView)itemView.findViewById(R.id.cv_item);
         }
+    }
+
+    //设置被选中的item的positionList（被选中的item滑出屏幕后再次滑入屏幕保证依然是灰色背景）
+    public void setPositionList(List<Integer> positionList) {
+        this.positionList = positionList;
     }
 
     //刷新listDate&listContent

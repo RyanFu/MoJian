@@ -43,6 +43,24 @@ public class NoteFragment extends BaseFragment {
         return view;
     }
 
+    public NoteAdapter getAdapter() {
+        return adapter;
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        super.onItemClick(view, position);
+        if (isDeleting) {
+            adapter.setPositionList(positionList);      //设置Adapter的被选中的item的positionList
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        super.onItemLongClick(view, position);
+        adapter.setPositionList(positionList);          //设置Adapter的被选中的item的positionList
+    }
+
     public void flush(int action, int position) {
         super.flush(adapter, "note", action, position, -1);
     }

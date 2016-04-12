@@ -282,6 +282,8 @@ public class MainActivity extends AppCompatActivity implements
                     return lhs.getId() - rhs.getId();
                 }
             });
+            //清空Adapter的被选中的item的positionList（不是Fragment的positionList）
+            noteFragment.getAdapter().setPositionList(new ArrayList<Integer>());
         } else {
             Collections.sort(baseFragment.diaryList, new Comparator<Diary>() {
                 @Override
@@ -289,6 +291,8 @@ public class MainActivity extends AppCompatActivity implements
                     return lhs.getId() - rhs.getId();
                 }
             });
+            //清空Adapter的被选中的item的positionList（不是Fragment的positionList）
+            diaryFragment.getAdapter().setPositionList(new ArrayList<Integer>());
             //提前先获取到完整的tempList为后面删除刷新做准备
             diaryFragment.getAdapter().tempList = (List<Diary>)DatabaseHelper.query(database, "diary", null, null, null);
         }
