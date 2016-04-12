@@ -14,15 +14,24 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:navigationIcon="@mipmap/ic_done_black_24dp">
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:id="@+id/rl_toolbar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tt_add_diary"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:layout_centerVertical="true"
+                android:padding="5dp"/>
             <android.support.v7.widget.AppCompatSpinner
                 android:id="@+id/spn_weather"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:visibility="gone"/>
+                android:layout_centerVertical="true"/>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
     <android.support.v4.widget.NestedScrollView

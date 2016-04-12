@@ -1,17 +1,21 @@
 package net.roocky.moji.Activity;
 
+import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -32,13 +36,16 @@ import butterknife.ButterKnife;
  */
 public class AddActivity extends AppCompatActivity implements
         View.OnClickListener,
-        AdapterView.OnItemSelectedListener{
+        AdapterView.OnItemSelectedListener,
+        DialogInterface.OnClickListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
     EditText etContent;
     @Bind(R.id.spn_weather)
     AppCompatSpinner spnWeather;
+    @Bind(R.id.rl_toolbar)
+    RelativeLayout rlToolbar;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -68,8 +75,8 @@ public class AddActivity extends AppCompatActivity implements
 
         if (actionBar != null) {
             if (intent.getStringExtra("from").equals("diary")) {
-                actionBar.setTitle(getString(R.string.tt_add_diary));
-                spnWeather.setVisibility(View.VISIBLE);
+//                actionBar.setTitle(getString(R.string.tt_add_diary));     //rlToolbar中已经设置了"title"
+                rlToolbar.setVisibility(View.VISIBLE);
             } else {
                 actionBar.setTitle(getString(R.string.tt_add_note));
             }
@@ -124,17 +131,43 @@ public class AddActivity extends AppCompatActivity implements
     public void onNothingSelected(AdapterView<?> parent) {}
 
     @Override
-    public void onBackPressed() {
-        //记便笺时可以退出保存，写日记时需要手动保存
-        if (intent.getStringExtra("from").equals("note") && !etContent.getText().toString().equals("")) {
+    public void onClick(DialogInterface dialog, int which) {
+        if (which == DialogInterface.BUTTON_POSITIVE) {
             ContentValues values = new ContentValues();
             values.put("year", Moji.year);
             values.put("month", Moji.month);
             values.put("day", Moji.day);
             values.put("content", etContent.getText().toString());
-            database.insert("note", null, values);
+            values.put("weather", weather);
+            database.insert("diary", null, values);
         }
-        super.onBackPressed();
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        //记便笺时可以退出保存，写日记时需要提示是否保存
+        if (!etContent.getText().toString().equals("")) {
+            if (intent.getStringExtra("from").equals("note")) {
+                ContentValues values = new ContentValues();
+                values.put("year", Moji.year);
+                values.put("month", Moji.month);
+                values.put("day", Moji.day);
+                values.put("content", etContent.getText().toString());
+                database.insert("note", null, values);
+                super.onBackPressed();
+            } else {
+                new AlertDialog.Builder(this)
+                        .setTitle("保存")
+                        .setMessage("需要保存该日记吗？")
+                        .setPositiveButton("保存", this)
+                        .setNegativeButton("不保存", this)
+                        .setCancelable(false)
+                        .show();
+            }
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

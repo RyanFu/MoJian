@@ -79,6 +79,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     private AlertDialog dialogDiary;
     private AlertDialog dialogNote;
+    private AlertDialog dialogUpdate;
 
     private int yearRemind;
     private int monthRemind;
@@ -246,8 +247,14 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(DialogInterface dialog, int which) {
         if (dialog.equals(dialogDiary)) {   //删除日记
             database.delete("diary", "id = ?", new String[]{intent.getStringExtra("id")});
-        } else {                            //删除便笺
+        } else if (dialog.equals(dialogNote)){                            //删除便笺
             database.delete("note", "id = ?", new String[]{intent.getStringExtra("id")});
+        } else {                //是否保存修改
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                ContentValues values = new ContentValues();
+                values.put("content", etContent.getText().toString());
+                database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
+            }
         }
         finish();
     }
@@ -348,12 +355,26 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (isEdit) {
-            ContentValues values = new ContentValues();
-            values.put("content", etContent.getText().toString());
             if (intent.getStringExtra("from").equals("note")) {
+                ContentValues values = new ContentValues();
+                values.put("content", etContent.getText().toString());
                 database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                super.onBackPressed();
+            } else {
+                if (!tvContent.getText().toString().equals(etContent.getText().toString())) {
+                    dialogUpdate = new AlertDialog.Builder(this)
+                            .setTitle("修改")
+                            .setMessage("需要保存修改吗？")
+                            .setPositiveButton("保存", this)
+                            .setNegativeButton("不保存", this)
+                            .setCancelable(false)
+                            .show();
+                } else {
+                    super.onBackPressed();
+                }
             }
+        } else {
+            super.onBackPressed();
         }
-        super.onBackPressed();
     }
 }

@@ -71,7 +71,7 @@ public class CalendarActivity extends AppCompatActivity implements
         //设置RecyclerView
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new DiaryAdapter(this,
-                new String[]{"id", "year", "month", "day", "content"},
+                new String[]{"id", "year", "month", "day", "weather", "content"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
                 -1);
@@ -111,7 +111,7 @@ public class CalendarActivity extends AppCompatActivity implements
         this.day = date.getDay();
         adapter.listRefresh("diary",
                 Moji.FLUSH_ALL,
-                new String[]{"id", "year", "month", "day", "content"},
+                new String[]{"id", "year", "month", "day", "weather", "content"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
                 -1,
@@ -127,13 +127,12 @@ public class CalendarActivity extends AppCompatActivity implements
     public void onItemClick(View view, int position) {
         Intent intent = new Intent(this, ViewActivity.class);
         intent.putExtra("id", (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString());     //id作为删除和修改的标识
+        intent.putExtra("weather", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather));
+        intent.putExtra("year", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year));
+        intent.putExtra("month", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month));
+        intent.putExtra("day", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day));
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
-        if (view.findViewById(R.id.tv_remind) != null) {    //判断当前的Fragment是diary还是note
-            intent.putExtra("from", "note");
-            intent.putExtra("remind", ((TextView) (view.findViewById(R.id.tv_remind))).getText().toString());
-        } else {
-            intent.putExtra("from", "diary");
-        }
+        intent.putExtra("from", "diary");
         startActivity(intent);
     }
 
