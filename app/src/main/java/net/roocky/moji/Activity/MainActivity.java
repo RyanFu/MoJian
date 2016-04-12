@@ -23,7 +23,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,7 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.alibaba.sdk.android.feedback.util.IWxCallback;
@@ -54,7 +52,6 @@ import net.roocky.moji.R;
 import net.roocky.moji.Util.UmengUpdate;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -332,6 +329,7 @@ public class MainActivity extends AppCompatActivity implements
                                 values.put("year", baseFragment.diaryList.get(i).getYear());
                                 values.put("month", baseFragment.diaryList.get(i).getMonth());
                                 values.put("day", baseFragment.diaryList.get(i).getDay());
+                                values.put("weather", baseFragment.diaryList.get(i).getWeather());
                                 values.put("content", baseFragment.diaryList.get(i).getContent());
                                 database.insert("diary", null, values);
                                 diaryFragment.flush(Moji.FLUSH_ADD, baseFragment.positionList.get(i), diaryFragment.count);

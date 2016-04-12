@@ -12,14 +12,35 @@
         android:background="?attr/colorPrimary"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:navigationIcon="@mipmap/ic_done_black_24dp"/>
-    <EditText
-        android:id="@+id/et_content"
+        app:navigationIcon="@mipmap/ic_done_black_24dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/spn_weather"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </android.support.v7.widget.Toolbar>
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nsv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@null"
-        android:gravity="top"
-        android:hint="内容……"
-        android:padding="10dp"
-        android:lineSpacingMultiplier="1.7" />
+        android:scrollbars="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:textColor="@android:color/black"
+            android:background="@null"
+            android:gravity="top"
+            android:hint="内容……"
+            android:padding="10dp"
+            android:lineSpacingExtra="10dp" />
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>

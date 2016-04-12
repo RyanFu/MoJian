@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import net.roocky.moji.Model.Base;
 import net.roocky.moji.Model.Diary;
 import net.roocky.moji.Model.Note;
 import net.roocky.moji.Moji;
@@ -24,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "year integer, "
             + "month integer, "
             + "day integer, "
+            + "weather integer, "
             + "content text)";
     //便笺表
     public static final String CREATE_NOTE = "create table note ("
@@ -56,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public static List<? extends Diary> query(SQLiteDatabase database, String type, String[] columns, String selection, String[] selectionArgs) {
+    public static List<? extends Base> query(SQLiteDatabase database, String type, String[] columns, String selection, String[] selectionArgs) {
         List<Diary> diaryList = new ArrayList<>();
         List<Note> noteList = new ArrayList<>();
         Cursor cursor = database.query(type, columns, selection, selectionArgs, null, null, null);
@@ -68,7 +70,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String content = cursor.getString(cursor.getColumnIndex("content"));
             //根据type来决定存入哪个list中
             if (type.equals("diary")) {
-                diaryList.add(new Diary(id, year, month, day, content));
+                int weather = cursor.getInt(cursor.getColumnIndex("weather"));
+                diaryList.add(new Diary(id, year, month, day, weather, content));
             } else {
                 String remind = cursor.getString(cursor.getColumnIndex("remind"));
                 noteList.add(new Note(id, year, month, day, content, remind));

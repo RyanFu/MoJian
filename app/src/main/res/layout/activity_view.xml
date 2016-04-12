@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:id="@+id/cl_content"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:fitsSystemWindows="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cl_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/abl_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.Toolbar
@@ -24,30 +25,83 @@ android:fitsSystemWindows="true">
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <EditText
-                android:id="@+id/et_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <!-- 顶部日期 & 天气 & 心情展示-->
+            <RelativeLayout
+                android:id="@+id/rl_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
-                android:background="@null"
+                android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:gravity="top"
-                android:padding="10dp"
-                android:lineSpacingExtra="10dp"
-                android:focusable="true" />
-            <TextView
-                android:id="@+id/tv_content"
+                android:layout_margin="5dp">
+                <ImageView
+                    android:id="@+id/iv_weather"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_toRightOf="@id/iv_weather"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp">
+                    <TextView
+                        android:id="@+id/tv_year"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="5dp"
+                        android:paddingBottom="7dp"/>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/grey_400"/>
+                    <TextView
+                        android:id="@+id/tv_month_day"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="21sp"
+                        android:textColor="@android:color/black"
+                        android:paddingTop="7dp"
+                        android:paddingBottom="5dp"/>
+                </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_weather_icon"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="10dp"/>
+            </RelativeLayout>
+            <!-- 内容展示-->
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textColor="@android:color/black"
-                android:textSize="15sp"
-                android:padding="10dp"
-                android:lineSpacingExtra="10dp" />
-        </FrameLayout>
+                android:layout_height="match_parent">
+                <EditText
+                    android:id="@+id/et_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/black"
+                    android:background="@null"
+                    android:visibility="gone"
+                    android:gravity="top"
+                    android:padding="10dp"
+                    android:lineSpacingExtra="10dp"
+                    android:focusable="true" />
+                <TextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="15sp"
+                    android:textColor="@android:color/black"
+                    android:padding="10dp"
+                    android:lineSpacingExtra="10dp" />
+            </FrameLayout>
+        </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_edit"

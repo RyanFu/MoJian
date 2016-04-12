@@ -2,36 +2,30 @@ package net.roocky.moji.Activity;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.Toolbar;
-import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
 
@@ -41,7 +35,6 @@ import net.roocky.moji.Moji;
 import net.roocky.moji.R;
 import net.roocky.moji.Util.SoftInput;
 
-import java.sql.Time;
 import java.util.Calendar;
 
 import butterknife.Bind;
@@ -55,7 +48,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         DialogInterface.OnClickListener,
         NestedScrollView.OnScrollChangeListener,
         DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener{
+        TimePickerDialog.OnTimeSetListener {
+    @Bind(R.id.abl_toolbar)
+    AppBarLayout ablToolbar;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
@@ -66,6 +61,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     FloatingActionButton fabEdit;
     @Bind(R.id.tv_remind)
     TextView tvRemind;
+    @Bind(R.id.rl_header)
+    RelativeLayout rlHeader;
+    @Bind(R.id.iv_weather)
+    ImageView ivWeather;
+    @Bind(R.id.tv_year)
+    TextView tvYear;
+    @Bind(R.id.tv_month_day)
+    TextView tvMonthDay;
+    @Bind(R.id.iv_weather_icon)
+    ImageView ivWeatherIcon;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -78,6 +83,19 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private int yearRemind;
     private int monthRemind;
     private int dayRemind;
+
+    private int[] weathers = {
+            R.drawable.wd_weather_sun,
+            R.drawable.wd_weather_clouds,
+            R.drawable.wd_weather_rain,
+            R.drawable.wd_weather_snow
+    };
+    private int[] weatherIcons = {
+            R.drawable.weather_sun,
+            R.drawable.weather_clouds,
+            R.drawable.weather_clouds_with_rain,
+            R.drawable.weather_clouds_with_snow
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,14 +121,24 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         //显示内容
         tvContent.setText(intent.getStringExtra("content"));
-        if (intent.getStringExtra("from").equals("note") && !intent.getStringExtra("remind").equals("")) {
+        if (intent.getStringExtra("from").equals("diary")) {
+            rlHeader.setVisibility(View.VISIBLE);
+            //设置顶部日期&天气展示
+            ivWeather.setImageResource(weathers[intent.getIntExtra("weather", 0)]);
+            tvYear.setText(getResources().getStringArray(R.array.year_array)[intent.getIntExtra("year", 2016) - 2010]);
+            tvMonthDay.setText(getString(R.string.diary_month_day,
+                    getResources().getStringArray(R.array.number_array)[intent.getIntExtra("month", 0)],
+                    getResources().getStringArray(R.array.number_array)[intent.getIntExtra("day", 1) - 1]));
+            ivWeatherIcon.setImageResource(weatherIcons[intent.getIntExtra("weather", 0)]);
+        } else if (!intent.getStringExtra("remind").equals("")) {
+            //设置提醒语句
             tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
         }
     }
 
     private void setListener() {
         fabEdit.setOnClickListener(this);
-        NestedScrollView scrollView = (NestedScrollView)findViewById(R.id.nsv_content);
+        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.nsv_content);
         scrollView.setOnScrollChangeListener(this);
     }
 
@@ -137,14 +165,14 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.action_delete:    //删除
                 if (intent.getStringExtra("from").equals("diary")) {
-                     dialogDiary = new AlertDialog.Builder(this)
+                    dialogDiary = new AlertDialog.Builder(this)
                             .setTitle("删除")
                             .setMessage("确定删除该日记吗？")
                             .setPositiveButton("确定", this)
                             .setNegativeButton("取消", null)
                             .show();
                 } else {
-                     dialogNote = new AlertDialog.Builder(this)
+                    dialogNote = new AlertDialog.Builder(this)
                             .setTitle("删除")
                             .setMessage("确定删除该便笺吗？")
                             .setPositiveButton("确定", this)
@@ -176,6 +204,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     toolbar.setNavigationOnClickListener(this);
                 }
 
+                ablToolbar.setExpanded(false);
                 tvContent.setVisibility(View.GONE);
                 etContent.setText(tvContent.getText());
                 etContent.setVisibility(View.VISIBLE);
@@ -255,12 +284,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         String strRemind =                  //存入数据库的提醒时间
                 yearRemind + "年"
-                + month + "月"
-                + dayRemind + "日"
-                + " "
-                + hour
-                + " : "
-                + minute;
+                        + month + "月"
+                        + dayRemind + "日"
+                        + " "
+                        + hour
+                        + " : "
+                        + minute;
         tvRemind.setText(getString(R.string.note_remind, strRemind));
         ContentValues values = new ContentValues();
         values.put("remind", strRemind);
@@ -284,7 +313,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 intentReceiver,     //Intent
                 PendingIntent.FLAG_UPDATE_CURRENT);     //Flag
 
-        AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
         } else {
@@ -295,10 +324,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //NestedScrollView滚动事件
     @Override
     public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-        if (scrollY - oldScrollY > 0) {
-            fabEdit.hide();
-        } else {
-            fabEdit.show();
+        if (!isEdit) {
+            if (scrollY - oldScrollY > 0) {
+                fabEdit.hide();
+            } else {
+                fabEdit.show();
+            }
         }
     }
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 
 import net.roocky.moji.Database.DatabaseHelper;
+import net.roocky.moji.Model.Base;
 import net.roocky.moji.Model.Diary;
 import net.roocky.moji.Model.Note;
 import net.roocky.moji.Moji;
@@ -59,7 +60,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        List<? extends Diary> baseList = type.equals("diary") ? diaryList : noteList;
+        List<? extends Base> baseList = type.equals("diary") ? diaryList : noteList;
         //数据在数据库中是倒序排列的，即日期最早的数据在最前面，所以此处的index需要减去position
         int month = baseList.get(baseList.size() - position - 1).getMonth();
         int day = baseList.get(baseList.size() - position - 1).getDay();
@@ -91,6 +92,9 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         holder.cvItem.setTag(R.id.tag_year, baseList.get(baseList.size() - position - 1).getYear());
         holder.cvItem.setTag(R.id.tag_month, baseList.get(baseList.size() - position - 1).getMonth());
         holder.cvItem.setTag(R.id.tag_day, baseList.get(baseList.size() - position - 1).getDay());
+        if (type.equals("diary")) {
+            holder.cvItem.setTag(R.id.tag_weather, ((Diary) baseList.get(baseList.size() - position - 1)).getWeather());
+        }
         //设置item的点击效果（5.0以上版本）
         if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
             holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);

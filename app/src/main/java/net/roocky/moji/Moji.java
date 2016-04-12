@@ -27,6 +27,11 @@ public class Moji extends Application {
     public static final int FLUSH_ADD = 0;
     public static final int FLUSH_REMOVE = 1;
     public static final int FLUSH_ALL = 2;
+    //天气
+    public static final int WEATHER_SUN = 0;
+    public static final int WEATHER_CLOUD = 1;
+    public static final int WEATHER_RAIN = 2;
+    public static final int WEATHER_SNOW = 3;
 
     @Override
     public void onCreate() {

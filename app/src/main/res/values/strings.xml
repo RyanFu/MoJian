@@ -43,11 +43,32 @@
 
     <string name="toast_null">这天你没写日記呀~</string>
     <string name="toast_delete_success">已成功删除</string>
-    <string name="per_success">获取权限成功，再次点击完成操作</string>
-    <string name="per_fail">获取权限失败</string>
+    <string name="toast_per_success">获取权限成功，再次点击完成操作</string>
+    <string name="toast_per_fail">获取权限失败</string>
 
     <string name="note_remind">「墨記」会在%1$s提醒你：）</string>
     <string name="feedback_notify">您有%1$d条反馈未读消息</string>
+
+    <string name="diary_month_day">%1$s月%2$s</string>
+
+    <string-array name="year_array">
+        <item>二零一零</item>
+        <item>二零一一</item>
+        <item>二零一二</item>
+        <item>二零一三</item>
+        <item>二零一四</item>
+        <item>二零一五</item>
+        <item>二零一六</item>
+        <item>二零一七</item>
+        <item>二零一八</item>
+        <item>二零一九</item>
+        <item>二零二零</item>
+        <item>二零二一</item>
+        <item>二零二二</item>
+        <item>二零二三</item>
+        <item>二零二四</item>
+        <item>二零二五</item>
+    </string-array>
 
     <string-array name="number_array">
         <item>一</item>
@@ -87,4 +108,5 @@
     <item type="id" name="tag_year" />
     <item type="id" name="tag_month"/>
     <item type="id" name="tag_day" />
+    <item type="id" name="tag_weather" />
 </resources>

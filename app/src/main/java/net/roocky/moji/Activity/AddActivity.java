@@ -7,12 +7,15 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 
 import com.umeng.analytics.MobclickAgent;
 
+import net.roocky.moji.Adapter.WeatherAdapter;
 import net.roocky.moji.Database.DatabaseHelper;
 import net.roocky.moji.Moji;
 import net.roocky.moji.R;
@@ -27,15 +30,20 @@ import butterknife.ButterKnife;
  * Created by roocky on 03/28.
  * 新建
  */
-public class AddActivity extends AppCompatActivity implements View.OnClickListener {
+public class AddActivity extends AppCompatActivity implements
+        View.OnClickListener,
+        AdapterView.OnItemSelectedListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
     EditText etContent;
+    @Bind(R.id.spn_weather)
+    AppCompatSpinner spnWeather;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase database;
+    private int weather;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +69,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         if (actionBar != null) {
             if (intent.getStringExtra("from").equals("diary")) {
                 actionBar.setTitle(getString(R.string.tt_add_diary));
+                spnWeather.setVisibility(View.VISIBLE);
             } else {
                 actionBar.setTitle(getString(R.string.tt_add_note));
             }
@@ -68,6 +77,9 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
         //显示软键盘
         etContent.requestFocus();
         SoftInput.show(etContent);
+        //配置Spinner
+        spnWeather.setAdapter(new WeatherAdapter(this));
+        spnWeather.setOnItemSelectedListener(this);
     }
 
     private void setOnClickListener() {
@@ -94,6 +106,7 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             values.put("day", Moji.day);
             values.put("content", etContent.getText().toString());
             if (intent.getStringExtra("from").equals("diary")) {
+                values.put("weather", weather);
                 database.insert("diary", null, values);
             } else {
                 database.insert("note", null, values);
@@ -102,6 +115,13 @@ public class AddActivity extends AppCompatActivity implements View.OnClickListen
             finish();
         }
     }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        weather = position;
+    }
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {}
 
     @Override
     public void onBackPressed() {

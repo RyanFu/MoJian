@@ -93,7 +93,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     backStore(idClick);     //若获取成功权限则进行备份&恢复操作
                 } else {
-                    Snackbar.make(llBackup, getString(R.string.per_fail), Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(llBackup, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
                 }
                 return;
 

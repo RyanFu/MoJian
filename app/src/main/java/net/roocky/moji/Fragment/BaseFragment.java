@@ -53,6 +53,10 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                 intent.putExtra("remind", ((TextView) (view.findViewById(R.id.tv_remind))).getText().toString());
             } else {
                 intent.putExtra("from", "diary");
+                intent.putExtra("weather", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather));
+                intent.putExtra("year", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year));
+                intent.putExtra("month", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month));
+                intent.putExtra("day", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day));
             }
             startActivity(intent);
         } else {        //若处于删除状态，选择被点击的该项
@@ -80,6 +84,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather),
                             ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
                 }
 
@@ -99,6 +104,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather),
                             ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
                 }
             }
@@ -132,6 +138,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather),
                     ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
         }
     }
