@@ -1,4 +1,4 @@
-package net.roocky.moji;
+package net.roocky.mojian;
 
 import org.junit.Test;
 

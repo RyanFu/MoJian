@@ -2,7 +2,9 @@
     tools:ignore="MissingTranslation">
     <string name="baichuan_app_key">23336545</string>
 
-    <string name="app_name">墨記</string>
+    <string name="app_name">墨笺</string>
+    <string name="app_name_full">墨笺 1.0.0</string>
+    <string name="app_author">Roocky强力驱动</string>
 
     <string name="mn_diary">日記</string>
     <string name="mn_diary_vertical">日記</string>
@@ -23,30 +25,29 @@
     <string name="set_signature">个性签名</string>
     
     <string name="set_backup">备份</string>
-    <string name="set_backup_detail">（备份文件存放路径：“/sdcard/Moji.db”）</string>
+    <string name="set_backup_detail">备份文件存放路径：“/sdcard/Mojian.db”</string>
     <string name="set_restore">恢复</string>
-    <string name="set_restore_detail">（备份文件需提前移动到“/sdcard/Moji.db”路径下）</string>
+    <string name="set_restore_detail">备份文件需提前移动到“/sdcard/Mojian.db”路径下</string>
     <string name="set_update">更新</string>
-    <string name="set_update_detail">看看「墨記」有没有进步 : )</string>
+    <string name="set_update_detail">看看「墨笺」有没有进步 : )</string>
     <string name="set_feedback">反馈</string>
-    <string name="set_feedback_detail">「墨記」需要听到你的声音~</string>
+    <string name="set_feedback_detail">「墨笺」需要听到你的声音~</string>
     <string name="set_about">关于</string>
-    <string name="set_about_detail">「墨記」的故事</string>
-    <string name="path_databases">/data/data/net.roocky.moji/databases/Moji.db</string>
-    <string name="path_sdcard">/sdcard/Moji.db</string>
+    <string name="set_about_detail">「墨笺」的故事</string>
+    <string name="path_databases">/data/data/net.roocky.mojian/databases/</string>
+    <string name="path_sdcard">/sdcard/Mojian.db</string>
 
     <string name="tt_add_diary">写日記</string>
     <string name="tt_add_note">记便箋</string>
-
-    <string name="use_explain_diary">「墨記」是一款用来写日记</string>
-    <string name="use_explain_note">便笺使用说明一</string>
 
     <string name="toast_null">这天你没写日記呀~</string>
     <string name="toast_delete_success">已成功删除</string>
     <string name="toast_per_success">获取权限成功，再次点击完成操作</string>
     <string name="toast_per_fail">获取权限失败</string>
+    <string name="toast_update">正在检查更新……</string>
+    <string name="toast_thanks">感谢使用墨笺(～￣▽￣)～</string>
 
-    <string name="note_remind">「墨記」会在%1$s提醒你：）</string>
+    <string name="note_remind">「墨笺」会在%1$s提醒你：）</string>
     <string name="feedback_notify">您有%1$d条反馈未读消息</string>
 
     <string name="diary_month_day">%1$s月%2$s</string>
