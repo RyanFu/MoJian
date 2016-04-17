@@ -61,7 +61,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements
+public class MainActivity extends BaseActivity implements
         View.OnClickListener,
         IWxCallback,
         DialogInterface.OnClickListener {
@@ -90,14 +90,12 @@ public class MainActivity extends AppCompatActivity implements
     private DiaryFragment diaryFragment = new DiaryFragment();
     private SettingFragment settingFragment = new SettingFragment();
 
-    private int fragmentId = FRAGMENT_NOTE;         //记录当前所在的Fragment
     private List<Fragment> fragmentList = new ArrayList<>();        //存放便笺、日记、设置三个Fragment
     private String[] ttMenus = {"便箋", "日記", "設置"};
     private int[] idMenus = {R.id.btn_note, R.id.btn_diary, R.id.btn_setting};      //便笺、日记、设置三项的ID
     private int[] bgToolbar = {R.drawable.bd_note, R.drawable.bd_diary, R.drawable.bd_setting}; //Toolbar背景图片
 
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
+    private AlertDialog dialogDelete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,9 +119,6 @@ public class MainActivity extends AppCompatActivity implements
 
     //初始化使用说明
     private void initExplain() {
-        preferences = getSharedPreferences("mojian", MODE_PRIVATE);
-        editor = preferences.edit();
-
         if (preferences.getBoolean("isFirst", true)) {
             editor.putBoolean("isFirst", false).apply();   //设置一个布尔变量标识是否第一次运行App
 
@@ -142,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements
 
     //初始化View
     private void initView() {
+        curActivity = ACTIVITY_MAIN;
         llAccount = (LinearLayout)findViewById(R.id.ll_account);
         sdvAvatar = (SimpleDraweeView)findViewById(R.id.sdv_avatar);
         tvNickname = (TextView)findViewById(R.id.tv_nickname);
@@ -171,8 +167,9 @@ public class MainActivity extends AppCompatActivity implements
 
     //绑定控件点击事件
     private void setOnClickListener() {
-        llAccount.setOnClickListener(this);
+        llAccount.setOnClickListener(this);         //账户设置
         fabAdd.setOnClickListener(this);
+        ivBackground.setOnClickListener(this);      //更改背景图片
         //日记、便笺、设置三项
         for (int idMenu : idMenus) {
             findViewById(idMenu).setOnClickListener(this);
@@ -197,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements
                 break;
             case R.id.fab_add:
                 if (noteFragment.isDeleting || diaryFragment.isDeleting) {
-                    new AlertDialog.Builder(this)
+                    dialogDelete = new AlertDialog.Builder(this)
                             .setTitle("删除")
                             .setMessage("确定删除吗？")
                             .setPositiveButton("确定", this)
@@ -216,6 +213,12 @@ public class MainActivity extends AppCompatActivity implements
                     }
                     startActivity(intent);
                 }
+                break;
+            case R.id.iv_background:        //修改背景图片
+                dialogBackground = new AlertDialog.Builder(this)
+                        .setTitle("更改背景")
+                        .setItems(new String[]{"拍照", "从相册中选中", "恢复默认背景"}, this)
+                        .show();
                 break;
             default:
                 itemSelected(v.getId());
@@ -241,7 +244,11 @@ public class MainActivity extends AppCompatActivity implements
                 fragmentManager.beginTransaction().replace(R.id.fl_content, fragmentList.get(i)).commit();
                 fragmentId = i;
                 invalidateOptionsMenu();    //完成fragmentId的设置后刷新菜单
-                ivBackground.setImageResource(bgToolbar[i]);
+                if (!preferences.getString("background" + i, "").equals("")) {        //用户有自定义背景图片
+                    ivBackground.setImageURI(Uri.parse(preferences.getString("background" + i, "")));
+                } else {        //用户未自定义背景图片
+                    ivBackground.setImageResource(bgToolbar[i]);
+                }
                 if (id == R.id.btn_setting) {
                     fabAdd.setVisibility(View.GONE);
                 } else {
@@ -254,81 +261,94 @@ public class MainActivity extends AppCompatActivity implements
         slidingMenu.showContent();
     }
 
+    //设置背景图片
+    @Override
+    protected void setBackground(Uri imageUri) {
+        if (imageUri.equals(Uri.parse(""))) {
+            ivBackground.setImageResource(bgToolbar[fragmentId]);
+        } else {
+            ivBackground.setImageURI(imageUri);
+        }
+    }
+
     //删除提示弹窗点击事件
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 1).getWritableDatabase();
-        final BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
-        //对List进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
-        Collections.sort(baseFragment.deleteList);
-        Collections.sort(baseFragment.positionList);
-        //对存放了被删除数据的List进行id升序排序，以便撤销时可以根据positionList来刷新RecyclerView
-        if (fragmentId == FRAGMENT_NOTE) {
-            Collections.sort(baseFragment.noteList, new Comparator<Note>() {
-                @Override
-                public int compare(Note lhs, Note rhs) {
-                    return lhs.getId() - rhs.getId();
-                }
-            });
-            //清空Adapter的被选中的item的positionList（不是Fragment的positionList）
-            noteFragment.getAdapter().setPositionList(new ArrayList<Integer>());
-        } else {
-            Collections.sort(baseFragment.diaryList, new Comparator<Diary>() {
-                @Override
-                public int compare(Diary lhs, Diary rhs) {
-                    return lhs.getId() - rhs.getId();
-                }
-            });
-            //清空Adapter的被选中的item的positionList（不是Fragment的positionList）
-            diaryFragment.getAdapter().setPositionList(new ArrayList<Integer>());
-            //提前先获取到完整的tempList为后面删除刷新做准备
-            diaryFragment.getAdapter().tempList = (List<Diary>)DatabaseHelper.query(database, "diary", null, null, null);
-        }
-        //从数据库中删除数据并刷新RecyclerView
-        for (int i = 0; i < baseFragment.deleteList.size(); i ++) {
+        super.onClick(dialog, which);           //更改头像&背景图片
+        if (dialog.equals(dialogDelete)) {      //删除item
+            final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 1).getWritableDatabase();
+            final BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
+            //对List进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
+            Collections.sort(baseFragment.deleteList);
+            Collections.sort(baseFragment.positionList);
+            //对存放了被删除数据的List进行id升序排序，以便撤销时可以根据positionList来刷新RecyclerView
             if (fragmentId == FRAGMENT_NOTE) {
-                database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                noteFragment.flush(Mojian.FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
-            } else {
-                database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
-                //刷新至删除前所刷新到的地方
-                diaryFragment.flush(Mojian.FLUSH_REMOVE, baseFragment.positionList.get(i) - i, diaryFragment.count);
-            }
-        }
-        //情况delete列表，切换回普通状态
-        baseFragment.isDeleting = false;
-        fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
-        Snackbar.make(toolbar, getString(R.string.toast_delete_success), Snackbar.LENGTH_LONG)
-                .setAction("撤销", new View.OnClickListener() {
+                Collections.sort(baseFragment.noteList, new Comparator<Note>() {
                     @Override
-                    public void onClick(View v) {
-                        ContentValues values = new ContentValues();
-                        //恢复已删除的数据即再次将数据添加到数据库中
-                        if (fragmentId == FRAGMENT_NOTE) {
-                            for (int i = 0; i < baseFragment.noteList.size(); i ++) {
-                                values.put("id", baseFragment.noteList.get(i).getId());
-                                values.put("year", baseFragment.noteList.get(i).getYear());
-                                values.put("month", baseFragment.noteList.get(i).getMonth());
-                                values.put("day", baseFragment.noteList.get(i).getDay());
-                                values.put("content", baseFragment.noteList.get(i).getContent());
-                                database.insert("note", null, values);
-                                noteFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i));
-                            }
-                        } else {
-                            diaryFragment.getAdapter().tempList = (List<Diary>)DatabaseHelper.query(database, "diary", null, null, null);
-                            for (int i = 0; i < baseFragment.diaryList.size(); i ++) {
-                                values.put("id", baseFragment.diaryList.get(i).getId());
-                                values.put("year", baseFragment.diaryList.get(i).getYear());
-                                values.put("month", baseFragment.diaryList.get(i).getMonth());
-                                values.put("day", baseFragment.diaryList.get(i).getDay());
-                                values.put("weather", baseFragment.diaryList.get(i).getWeather());
-                                values.put("content", baseFragment.diaryList.get(i).getContent());
-                                database.insert("diary", null, values);
-                                diaryFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i), diaryFragment.count);
+                    public int compare(Note lhs, Note rhs) {
+                        return lhs.getId() - rhs.getId();
+                    }
+                });
+                //清空Adapter的被选中的item的positionList（不是Fragment的positionList）
+                noteFragment.getAdapter().setPositionList(new ArrayList<Integer>());
+            } else {
+                Collections.sort(baseFragment.diaryList, new Comparator<Diary>() {
+                    @Override
+                    public int compare(Diary lhs, Diary rhs) {
+                        return lhs.getId() - rhs.getId();
+                    }
+                });
+                //清空Adapter的被选中的item的positionList（不是Fragment的positionList）
+                diaryFragment.getAdapter().setPositionList(new ArrayList<Integer>());
+                //提前先获取到完整的tempList为后面删除刷新做准备
+                diaryFragment.getAdapter().tempList = (List<Diary>) DatabaseHelper.query(database, "diary", null, null, null);
+            }
+            //从数据库中删除数据并刷新RecyclerView
+            for (int i = 0; i < baseFragment.deleteList.size(); i++) {
+                if (fragmentId == FRAGMENT_NOTE) {
+                    database.delete("note", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                    noteFragment.flush(Mojian.FLUSH_REMOVE, baseFragment.positionList.get(i) - i);
+                } else {
+                    database.delete("diary", "id = ?", new String[]{baseFragment.deleteList.get(i)});
+                    //刷新至删除前所刷新到的地方
+                    diaryFragment.flush(Mojian.FLUSH_REMOVE, baseFragment.positionList.get(i) - i, diaryFragment.count);
+                }
+            }
+            //情况delete列表，切换回普通状态
+            baseFragment.isDeleting = false;
+            fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
+            Snackbar.make(toolbar, getString(R.string.toast_delete_success), Snackbar.LENGTH_LONG)
+                    .setAction("撤销", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ContentValues values = new ContentValues();
+                            //恢复已删除的数据即再次将数据添加到数据库中
+                            if (fragmentId == FRAGMENT_NOTE) {
+                                for (int i = 0; i < baseFragment.noteList.size(); i++) {
+                                    values.put("id", baseFragment.noteList.get(i).getId());
+                                    values.put("year", baseFragment.noteList.get(i).getYear());
+                                    values.put("month", baseFragment.noteList.get(i).getMonth());
+                                    values.put("day", baseFragment.noteList.get(i).getDay());
+                                    values.put("content", baseFragment.noteList.get(i).getContent());
+                                    database.insert("note", null, values);
+                                    noteFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i));
+                                }
+                            } else {
+                                diaryFragment.getAdapter().tempList = (List<Diary>) DatabaseHelper.query(database, "diary", null, null, null);
+                                for (int i = 0; i < baseFragment.diaryList.size(); i++) {
+                                    values.put("id", baseFragment.diaryList.get(i).getId());
+                                    values.put("year", baseFragment.diaryList.get(i).getYear());
+                                    values.put("month", baseFragment.diaryList.get(i).getMonth());
+                                    values.put("day", baseFragment.diaryList.get(i).getDay());
+                                    values.put("weather", baseFragment.diaryList.get(i).getWeather());
+                                    values.put("content", baseFragment.diaryList.get(i).getContent());
+                                    database.insert("diary", null, values);
+                                    diaryFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i), diaryFragment.count);
+                                }
                             }
                         }
-                    }
-                }).show();
+                    }).show();
+        }
     }
 
     @Override
@@ -414,4 +434,8 @@ public class MainActivity extends AppCompatActivity implements
     public void onError(int i, String s) {}
     @Override
     public void onProgress(int i) {}
+
+    //AccountActivity中设置头像
+    @Override
+    protected void setAvatar(Uri imageUri) {}
 }

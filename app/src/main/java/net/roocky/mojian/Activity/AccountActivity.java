@@ -36,8 +36,7 @@ import butterknife.ButterKnife;
  * Created by roocky on 03/18.
  * 账号信息
  */
-public class AccountActivity extends AppCompatActivity implements View.OnClickListener,
-        DialogInterface.OnClickListener,
+public class AccountActivity extends BaseActivity implements View.OnClickListener,
         DatePickerDialog.OnDateSetListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -64,15 +63,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     @Bind(R.id.ll_signature)
     LinearLayout llSignature;
 
-    private final int TAKE_PHOTO = 0;
-    private final int SELECT_PHOTO = 1;
-    private final int CROP_PHOTO = 2;
-
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-    private Uri imageUri;
-
-    private AlertDialog dialogAvatar;
     private AlertDialog dialogNickname;
     private AlertDialog dialogSex;
     private AlertDialog dialogAddress;
@@ -94,8 +84,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void initView() {
-        preferences = getSharedPreferences("mojian", MODE_PRIVATE);
-        editor = preferences.edit();
+        curActivity = ACTIVITY_ACCOUNT;
         String uriAvatar = preferences.getString("avatar", null);
 
         setSupportActionBar(toolbar);
@@ -116,6 +105,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         llBirthday.setOnClickListener(this);
         llAddress.setOnClickListener(this);
         llSignature.setOnClickListener(this);
+    }
+
+    @Override
+    protected void setAvatar(Uri imageUri) {
+        sdvAvatar.setImageURI(imageUri);
     }
 
     /**
@@ -195,45 +189,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
      */
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        if (dialog.equals(dialogAvatar)) {
-            /**
-             * 创建File对象来存储所拍摄的照片
-             */
-
-            //返回路径：/storage/emulated/0/Android/包名/files
-            File outputImage = new File(getExternalFilesDir(""), "avatar" + System.currentTimeMillis() + ".jpg");
-            try {
-                if (outputImage.exists()) {
-                    outputImage.delete();
-                }
-                outputImage.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            imageUri = Uri.fromFile(outputImage);
-            switch (which) {
-                //启动相机Activity，resultCode == TAKE_PHOTO
-                case TAKE_PHOTO:
-                    Intent intent_t = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent_t.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    startActivityForResult(intent_t, TAKE_PHOTO);
-                    break;
-
-                //启动文件选择器，resultCode == Crop.REQUEST_PICK
-                case SELECT_PHOTO:
-                    /**
-                     * 设置Action为ACTION_PICK的话可以直接从图库中选取图片，ACTION_GET_CONTENT是从“打开文件”处
-                     * 选取，此处选取的图片会跳过截图步骤，具体原因不清楚
-                     * Android 6.0系统没有Gallery应用，所以默认打开的是Google Photos，然而似乎Photos并没有裁剪功能
-                     *
-                     * 此处调用第三方裁剪库android-crop实现选择&裁剪图片（选择图片基于原生的选择器）
-                     */
-                    Crop.pickImage(this);
-                    break;
-                default:
-                    break;
-            }
-        } else if (dialog.equals(dialogNickname)) {
+        super.onClick(dialog, which);           //更改头像&背景图片
+        if (dialog.equals(dialogNickname)) {
             tvNickname.setText(etNickname.getText());
             editor.putString("nickname", etNickname.getText().toString()).commit();
         } else if (dialog.equals(dialogSex)) {
@@ -246,37 +203,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         } else if (dialog.equals(dialogSignature)) {
             tvSignature.setText(etSignature.getText());
             editor.putString("signature", etSignature.getText().toString()).commit();
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            //拍照完成，启动裁剪程序
-            case TAKE_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    Crop.of(imageUri, imageUri).withMaxSize(300, 300)     //第一个参数imageUri是拍照生成的原始图片Uri
-                            .asSquare().start(this);                      //第二个参数imageUri是裁剪完成生成的图片Uri
-                }
-                break;
-
-            //选择完成，启动裁剪程序
-            case Crop.REQUEST_PICK:
-                if (resultCode == RESULT_OK && data != null) {
-                    Crop.of(data.getData(), imageUri).withMaxSize(300, 300)   //data.getData()为选择图片后得到的Uri
-                            .asSquare().start(this);                          //resultCode == Crop.REQUEST_CROP
-                }
-                break;
-
-            //裁剪完成，设置图片Uri
-            case Crop.REQUEST_CROP:
-                if (resultCode == RESULT_OK) {
-                    sdvAvatar.setImageURI(imageUri);
-                    editor.putString("avatar", imageUri.toString()).apply();
-                }
-                break;
-            default:
-                break;
         }
     }
 
@@ -322,4 +248,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //MainActivity中设置背景图片
+    @Override
+    protected void setBackground(Uri imageUri) {}
 }
