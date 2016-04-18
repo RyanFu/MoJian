@@ -59,10 +59,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         NestedScrollView.OnScrollChangeListener,
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
-    @Bind(R.id.abl_toolbar)
-    AppBarLayout ablToolbar;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.abl_toolbar)
+    AppBarLayout ablToolbar;
     @Bind(R.id.et_content)
     EditText etContent;
     @Bind(R.id.tv_content)

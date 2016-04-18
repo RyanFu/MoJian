@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
 import com.umeng.update.UmengUpdateAgent;
 
+import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileCopy;
 import net.roocky.mojian.Util.PermissionUtil;
@@ -63,6 +64,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.ll_update:
                 Toast.makeText(getContext(), getString(R.string.toast_update), Toast.LENGTH_SHORT).show();
+                Mojian.isAutoUpdate = false;        //标识当前更新为手动更新
                 UmengUpdateAgent.forceUpdate(getActivity());
                 break;
             case R.id.ll_feedback:

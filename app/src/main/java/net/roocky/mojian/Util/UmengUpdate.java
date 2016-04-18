@@ -8,6 +8,7 @@ import com.umeng.update.UmengUpdateListener;
 import com.umeng.update.UpdateResponse;
 import com.umeng.update.UpdateStatus;
 
+import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 
 /**
@@ -20,8 +21,8 @@ public class UmengUpdate {
         UmengUpdateAgent.setUpdateListener(new UmengUpdateListener() {
             @Override
             public void onUpdateReturned(int updateStatus, UpdateResponse updateInfo) {
-                //判断当前是否处于SettingFragment，R.id.ll_update为任意一个SettingFragment有而DiaryFragment没有的元素
-                if (activity.findViewById(R.id.ll_update) != null) {
+                //判断当前是否为自动更新
+                if (!Mojian.isAutoUpdate) {         //手动更新
                     switch (updateStatus) {
                         case UpdateStatus.Yes: // has update
                             UmengUpdateAgent.showUpdateDialog(activity, updateInfo);
@@ -36,7 +37,8 @@ public class UmengUpdate {
                             Toast.makeText(activity, "超时", Toast.LENGTH_SHORT).show();
                             break;
                     }
-                } else {
+                    Mojian.isAutoUpdate = true;     //恢复标识
+                } else {        //自动更新
                     if (updateStatus == UpdateStatus.Yes) {
                         UmengUpdateAgent.showUpdateDialog(activity, updateInfo);
                     }
