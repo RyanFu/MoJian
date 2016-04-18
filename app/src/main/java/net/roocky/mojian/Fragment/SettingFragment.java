@@ -16,7 +16,7 @@ import com.umeng.update.UmengUpdateAgent;
 
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileCopy;
-import net.roocky.mojian.Util.Permission;
+import net.roocky.mojian.Util.PermissionUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -37,7 +37,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Bind(R.id.ll_about)
     LinearLayout llAbout;
 
-    private final int EXTERNAL_STORAGE = 0;
+    private final int PER_EXTERNAL_STORAGE = 0;
     private int idClick;
 
     @Override
@@ -77,7 +77,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                  * 请求被处理后会回调onRequestPermissionsResult()方法
                  */
                 idClick = v.getId();
-                if (Permission.check(this, Manifest.permission.READ_EXTERNAL_STORAGE, EXTERNAL_STORAGE)) {
+                if (PermissionUtil.check(this, Manifest.permission.READ_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
                     backStore(idClick);   //备份 & 恢复
                 }
 
@@ -89,7 +89,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case EXTERNAL_STORAGE:  //存储空间权限
+            case PER_EXTERNAL_STORAGE:  //存储空间权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     backStore(idClick);     //若获取成功权限则进行备份&恢复操作
                 } else {

@@ -1,5 +1,6 @@
 package net.roocky.mojian.Activity;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
@@ -7,16 +8,22 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +40,9 @@ import net.roocky.mojian.BroadcastReceiver.RemindReceiver;
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.BitmapUtil;
+import net.roocky.mojian.Util.PermissionUtil;
+import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 
 import java.util.Calendar;
@@ -71,6 +81,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     TextView tvMonthDay;
     @Bind(R.id.iv_weather_icon)
     ImageView ivWeatherIcon;
+    @Bind(R.id.nsv_content)
+    NestedScrollView nsvContent;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -84,6 +96,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private int yearRemind;
     private int monthRemind;
     private int dayRemind;
+
+    private final int PER_EXTERNAL_STORAGE = 0;
+    private Bitmap bmpContent;
 
     private int[] weathers = {
             R.drawable.wd_weather_sun,
@@ -139,8 +154,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     private void setListener() {
         fabEdit.setOnClickListener(this);
-        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.nsv_content);
-        scrollView.setOnScrollChangeListener(this);
+        nsvContent = (NestedScrollView) findViewById(R.id.nsv_content);
+        nsvContent.setOnScrollChangeListener(this);
     }
 
     @Override
@@ -181,6 +196,18 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                             .show();
                 }
                 break;
+            case R.id.action_to_picture:
+                int width = ScreenUtil.getWidth(this);                  //获取屏幕宽度
+                bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
+                //先检查权限在进行保存
+                if (PermissionUtil.checkA(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
+                    if (BitmapUtil.save(bmpContent)) {            //保存至SD卡
+                        Snackbar.make(toolbar, getString(R.string.toast_to_picture), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+                break;
             case R.id.action_remind:
                 new DatePickerDialog(
                         this,
@@ -193,6 +220,25 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    //处理Android 6.0中permission请求完成事件
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PER_EXTERNAL_STORAGE:  //存储空间权限
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (BitmapUtil.save(bmpContent)) {            //保存至SD卡
+                        Snackbar.make(toolbar, getString(R.string.toast_to_picture), Snackbar.LENGTH_SHORT).show();
+                    } else {
+                        Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
+                }
+                return;
+
+        }
     }
 
     //其他View点击事件

@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat;
  * Created by roocky on 03/29.
  * Android 6.0权限检查工具类
  */
-public class Permission {
+public class PermissionUtil {
     /**
      * 如果已拥有权限，返回true，否则返回false
      * @param fragment      check()方法是在fragment中被调用的，所以传参时直接传this即可

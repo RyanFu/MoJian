@@ -59,4 +59,9 @@ public class Mojian extends Application {
         fbSetting.put("themeColor", "#9e9e9e");
         FeedbackAPI. setUICustomInfo(fbSetting);
     }
+
+    //获取Context
+    public static Context getContext() {
+        return context;
+    }
 }

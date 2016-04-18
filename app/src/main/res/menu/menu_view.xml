@@ -7,6 +7,10 @@
         android:icon="@mipmap/ic_delete_black_24dp"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_to_picture"
+        android:title="@string/action_to_picture"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_remind"
         android:title="@string/action_remind"
         app:showAsAction="never" />
