@@ -7,12 +7,12 @@
     <string name="app_name_full">墨笺 1.0.1</string>
     <string name="app_author">Roocky强力驱动</string>
 
-    <string name="mn_diary">日記</string>
-    <string name="mn_diary_vertical">日記</string>
-    <string name="mn_note">便箋</string>
-    <string name="mn_note_vertical">便箋</string>
-    <string name="mn_setting">設置</string>
-    <string name="mn_setting_vertical">設置</string>
+    <string name="mn_diary">日记</string>
+    <string name="mn_diary_vertical">日\n记</string>
+    <string name="mn_note">便笺</string>
+    <string name="mn_note_vertical">便\n笺</string>
+    <string name="mn_setting">设置</string>
+    <string name="mn_setting_vertical">设\n置</string>
 
     <string name="action_delete">删除</string>
     <string name="action_to_picture">导出为图片</string>
@@ -39,10 +39,10 @@
     <string name="path_databases">/data/data/net.roocky.mojian/databases/</string>
     <string name="path_sdcard">/sdcard/Mojian.db</string>
 
-    <string name="tt_add_diary">写日記</string>
-    <string name="tt_add_note">记便箋</string>
+    <string name="tt_add_diary">写日记</string>
+    <string name="tt_add_note">记便笺</string>
 
-    <string name="toast_null">这天你没写日記呀~</string>
+    <string name="toast_null">这天你没写日记呀~</string>
     <string name="toast_delete_success">已成功删除</string>
     <string name="toast_per_success">获取权限成功，再次点击完成操作</string>
     <string name="toast_per_fail">获取权限失败</string>

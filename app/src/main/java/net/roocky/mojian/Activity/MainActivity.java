@@ -91,7 +91,7 @@ public class MainActivity extends BaseActivity implements
     private SettingFragment settingFragment = new SettingFragment();
 
     private List<Fragment> fragmentList = new ArrayList<>();        //存放便笺、日记、设置三个Fragment
-    private String[] ttMenus = {"便箋", "日記", "設置"};
+    private String[] ttMenus = {"便笺", "日记", "设置"};
     private int[] idMenus = {R.id.btn_note, R.id.btn_diary, R.id.btn_setting};      //便笺、日记、设置三项的ID
     private int[] bgToolbar = {R.drawable.bd_note, R.drawable.bd_diary, R.drawable.bd_setting}; //Toolbar背景图片
 
