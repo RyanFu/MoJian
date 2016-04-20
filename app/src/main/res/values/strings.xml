@@ -3,7 +3,7 @@
     <string name="baichuan_app_key">23336545</string>
 
     <string name="app_name">墨笺</string>
-    <string name="app_name_eng">mojian</string>
+    <string name="app_name_eng">Mojian</string>
     <string name="app_name_full">墨笺 1.0.1</string>
     <string name="app_author">Roocky强力驱动</string>
 
@@ -15,7 +15,8 @@
     <string name="mn_setting_vertical">设\n置</string>
 
     <string name="action_delete">删除</string>
-    <string name="action_to_picture">导出为图片</string>
+    <string name="action_share_picture">图片分享</string>
+    <string name="action_share_text">文本分享</string>
     <string name="action_remind">提醒我</string>
     <string name="action_calendar">日历</string>
 
@@ -49,7 +50,7 @@
     <string name="toast_update">正在检查更新……</string>
     <string name="toast_thanks">感谢使用墨笺(～￣▽￣)～</string>
     <string name="toast_to_picture">成功导出为图片（路径：/sdcard/mojian/）</string>
-    <string name="toast_to_picture_error">导出失败……</string>
+    <string name="toast_to_picture_error">导出图片失败……</string>
 
     <string name="note_remind">「墨笺」会在%1$s提醒你：）</string>
     <string name="feedback_notify">您有%1$d条反馈未读消息</string>

@@ -16,23 +16,29 @@ import java.io.IOException;
  * Bitmap保存工具类
  */
 public class BitmapUtil {
-    public static boolean save(Bitmap bitmap) {
+    /**
+     *
+     * @param bitmap
+     * @return          返回值为0表明没有成功保存
+     */
+    public static long save(Bitmap bitmap) {
         File directory = new File(Environment.getExternalStorageDirectory(),
                 Mojian.getContext().getString(R.string.app_name_eng));
         if (!directory.exists()) {
             directory.mkdir();
         }
-        String fileName = System.currentTimeMillis() + ".jpg";
+        long currentTimeMill = System.currentTimeMillis();
+        String fileName = currentTimeMill + ".jpg";
         File file = new File(directory, fileName);
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
             outputStream.flush();
             outputStream.close();
-            return true;
+            return currentTimeMill;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
+            return 0;
         }
     }
 }

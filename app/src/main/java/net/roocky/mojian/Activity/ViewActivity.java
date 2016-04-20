@@ -11,8 +11,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -45,6 +47,7 @@ import net.roocky.mojian.Util.PermissionUtil;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 
+import java.io.File;
 import java.util.Calendar;
 
 import butterknife.Bind;
@@ -196,17 +199,30 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                             .show();
                 }
                 break;
-            case R.id.action_to_picture:
+            case R.id.action_share_picture:
                 int width = ScreenUtil.getWidth(this);                  //获取屏幕宽度
                 bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
                 //先检查权限在进行保存
                 if (PermissionUtil.checkA(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
-                    if (BitmapUtil.save(bmpContent)) {            //保存至SD卡
-                        Snackbar.make(toolbar, getString(R.string.toast_to_picture), Snackbar.LENGTH_SHORT).show();
+                    long currentTimeMill = BitmapUtil.save(bmpContent);     //保存至SD卡
+                    if (currentTimeMill != 0) {
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_STREAM,
+                                Uri.parse("file:///" + Environment.getExternalStorageDirectory()
+                                        + "/" + getString(R.string.app_name_eng)
+                                        + "/" + currentTimeMill + ".jpg"));
+                        shareIntent.setType("image/*");
+                        startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_picture)));
                     } else {
                         Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
                     }
                 }
+                break;
+            case R.id.action_share_text:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, tvContent.getText());
+                shareIntent.setType("text/plain");
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
             case R.id.action_remind:
                 new DatePickerDialog(
@@ -228,16 +244,22 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case PER_EXTERNAL_STORAGE:  //存储空间权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (BitmapUtil.save(bmpContent)) {            //保存至SD卡
-                        Snackbar.make(toolbar, getString(R.string.toast_to_picture), Snackbar.LENGTH_SHORT).show();
+                    long currentTimeMill = BitmapUtil.save(bmpContent);     //保存至SD卡
+                    if (currentTimeMill != 0) {
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_STREAM,
+                                Uri.parse("file:///" + Environment.getExternalStorageDirectory()
+                                        + "/" + getString(R.string.app_name_eng)
+                                        + "/" + currentTimeMill + ".jpg"));
+                        shareIntent.setType("image/jpeg");
+                        startActivity(Intent.createChooser(shareIntent, "图片分享"));
                     } else {
                         Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
                     }
                 } else {
                     Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
                 }
-                return;
-
+                break;
         }
     }
 
