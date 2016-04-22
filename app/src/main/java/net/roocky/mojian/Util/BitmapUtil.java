@@ -22,8 +22,8 @@ public class BitmapUtil {
      * @return          返回值为0表明没有成功保存
      */
     public static long save(Bitmap bitmap) {
-        File directory = new File(Environment.getExternalStorageDirectory(),
-                Mojian.getContext().getString(R.string.app_name_eng));
+        File directory = new File(Environment.getExternalStorageDirectory()
+                + Mojian.getContext().getString(R.string.app_path_pic));
         if (!directory.exists()) {
             directory.mkdir();
         }

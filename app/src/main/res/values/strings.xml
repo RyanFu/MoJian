@@ -3,9 +3,9 @@
     <string name="baichuan_app_key">23336545</string>
 
     <string name="app_name">墨笺</string>
-    <string name="app_name_eng">Mojian</string>
     <string name="app_name_full">墨笺 1.0.1</string>
     <string name="app_author">Roocky强力驱动</string>
+    <string name="app_path_pic">/Mojian/Picture/</string>
 
     <string name="mn_diary">日记</string>
     <string name="mn_diary_vertical">日\n记</string>

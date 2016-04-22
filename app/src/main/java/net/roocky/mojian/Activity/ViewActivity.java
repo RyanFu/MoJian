@@ -209,8 +209,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                        + "/" + getString(R.string.app_name_eng)
-                                        + "/" + currentTimeMill + ".jpg"));
+                                        + getString(R.string.app_path_pic)
+                                        + currentTimeMill + ".jpg"));
                         shareIntent.setType("image/*");
                         startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_picture)));
                     } else {
@@ -220,7 +220,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.action_share_text:
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, tvContent.getText());
+                shareIntent.putExtra(Intent.EXTRA_TEXT,
+                        tvContent.getText() + "\n——「墨笺」");
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
@@ -249,9 +250,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                        + "/" + getString(R.string.app_name_eng)
-                                        + "/" + currentTimeMill + ".jpg"));
-                        shareIntent.setType("image/jpeg");
+                                        + getString(R.string.app_path_pic)
+                                        + currentTimeMill + ".jpg"));
+                        shareIntent.setType("image/*");
                         startActivity(Intent.createChooser(shareIntent, "图片分享"));
                     } else {
                         Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
