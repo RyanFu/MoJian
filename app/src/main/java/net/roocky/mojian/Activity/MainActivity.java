@@ -7,7 +7,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -20,7 +19,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +33,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
-import com.umeng.update.UmengUpdateAgent;
 
 import net.roocky.mojian.BroadcastReceiver.FeedbackReceiver;
 import net.roocky.mojian.Database.DatabaseHelper;
@@ -48,7 +45,6 @@ import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileCopy;
-import net.roocky.mojian.Util.UmengUpdate;
 
 import java.io.File;
 import java.io.IOException;
@@ -104,9 +100,6 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        UmengUpdateAgent.setDeltaUpdate(false); //设置为全量更新
-        UmengUpdate.set(this);                  //设置友盟检查更新结果的处理
-        UmengUpdateAgent.update(this);          //友盟检查更新
         FeedbackAPI.getFeedbackUnreadCount(this, null, this);   //检查百川反馈未读消息
 
         initExplain();          //使用说明初始化

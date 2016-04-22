@@ -31,8 +31,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     LinearLayout llBackup;
     @Bind(R.id.ll_restore)
     LinearLayout llRestore;
-    @Bind(R.id.ll_update)
-    LinearLayout llUpdate;
     @Bind(R.id.ll_feedback)
     LinearLayout llFeedback;
     @Bind(R.id.ll_about)
@@ -54,7 +52,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private void setOnClickListener() {
         llBackup.setOnClickListener(this);
         llRestore.setOnClickListener(this);
-        llUpdate.setOnClickListener(this);
         llFeedback.setOnClickListener(this);
         llAbout.setOnClickListener(this);
     }
@@ -62,11 +59,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_update:
-                Toast.makeText(getContext(), getString(R.string.toast_update), Toast.LENGTH_SHORT).show();
-                Mojian.isAutoUpdate = false;        //标识当前更新为手动更新
-                UmengUpdateAgent.forceUpdate(getActivity());
-                break;
             case R.id.ll_feedback:
                 FeedbackAPI.openFeedbackActivity(getActivity());    //百川反馈
                 break;

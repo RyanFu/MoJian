@@ -32,8 +32,6 @@ public class Mojian extends Application {
     public static final int WEATHER_CLOUD = 1;
     public static final int WEATHER_RAIN = 2;
     public static final int WEATHER_SNOW = 3;
-    //表示当前更新是否为自动更新
-    public static boolean isAutoUpdate = true;
 
     @Override
     public void onCreate() {
