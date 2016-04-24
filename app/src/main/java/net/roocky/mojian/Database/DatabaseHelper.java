@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import net.roocky.mojian.Model.Base;
 import net.roocky.mojian.Model.Diary;
@@ -24,8 +25,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "year integer, "
             + "month integer, "
             + "day integer, "
-            + "weather integer, "
-            + "content text)";
+            + "content text, "
+            + "background integer, "
+            + "weather integer)";
     //便笺表
     public static final String CREATE_NOTE = "create table note ("
             + "id integer primary key autoincrement, "
@@ -33,6 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "month integer, "
             + "day integer, "
             + "content text, "
+            + "background integer, "
             + "remind text)";
 
     /**
@@ -55,6 +58,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("ALTER TABLE note ADD COLUMN background");
+        db.execSQL("ALTER TABLE diary ADD COLUMN background");
     }
 
     public static List<? extends Base> query(SQLiteDatabase database, String type, String[] columns, String selection, String[] selectionArgs) {
@@ -67,13 +72,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             int month = cursor.getInt(cursor.getColumnIndex("month"));
             int day = cursor.getInt(cursor.getColumnIndex("day"));
             String content = cursor.getString(cursor.getColumnIndex("content"));
+            int background = cursor.getInt(cursor.getColumnIndex("background"));
             //根据type来决定存入哪个list中
             if (type.equals("diary")) {
                 int weather = cursor.getInt(cursor.getColumnIndex("weather"));
-                diaryList.add(new Diary(id, year, month, day, weather, content));
+                diaryList.add(new Diary(id, year, month, day, content, background, weather));
             } else {
                 String remind = cursor.getString(cursor.getColumnIndex("remind"));
-                noteList.add(new Note(id, year, month, day, content, remind));
+                noteList.add(new Note(id, year, month, day, content, background, remind));
             }
         }
         cursor.close();

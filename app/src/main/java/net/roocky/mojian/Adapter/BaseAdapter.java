@@ -49,7 +49,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
      * @param count             第几次获取数据(-1表示获取全部数据，主页=要用于日记fragment分次刷新数据)
      */
     public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs, int count) {
-        database = new DatabaseHelper(context, "Mojian.db", null, 1).getWritableDatabase();
+        database = new DatabaseHelper(context, "Mojian.db", null, 2).getWritableDatabase();
         listRefresh(type, Mojian.FLUSH_ALL, columns, selection, selectionArgs, count, -1);
         this.type = type;
     }
@@ -91,6 +91,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         holder.cvItem.setTag(R.id.tag_year, baseList.get(baseList.size() - position - 1).getYear());
         holder.cvItem.setTag(R.id.tag_month, baseList.get(baseList.size() - position - 1).getMonth());
         holder.cvItem.setTag(R.id.tag_day, baseList.get(baseList.size() - position - 1).getDay());
+        holder.cvItem.setTag(R.id.tag_background, baseList.get(baseList.size() - position - 1).getBackground());
         if (type.equals("diary")) {
             holder.cvItem.setTag(R.id.tag_weather, ((Diary) baseList.get(baseList.size() - position - 1)).getWeather());
         }
@@ -98,7 +99,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         if (positionList.contains(position)) {
             holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);
         } else {
-            if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
+            if (SDKVersion.isHigher(Build.VERSION_CODES.LOLLIPOP)) {
                 holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
             } else {
                 holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);

@@ -1,14 +1,9 @@
 package net.roocky.mojian.Activity;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -27,14 +21,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.alibaba.sdk.android.feedback.util.IWxCallback;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.umeng.analytics.MobclickAgent;
 
-import net.roocky.mojian.BroadcastReceiver.FeedbackReceiver;
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Fragment.BaseFragment;
 import net.roocky.mojian.Fragment.DiaryFragment;
@@ -59,7 +50,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity implements
         View.OnClickListener,
-        IWxCallback,
+//        IWxCallback,
         DialogInterface.OnClickListener {
 
     @Bind(R.id.iv_background)
@@ -100,8 +91,7 @@ public class MainActivity extends BaseActivity implements
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        FeedbackAPI.getFeedbackUnreadCount(this, null, this);   //检查百川反馈未读消息
-
+//        FeedbackAPI.getFeedbackUnreadCount(this, null, this);   //检查百川反馈未读消息
         initExplain();          //使用说明初始化
         setSlidingMenu();       //设置SlidingMenu
         initView();             //View初始化
@@ -269,7 +259,7 @@ public class MainActivity extends BaseActivity implements
     public void onClick(DialogInterface dialog, int which) {
         super.onClick(dialog, which);           //更改头像&背景图片
         if (dialog.equals(dialogDelete)) {      //删除item
-            final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 1).getWritableDatabase();
+            final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 2).getWritableDatabase();
             final BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
             //对List进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
             Collections.sort(baseFragment.deleteList);
@@ -397,36 +387,36 @@ public class MainActivity extends BaseActivity implements
     }
 
     //反馈消息未读数目成功获取后需要发出一条Notification
-    @Override
-    public void onSuccess(Object... objects) {
-        if ((int)objects[0] > 0) {
-            //创建Notification的跳转Intent
-            Intent intentNotify = new Intent(this, FeedbackReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    this,
-                    0,
-                    intentNotify,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-            //创建Notification
-            Notification notification = new NotificationCompat.Builder(this)
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.small_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
-                    .setContentTitle(getString(R.string.app_name))
-                    .setContentText(getString(R.string.feedback_notify, (int)objects[0]))
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .build();
-            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-            //发出Notification
-            NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.notify(0, notification);
-        }
-    }
-    @Override
-    public void onError(int i, String s) {}
-    @Override
-    public void onProgress(int i) {}
+//    @Override
+//    public void onSuccess(Object... objects) {
+//        if ((int)objects[0] > 0) {
+//            //创建Notification的跳转Intent
+//            Intent intentNotify = new Intent(this, FeedbackReceiver.class);
+//            PendingIntent pendingIntent = PendingIntent.getBroadcast(
+//                    this,
+//                    0,
+//                    intentNotify,
+//                    PendingIntent.FLAG_UPDATE_CURRENT);
+//            //创建Notification
+//            Notification notification = new NotificationCompat.Builder(this)
+//                    .setContentIntent(pendingIntent)
+//                    .setSmallIcon(R.drawable.small_icon)
+//                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
+//                    .setContentTitle(getString(R.string.app_name))
+//                    .setContentText(getString(R.string.feedback_notify, (int)objects[0]))
+//                    .setAutoCancel(true)
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .build();
+//            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+//            //发出Notification
+//            NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+//            manager.notify(0, notification);
+//        }
+//    }
+//    @Override
+//    public void onError(int i, String s) {}
+//    @Override
+//    public void onProgress(int i) {}
 
     //AccountActivity中设置头像
     @Override

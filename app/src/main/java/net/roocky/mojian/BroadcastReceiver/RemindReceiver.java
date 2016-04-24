@@ -51,7 +51,7 @@ public class RemindReceiver extends BroadcastReceiver {
         //将便笺的提醒时间设置为空
         DatabaseHelper databaseHelper;
         SQLiteDatabase database;
-        databaseHelper = new DatabaseHelper(context, "Mojian.db", null, 1);
+        databaseHelper = new DatabaseHelper(context, "Mojian.db", null, 2);
         database = databaseHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         String string = null;

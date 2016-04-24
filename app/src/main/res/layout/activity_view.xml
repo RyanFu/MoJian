@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cl_content"
+    android:id="@+id/cl_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
@@ -17,8 +17,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:layout_scrollFlags="scroll|enterAlways" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nsv_content"
@@ -28,6 +27,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:background="@android:color/white">
         <LinearLayout
+            android:id="@+id/ll_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -103,8 +103,22 @@
                     android:padding="10dp"
                     android:lineSpacingExtra="10dp" />
             </FrameLayout>
+            <ImageView
+                android:id="@+id/iv_bottom"
+                android:layout_width="300dp"
+                android:layout_height="150dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/bottom_mei"
+                android:visibility="gone"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:src="@drawable/bottom_mei"
+        android:layout_gravity="left|bottom"
+        android:scaleType="fitStart"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_edit"
         android:layout_width="wrap_content"
@@ -117,10 +131,12 @@
         android:layout_marginBottom="20dp" />
     <TextView
         android:id="@+id/tv_remind"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/grey_400"
+        android:textColor="@android:color/white"
+        android:background="@drawable/shadow_background"
         android:padding="15dp"
-        android:layout_gravity="left|bottom"/>
+        android:layout_gravity="left|bottom"
+        android:visibility="gone"/>
 
 </android.support.design.widget.CoordinatorLayout>

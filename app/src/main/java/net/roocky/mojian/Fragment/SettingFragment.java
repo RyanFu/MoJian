@@ -1,7 +1,9 @@
 package net.roocky.mojian.Fragment;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -9,12 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.alibaba.sdk.android.feedback.impl.FeedbackAPI;
-import com.umeng.update.UmengUpdateAgent;
-
-import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileCopy;
 import net.roocky.mojian.Util.PermissionUtil;
@@ -60,7 +57,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.ll_feedback:
-                FeedbackAPI.openFeedbackActivity(getActivity());    //百川反馈
+//                FeedbackAPI.openFeedbackActivity(getActivity());    //百川反馈
+                Intent feedbackIntent = new Intent(Intent.ACTION_SENDTO);
+                feedbackIntent.setData(Uri.parse("mailto:roocky08@gmail.com"));
+                feedbackIntent.putExtra(Intent.EXTRA_SUBJECT,
+                        getString(R.string.feedback_title) + " " + getString(R.string.app_version));
+                startActivity(feedbackIntent);
                 break;
             case R.id.ll_about:
                 Snackbar.make(llAbout, getString(R.string.toast_thanks), Snackbar.LENGTH_SHORT).show();

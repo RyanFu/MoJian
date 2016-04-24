@@ -42,6 +42,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
             Intent intent = new Intent(getActivity(), ViewActivity.class);
             intent.putExtra("id", idSelect);     //id作为删除和修改的标识
             intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
+            intent.putExtra("background", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background));
             if (view.findViewById(R.id.tv_remind) != null) {    //判断当前的Fragment是diary还是note
                 intent.putExtra("from", "note");
                 intent.putExtra("remind", ((TextView) (view.findViewById(R.id.tv_remind))).getText().toString());
@@ -55,7 +56,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
             startActivity(intent);
         } else {        //若处于删除状态，选择被点击的该项
             if (deleteList.contains(idSelect)) {    //如果已选则设置为未选
-                if (SDKVersion.judge(Build.VERSION_CODES.LOLLIPOP)) {
+                if (SDKVersion.isHigher(Build.VERSION_CODES.LOLLIPOP)) {
                     view.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
                 } else {
                     view.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);
@@ -72,14 +73,16 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
                             ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background),
                             ((TextView)view.findViewById(R.id.tv_remind)).getText().toString()));
                 } else {
                     diaryList.remove(new Diary(Integer.parseInt(idSelect),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
-                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather),
-                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
+                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather)));
                 }
 
             } else {        //如果未选则设置为已选
@@ -92,14 +95,16 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                             (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                             (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
                             ((TextView) view.findViewById(R.id.tv_content)).getText().toString(),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background),
                             ((TextView) view.findViewById(R.id.tv_remind)).getText().toString()));
                 } else {
                     diaryList.add(new Diary(Integer.parseInt(idSelect),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
-                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather),
-                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
+                            ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background),
+                            (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather)));
                 }
             }
         }
@@ -126,14 +131,16 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
                     ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background),
                     ((TextView)view.findViewById(R.id.tv_remind)).getText().toString()));
         } else {
             diaryList.add(new Diary(Integer.parseInt(idSelect),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day),
-                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather),
-                    ((TextView)view.findViewById(R.id.tv_content)).getText().toString()));
+                    ((TextView)view.findViewById(R.id.tv_content)).getText().toString(),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background),
+                    (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather)));
         }
     }
 

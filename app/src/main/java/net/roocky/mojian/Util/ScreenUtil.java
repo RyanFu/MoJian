@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,5 +47,20 @@ public class ScreenUtil {
         Canvas canvas = new Canvas(bitmap);
         view.draw(canvas);
         return bitmap;
+    }
+
+    /**
+     * 判断软键盘是否显示
+     * @param view  Activity根Layout
+     * @return
+     */
+    public static boolean isSoftInputShow(View view) {
+        Rect rect = new Rect();
+        view.getWindowVisibleDisplayFrame(rect);
+        if (rect.bottom < getHeight(view.getContext())) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

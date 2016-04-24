@@ -25,13 +25,16 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -46,8 +49,8 @@ import net.roocky.mojian.Util.BitmapUtil;
 import net.roocky.mojian.Util.PermissionUtil;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
+import net.roocky.mojian.Widget.SelectDialog;
 
-import java.io.File;
 import java.util.Calendar;
 
 import butterknife.Bind;
@@ -61,11 +64,11 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         DialogInterface.OnClickListener,
         NestedScrollView.OnScrollChangeListener,
         DatePickerDialog.OnDateSetListener,
-        TimePickerDialog.OnTimeSetListener {
+        TimePickerDialog.OnTimeSetListener,
+        ViewTreeObserver.OnGlobalLayoutListener,
+        SelectDialog.OnItemClickListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
-    @Bind(R.id.abl_toolbar)
-    AppBarLayout ablToolbar;
     @Bind(R.id.et_content)
     EditText etContent;
     @Bind(R.id.tv_content)
@@ -86,6 +89,14 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivWeatherIcon;
     @Bind(R.id.nsv_content)
     NestedScrollView nsvContent;
+    @Bind(R.id.iv_bottom)
+    ImageView ivBottom;
+    @Bind(R.id.iv_background)
+    ImageView ivBackground;
+    @Bind(R.id.ll_content)
+    LinearLayout llContent;
+    @Bind(R.id.cl_main)
+    CoordinatorLayout clMain;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -115,6 +126,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             R.drawable.weather_clouds_with_rain,
             R.drawable.weather_clouds_with_snow
     };
+    private int background = 0;     //标识当前背景
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,12 +136,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
         initView();
         setListener();
-
     }
 
     private void initView() {
         intent = getIntent();
-        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 1);
+        background = intent.getIntExtra("background", 0);
+        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 2);
         database = databaseHelper.getWritableDatabase();
 
         setSupportActionBar(toolbar);
@@ -140,6 +152,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         //显示内容
         tvContent.setText(intent.getStringExtra("content"));
+        ivBackground.setImageResource(Mojian.backgrounds[background]);
+        ivBottom.setImageResource(Mojian.backgrounds[background]);
         if (intent.getStringExtra("from").equals("diary")) {
             rlHeader.setVisibility(View.VISIBLE);
             //设置顶部日期&天气展示
@@ -151,6 +165,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             ivWeatherIcon.setImageResource(weatherIcons[intent.getIntExtra("weather", 0)]);
         } else if (!intent.getStringExtra("remind").equals("")) {
             //设置提醒语句
+            tvRemind.setVisibility(View.VISIBLE);
             tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
         }
     }
@@ -159,6 +174,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         fabEdit.setOnClickListener(this);
         nsvContent = (NestedScrollView) findViewById(R.id.nsv_content);
         nsvContent.setOnScrollChangeListener(this);
+        clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     @Override
@@ -166,6 +182,11 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         getMenuInflater().inflate(R.menu.menu_view, menu);
         if (intent.getStringExtra("from").equals("diary")) {    //日记无需设置提醒
             menu.findItem(R.id.action_remind).setVisible(false);
+        }
+        if (isEdit) {
+            menu.getItem(0).setVisible(true);       //选择背景
+        } else {
+            menu.getItem(0).setVisible(false);
         }
         return true;
     }
@@ -178,6 +199,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 if (intent.getStringExtra("from").equals("note") && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
+                    values.put("background", background);
                     database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
                 }
                 finish();
@@ -199,7 +221,18 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                             .show();
                 }
                 break;
+            case R.id.action_background:
+                SelectDialog selectDialog = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
+                Window window = selectDialog.getWindow();
+                window.setGravity(Gravity.TOP | Gravity.RIGHT);
+                selectDialog.show();
+                selectDialog.setOnItemClickListener(selectDialog, this);
+                break;
             case R.id.action_share_picture:
+                if (ivBottom.getVisibility() == View.GONE) {
+                    ivBottom.setVisibility(View.VISIBLE);
+                    ivBackground.setVisibility(View.GONE);
+                }
                 int width = ScreenUtil.getWidth(this);                  //获取屏幕宽度
                 bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
                 //先检查权限在进行保存
@@ -269,12 +302,17 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_edit:
+                isEdit = true;
                 if (intent.getStringExtra("from").equals("diary")) {    //日记编辑状态需要改变Navigation图标
                     toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
                     toolbar.setNavigationOnClickListener(this);
                 }
-
-                ablToolbar.setExpanded(false);
+                //更新menu
+                invalidateOptionsMenu();
+                //将背景图片“移到”TextView底部
+                ivBackground.setVisibility(View.GONE);
+                ivBottom.setVisibility(View.VISIBLE);
+                //将TextView“转为”EditText
                 tvContent.setVisibility(View.GONE);
                 etContent.setText(tvContent.getText());
                 etContent.setVisibility(View.VISIBLE);
@@ -282,12 +320,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 fabEdit.hide();
                 SoftInput.show(etContent);  //显示软键盘
 
-                isEdit = true;
                 break;
             default:       //保存点击事件
                 if (isEdit) {
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
+                    values.put("background", background);
                     if (intent.getStringExtra("from").equals("diary")) {
                         database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
                     } else {
@@ -296,7 +334,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
                     toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
                     toolbar.setNavigationOnClickListener(this);
-
+                    //将EditText“转为”TextView
                     etContent.setVisibility(View.GONE);
                     tvContent.setText(etContent.getText().toString());
                     tvContent.setVisibility(View.VISIBLE);
@@ -304,6 +342,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     fabEdit.show();
 
                     isEdit = false;
+                    invalidateOptionsMenu();
                 } else {            //未处于编辑状态需要销毁当前Activity
                     finish();
                 }
@@ -322,10 +361,20 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             if (which == DialogInterface.BUTTON_POSITIVE) {
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
+                values.put("background", background);
                 database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
             }
         }
         finish();
+    }
+
+    //背景选择dialog点击事件
+    @Override
+    public void onItemClick(SelectDialog dialog, int position) {
+        background = position;
+        ivBackground.setImageResource(Mojian.backgrounds[background]);
+        ivBottom.setImageResource(Mojian.backgrounds[background]);
+        dialog.dismiss();
     }
 
     //便笺提醒选择器设置监听
@@ -366,6 +415,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                         + hour
                         + " : "
                         + minute;
+        tvRemind.setVisibility(View.VISIBLE);
         tvRemind.setText(getString(R.string.note_remind, strRemind));
         ContentValues values = new ContentValues();
         values.put("remind", strRemind);
@@ -409,6 +459,25 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    //界面view变化监听
+    @Override
+    public void onGlobalLayout() {
+        //根据软键盘是否显示决定背景图片的位置
+        if (ScreenUtil.isSoftInputShow(clMain)) {
+            ivBackground.setVisibility(View.GONE);
+            ivBottom.setVisibility(View.VISIBLE);
+        } else {
+            if (toolbar.getMeasuredHeight() + llContent.getMeasuredHeight() + ivBackground.getMeasuredHeight()
+                    > ScreenUtil.getHeight(this)) {         //如果TextView过长需要隐藏background显示Bottom
+                ivBackground.setVisibility(View.GONE);
+                ivBottom.setVisibility(View.VISIBLE);
+            } else {
+                ivBackground.setVisibility(View.VISIBLE);
+                ivBottom.setVisibility(View.GONE);
+            }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -427,10 +496,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             if (intent.getStringExtra("from").equals("note")) {
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
+                values.put("background", background);
                 database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
                 super.onBackPressed();
             } else {
-                if (!tvContent.getText().toString().equals(etContent.getText().toString())) {
+                if (!tvContent.getText().toString().equals(etContent.getText().toString()) ||
+                        background != intent.getIntExtra("background", 0)) {
                     dialogUpdate = new AlertDialog.Builder(this)
                             .setTitle("修改")
                             .setMessage("需要保存修改吗？")
@@ -444,6 +515,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
+        } else {
+            clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
         }
     }
 }

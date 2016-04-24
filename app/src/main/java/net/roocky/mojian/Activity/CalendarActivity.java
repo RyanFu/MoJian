@@ -71,7 +71,7 @@ public class CalendarActivity extends AppCompatActivity implements
         //设置RecyclerView
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new DiaryAdapter(this,
-                new String[]{"id", "year", "month", "day", "weather", "content"},
+                new String[]{"id", "year", "month", "day", "weather", "content", "background"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
                 -1);
@@ -111,7 +111,7 @@ public class CalendarActivity extends AppCompatActivity implements
         this.day = date.getDay();
         adapter.listRefresh("diary",
                 Mojian.FLUSH_ALL,
-                new String[]{"id", "year", "month", "day", "weather", "content"},
+                new String[]{"id", "year", "month", "day", "weather", "content", "background"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
                 -1,

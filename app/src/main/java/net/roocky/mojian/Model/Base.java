@@ -10,17 +10,19 @@ public class Base {
     private int month;
     private int day;
     private String content;
+    private int background;
 
     public Base() {
 
     }
 
-    public Base(int id, int year, int month, int day, String content) {
+    public Base(int id, int year, int month, int day, String content, int background) {
         this.id = id;
         this.year = year;
         this.month = month;
         this.day = day;
         this.content = content;
+        this.background = background;
     }
 
     public int getId() {
@@ -61,5 +63,13 @@ public class Base {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public int getBackground() {
+        return background;
+    }
+
+    public void setBackground(int background) {
+        this.background = background;
     }
 }

@@ -23,26 +23,17 @@
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
         <activity android:name=".Activity.AccountActivity" />
         <activity android:name=".Activity.ViewActivity"/>
-        <activity android:name=".Activity.AddActivity" />
+        <activity android:name=".Activity.AddActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".Activity.CalendarActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
-        <receiver android:name=".BroadcastReceiver.FeedbackReceiver" />
-        <!--友盟更新SDK-->
-        <service
-            android:name="com.umeng.update.net.DownloadingService"
-            android:process=":DownloadingService" >
-        </service>
-        <activity
-            android:name="com.umeng.update.UpdateDialogActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
+        <!--<receiver android:name=".BroadcastReceiver.FeedbackReceiver" />-->
     </application>
 
 </manifest>

@@ -1,9 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="baichuan_app_key">23336545</string>
+    <!--<string name="baichuan_app_key">23336545</string>-->
 
     <string name="app_name">墨笺</string>
     <string name="app_name_full">墨笺 1.0.1</string>
+    <string name="app_version">1.0.1</string>
     <string name="app_author">Roocky强力驱动</string>
     <string name="app_path_pic">/Mojian/Picture/</string>
 
@@ -15,6 +16,8 @@
     <string name="mn_setting_vertical">设\n置</string>
 
     <string name="action_delete">删除</string>
+    <string name="action_weather">选择天气</string>
+    <string name="action_background">选择背景</string>
     <string name="action_share_picture">图片分享</string>
     <string name="action_share_text">文本分享</string>
     <string name="action_remind">提醒我</string>
@@ -50,7 +53,8 @@
     <string name="toast_to_picture_error">导出图片失败……</string>
 
     <string name="note_remind">「墨笺」会在%1$s提醒你：）</string>
-    <string name="feedback_notify">您有%1$d条反馈未读消息</string>
+    <!--<string name="feedback_notify">您有%1$d条反馈未读消息</string>-->
+    <string name="feedback_title">「墨笺」用户反馈</string>
 
     <string name="diary_month_day">%1$s月%2$s</string>
 
@@ -111,5 +115,6 @@
     <item type="id" name="tag_year" />
     <item type="id" name="tag_month"/>
     <item type="id" name="tag_day" />
+    <item type="id" name="tag_background" />
     <item type="id" name="tag_weather" />
 </resources>
