@@ -27,8 +27,8 @@
             </intent-filter>
         </activity>
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
-        <activity android:name=".Activity.AccountActivity" />
-        <activity android:name=".Activity.ViewActivity"/>
+        <activity android:name=".Activity.ViewActivity"
+            android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".Activity.AddActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".Activity.CalendarActivity" />

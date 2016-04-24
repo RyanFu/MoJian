@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileCopy;
+import net.roocky.mojian.Util.SoftInput;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,10 +69,11 @@ public class MainActivity extends BaseActivity implements
     private final int FRAGMENT_SETTING = 2;
 
     private SlidingMenu slidingMenu;        //侧滑菜单
-    private LinearLayout llAccount;         //信息展示卡片
     private SimpleDraweeView sdvAvatar;     //用户头像
     private TextView tvNickname;            //用户昵称
+    private EditText etNickname;
     private TextView tvSignature;           //个性签名
+    private EditText etSignature;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
     private NoteFragment noteFragment = new NoteFragment();
@@ -83,6 +86,8 @@ public class MainActivity extends BaseActivity implements
     private int[] bgToolbar = {R.drawable.bd_note, R.drawable.bd_diary, R.drawable.bd_setting}; //Toolbar背景图片
 
     private AlertDialog dialogDelete;
+    private AlertDialog dialogNickname;
+    private AlertDialog dialogSignature;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,8 +125,6 @@ public class MainActivity extends BaseActivity implements
 
     //初始化View
     private void initView() {
-        curActivity = ACTIVITY_MAIN;
-        llAccount = (LinearLayout)findViewById(R.id.ll_account);
         sdvAvatar = (SimpleDraweeView)findViewById(R.id.sdv_avatar);
         tvNickname = (TextView)findViewById(R.id.tv_nickname);
         tvSignature = (TextView)findViewById(R.id.tv_signature);
@@ -150,7 +153,9 @@ public class MainActivity extends BaseActivity implements
 
     //绑定控件点击事件
     private void setOnClickListener() {
-        llAccount.setOnClickListener(this);         //账户设置
+        sdvAvatar.setOnClickListener(this);
+        tvNickname.setOnClickListener(this);
+        tvSignature.setOnClickListener(this);
         fabAdd.setOnClickListener(this);
         ivBackground.setOnClickListener(this);      //更改背景图片
         //日记、便笺、设置三项
@@ -172,8 +177,34 @@ public class MainActivity extends BaseActivity implements
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_account:
-                startActivity(new Intent(this, AccountActivity.class));
+            case R.id.sdv_avatar:
+                setWhat = AVATAR;
+                dialogAvatar = new AlertDialog.Builder(this)
+                        .setTitle("更改头像")
+                        .setItems(new String[]{"拍照", "从相册中选中"}, this)
+                        .show();
+                break;
+            case R.id.tv_nickname:
+                dialogNickname = new AlertDialog.Builder(this)
+                        .setTitle("昵称")
+                        .setView(etNickname = new EditText(this))
+                        .setPositiveButton("确定", this)
+                        .setNegativeButton("取消", null)
+                        .show();
+                etNickname.setText(preferences.getString("nickname", ""));
+                SoftInput.show(etNickname);     //自动打开软键盘
+                etNickname.requestFocus();
+                break;
+            case R.id.tv_signature:
+                dialogSignature = new AlertDialog.Builder(this)
+                        .setTitle("个性签名")
+                        .setView(etSignature = new EditText(this))
+                        .setPositiveButton("确定", this)
+                        .setNegativeButton("取消", null)
+                        .show();
+                etSignature.setText(preferences.getString("signature", ""));
+                SoftInput.show(etSignature);     //自动打开软键盘
+                etSignature.requestFocus();
                 break;
             case R.id.fab_add:
                 if (noteFragment.isDeleting || diaryFragment.isDeleting) {
@@ -198,6 +229,7 @@ public class MainActivity extends BaseActivity implements
                 }
                 break;
             case R.id.iv_background:        //修改背景图片
+                setWhat = BACKGROUND;
                 dialogBackground = new AlertDialog.Builder(this)
                         .setTitle("更改背景")
                         .setItems(new String[]{"拍照", "从相册中选中", "恢复默认背景"}, this)
@@ -244,6 +276,12 @@ public class MainActivity extends BaseActivity implements
         slidingMenu.showContent();
     }
 
+    //设置头像
+    @Override
+    protected void setAvatar(Uri imageUri) {
+        sdvAvatar.setImageURI(imageUri);
+    }
+
     //设置背景图片
     @Override
     protected void setBackground(Uri imageUri) {
@@ -254,7 +292,7 @@ public class MainActivity extends BaseActivity implements
         }
     }
 
-    //删除提示弹窗点击事件
+    //弹窗点击事件
     @Override
     public void onClick(DialogInterface dialog, int which) {
         super.onClick(dialog, which);           //更改头像&背景图片
@@ -331,6 +369,12 @@ public class MainActivity extends BaseActivity implements
                             }
                         }
                     }).show();
+        } else if (dialog.equals(dialogNickname)) {
+            tvNickname.setText(etNickname.getText());
+            editor.putString("nickname", etNickname.getText().toString()).commit();
+        } else if (dialog.equals(dialogSignature)) {
+            tvSignature.setText(etSignature.getText());
+            editor.putString("signature", etSignature.getText().toString()).commit();
         }
     }
 
@@ -417,8 +461,4 @@ public class MainActivity extends BaseActivity implements
 //    public void onError(int i, String s) {}
 //    @Override
 //    public void onProgress(int i) {}
-
-    //AccountActivity中设置头像
-    @Override
-    protected void setAvatar(Uri imageUri) {}
 }

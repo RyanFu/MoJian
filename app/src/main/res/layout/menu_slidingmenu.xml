@@ -32,17 +32,19 @@
                 app:placeholderImageScaleType="centerCrop"/>
             <TextView
                 android:id="@+id/tv_nickname"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:layout_marginLeft="20dp"/>
+                android:paddingLeft="20dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"/>
             <TextView
                 android:id="@+id/tv_signature"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
                 android:maxLines="3"/>
         </LinearLayout>
     </android.support.v7.widget.CardView>

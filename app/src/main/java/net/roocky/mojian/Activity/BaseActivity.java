@@ -30,9 +30,9 @@ public abstract class BaseActivity extends AppCompatActivity implements
     protected final int SET_DEFAULT = 2;
 
     protected int fragmentId = 0;         //记录当前所在的Fragment
-    protected int curActivity;          //用来判断当前的Activity
-    protected int ACTIVITY_MAIN = 0;
-    protected int ACTIVITY_ACCOUNT = 1;
+    protected int setWhat;          //用来判断当前的Activity
+    protected int BACKGROUND = 0;
+    protected int AVATAR = 1;
 
     protected AlertDialog dialogAvatar;
     protected AlertDialog dialogBackground;
@@ -58,7 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
              */
 
             String picName;
-            if (curActivity == ACTIVITY_ACCOUNT) {
+            if (setWhat == AVATAR) {
                 picName = "avatar";
             } else {
                 picName = "background";
@@ -109,7 +109,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             //拍照完成，启动裁剪程序
             case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
-                    if (curActivity == ACTIVITY_ACCOUNT) {
+                    if (setWhat == AVATAR) {
                         Crop.of(imageUri, imageUri).withMaxSize(300, 300)     //第一个参数imageUri是拍照生成的原始图片Uri
                                 .asSquare().start(this);                      //第二个参数imageUri是裁剪完成生成的图片Uri
                     } else {
@@ -121,7 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             //选择完成，启动裁剪程序
             case Crop.REQUEST_PICK:
                 if (resultCode == RESULT_OK && data != null) {
-                    if (curActivity == ACTIVITY_ACCOUNT) {
+                    if (setWhat == AVATAR) {
                         Crop.of(data.getData(), imageUri).withMaxSize(300, 300)   //data.getData()为选择图片后得到的Uri
                                 .asSquare().start(this);                          //resultCode == Crop.REQUEST_CROP
                     } else {
@@ -133,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
             //裁剪完成，设置图片Uri
             case Crop.REQUEST_CROP:
                 if (resultCode == RESULT_OK) {
-                    if (curActivity == ACTIVITY_ACCOUNT) {
+                    if (setWhat == AVATAR) {
                         setAvatar(imageUri);        //设置头像
                         editor.putString("avatar", imageUri.toString()).apply();
                     } else {
