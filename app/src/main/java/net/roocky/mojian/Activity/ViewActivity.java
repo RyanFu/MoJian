@@ -39,8 +39,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.umeng.analytics.MobclickAgent;
-
 import net.roocky.mojian.BroadcastReceiver.RemindReceiver;
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
@@ -481,13 +479,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        MobclickAgent.onResume(this);
+//        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);
+//        MobclickAgent.onPause(this);
     }
 
     @Override

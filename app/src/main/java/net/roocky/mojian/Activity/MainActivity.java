@@ -26,7 +26,6 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.umeng.analytics.MobclickAgent;
 
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Fragment.BaseFragment;
@@ -442,13 +441,13 @@ public class MainActivity extends BaseActivity implements
         }
         tvNickname.setText(preferences.getString("nickname", "昵称"));
         tvSignature.setText(preferences.getString("signature", "还没有个性签名"));
-        MobclickAgent.onResume(this);        //友盟用户统计
+//        MobclickAgent.onResume(this);        //友盟用户统计
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MobclickAgent.onPause(this);        //友盟用户统计
+//        MobclickAgent.onPause(this);        //友盟用户统计
     }
 
     @Override
