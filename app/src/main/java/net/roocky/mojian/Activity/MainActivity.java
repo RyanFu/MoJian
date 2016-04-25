@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -243,37 +244,67 @@ public class MainActivity extends BaseActivity implements
 
     //当菜单子项被选中时进行的操作
     private void itemSelected(int id) {
-        for (int i = 0; i < idMenus.length; i++) {
-            /**
-             * 如果取到的ID等于被点击的ID，则需将被点击的菜单颜色设置成黑色来凸显当前所选择的菜单，把Toolbar的title
-             * 设置为相应的文字。再进行Fragment替换操作，然后把fragmentId设置为该ID以表示当前所在的Fragment，根据
-             * 所在Fragment设置对应的Toolbar背景图片。如果所在Fragment为“设置”则不需要显示FloatActionBar
-             */
-            if (idMenus[i] == id) {
-                ((TextView) findViewById(idMenus[i]))
-                        .setTextColor(Color.BLACK);
-                if (getSupportActionBar() != null) {
-                    ctlMain.setTitle(ttMenus[i]);       //Toolbar包裹在CollapsingToolbarLayout里面时需要
-                                                        //通过CollapsingToolbarLayout来设置title
-                }
-                fragmentManager.beginTransaction().replace(R.id.fl_content, fragmentList.get(i)).commit();
-                fragmentId = i;
-                invalidateOptionsMenu();    //完成fragmentId的设置后刷新菜单
-                if (!preferences.getString("background" + i, "").equals("")) {        //用户有自定义背景图片
-                    ivBackground.setImageURI(Uri.parse(preferences.getString("background" + i, "")));
-                } else {        //用户未自定义背景图片
-                    ivBackground.setImageResource(bgToolbar[i]);
-                }
-                if (id == R.id.btn_setting) {
-                    fabAdd.setVisibility(View.GONE);
+        if (id == R.id.btn_diary && !preferences.getString("patternSha1", "").equals("") && Mojian.isLocked) {
+            startActivityForResult(new Intent(this, PatternConfirmActivity.class), PATTERN_LOCK_DIARY);
+        } else {
+            for (int i = 0; i < idMenus.length; i++) {
+                /**
+                 * 如果取到的ID等于被点击的ID，则需将被点击的菜单颜色设置成黑色来凸显当前所选择的菜单，把Toolbar的title
+                 * 设置为相应的文字。再进行Fragment替换操作，然后把fragmentId设置为该ID以表示当前所在的Fragment，根据
+                 * 所在Fragment设置对应的Toolbar背景图片。如果所在Fragment为“设置”则不需要显示FloatActionBar
+                 */
+                if (idMenus[i] != id) {     //如果取到的ID不是被点击的ID，直接把该菜单颜色设置为浅色以表示未选中即可
+                    ((TextView) findViewById(idMenus[i])).setTextColor(0xff9e9e9e);     //grey_500
                 } else {
+                    ((TextView) findViewById(idMenus[i])).setTextColor(Color.BLACK);
+                    if (getSupportActionBar() != null) {
+                        ctlMain.setTitle(ttMenus[i]);
+                    }
+                    fragmentManager.beginTransaction().replace(R.id.fl_content, fragmentList.get(i)).commit();
+                    fragmentId = i;
+                    invalidateOptionsMenu();    //完成fragmentId的设置后刷新菜单
+                    if (!preferences.getString("background" + i, "").equals("")) {        //用户有自定义背景图片
+                        ivBackground.setImageURI(Uri.parse(preferences.getString("background" + i, "")));
+                    } else {        //用户未自定义背景图片
+                        ivBackground.setImageResource(bgToolbar[i]);
+                    }
+                    if (id == R.id.btn_setting) {
+                        fabAdd.setVisibility(View.GONE);
+                    } else {
+                        fabAdd.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            slidingMenu.showContent();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PATTERN_LOCK_DIARY:
+                if (resultCode == RESULT_OK) {
+                    Mojian.isLocked = false;
+                    ((TextView) findViewById(R.id.btn_diary)).setTextColor(Color.BLACK);
+                    ((TextView) findViewById(R.id.btn_note)).setTextColor(0xff9e9e9e);     //grey_500
+                    ((TextView) findViewById(R.id.btn_setting)).setTextColor(0xff9e9e9e);     //grey_500
+                    slidingMenu.showContent();
+                    if (getSupportActionBar() != null) {
+                            ctlMain.setTitle(getString(R.string.mn_diary));
+                    }
+                    fragmentManager.beginTransaction().replace(R.id.fl_content, diaryFragment).commitAllowingStateLoss();
+                    fragmentId = 1;
+                    invalidateOptionsMenu();    //完成fragmentId的设置后刷新菜单
+                    if (!preferences.getString("background" + 1, "").equals("")) {        //用户有自定义背景图片
+                        ivBackground.setImageURI(Uri.parse(preferences.getString("background" + 1, "")));
+                    } else {        //用户未自定义背景图片
+                        ivBackground.setImageResource(R.drawable.bd_diary);
+                    }
                     fabAdd.setVisibility(View.VISIBLE);
                 }
-            } else {    //如果取到的ID不是被点击的ID，直接把该菜单颜色设置为浅色以表示未选中即可
-                ((TextView) findViewById(idMenus[i])).setTextColor(0xff9e9e9e);     //grey_500
-            }
+                break;
         }
-        slidingMenu.showContent();
     }
 
     //设置头像
@@ -420,12 +451,12 @@ public class MainActivity extends BaseActivity implements
         MobclickAgent.onPause(this);        //友盟用户统计
     }
 
-
     @Override
     public void onBackPressed() {
         if (slidingMenu.isMenuShowing()) {
             slidingMenu.showContent();
         } else {
+            Mojian.isLocked = true;
             super.onBackPressed();
         }
     }

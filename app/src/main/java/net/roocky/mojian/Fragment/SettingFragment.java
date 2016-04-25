@@ -2,16 +2,20 @@ package net.roocky.mojian.Fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import net.roocky.mojian.Activity.PatternConfirmActivity;
+import net.roocky.mojian.Activity.PatternSetActivity;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileCopy;
 import net.roocky.mojian.Util.PermissionUtil;
@@ -28,19 +32,31 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     LinearLayout llBackup;
     @Bind(R.id.ll_restore)
     LinearLayout llRestore;
+    @Bind(R.id.ll_lock)
+    LinearLayout llLock;
+    @Bind(R.id.ll_clear_lock)
+    LinearLayout llClearLock;
     @Bind(R.id.ll_feedback)
     LinearLayout llFeedback;
     @Bind(R.id.ll_about)
     LinearLayout llAbout;
 
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+
     private final int PER_EXTERNAL_STORAGE = 0;
     private int idClick;
+    private final int PATTERN_LOCK_SET = 4;
+    private final int PATTERN_LOCK_CLEAR = 5;
 
+    private final int RESULT_OK = -1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         ButterKnife.bind(this, view);
 
+        preferences = getActivity().getSharedPreferences("mojian", getActivity().MODE_PRIVATE);
+        editor = preferences.edit();
         setOnClickListener();
 
         return view;
@@ -49,13 +65,30 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private void setOnClickListener() {
         llBackup.setOnClickListener(this);
         llRestore.setOnClickListener(this);
+        llLock.setOnClickListener(this);
+        llClearLock.setOnClickListener(this);
         llFeedback.setOnClickListener(this);
         llAbout.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        String patternSha1 = preferences.getString("patternSha1", "");
         switch (v.getId()) {
+            case R.id.ll_lock:
+                if (patternSha1.equals("")) {
+                    startActivity(new Intent(getActivity(), PatternSetActivity.class));
+                } else {
+                    startActivityForResult(new Intent(getActivity(), PatternConfirmActivity.class), PATTERN_LOCK_SET);
+                }
+                break;
+            case R.id.ll_clear_lock:
+                if (patternSha1.equals("")) {
+                    Snackbar.make(llClearLock, getString(R.string.toast_no_lock), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    startActivityForResult(new Intent(getActivity(), PatternConfirmActivity.class), PATTERN_LOCK_CLEAR);
+                }
+                break;
             case R.id.ll_feedback:
 //                FeedbackAPI.openFeedbackActivity(getActivity());    //百川反馈
                 Intent feedbackIntent = new Intent(Intent.ACTION_SENDTO);
@@ -77,6 +110,23 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                     backStore(idClick);   //备份 & 恢复
                 }
 
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case PATTERN_LOCK_SET:
+                if (resultCode == RESULT_OK) {
+                    startActivity(new Intent(getActivity(), PatternSetActivity.class));
+                }
+                break;
+            case PATTERN_LOCK_CLEAR:
+                if (resultCode == RESULT_OK) {
+                    editor.putString("patternSha1", "").apply();
+                    Snackbar.make(llClearLock, getString(R.string.toast_clear_success), Snackbar.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

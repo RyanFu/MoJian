@@ -57,6 +57,48 @@
             android:layout_height="1dp"
             android:background="@color/grey_300"/>
         <LinearLayout
+            android:id="@+id/ll_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_lock"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:padding="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_lock_detail"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_clear_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_clear_lock"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"
+                android:padding="10dp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_clear_lock_detail"
+                android:paddingLeft="10dp"
+                android:paddingBottom="10dp"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+        <LinearLayout
             android:id="@+id/ll_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/grey_500</item>
         <!-- 头像裁剪器-->
         <item name="cropImageStyle">@style/Widget.CropImageView</item>
+        <!-- 图案解锁-->
+        <item name="patternViewStyle">@style/PatternView</item>
     </style>
 
     <!-- 裁剪器-->
@@ -29,6 +31,23 @@
     <style name="Animation.SelectDialog" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_select_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_select_exit</item>
+    </style>
+
+    <!-- 图案解锁-->
+    <style name="Base.PatternView" parent="">
+        <item name="pl_aspect">square</item>
+    </style>
+
+    <style name="PatternView" parent="Base.PatternView">
+        <item name="pl_regularColor">?colorControlNormal</item>
+        <item name="pl_errorColor">#fff4511e</item>
+        <item name="pl_successColor">@color/teal_500</item>
+    </style>
+
+    <style name="PatternView.Light" parent="Base.PatternView">
+        <item name="pl_regularColor">?colorControlNormal</item>
+        <item name="pl_errorColor">#fff4511e</item>
+        <item name="pl_successColor">?colorControlActivated</item>
     </style>
 
 </resources>

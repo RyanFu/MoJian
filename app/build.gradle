@@ -46,4 +46,5 @@ dependencies {
     compile 'com.soundcloud.android:android-crop:1.0.1@aar'     //图片裁剪
     compile 'com.umeng.analytics:analytics:latest.integration'  //友盟用户统计
     compile 'com.prolificinteractive:material-calendarview:1.2.0'   //日历
+    compile 'me.zhanghai.android.patternlock:library:2.0.2'     //图案解锁
 }

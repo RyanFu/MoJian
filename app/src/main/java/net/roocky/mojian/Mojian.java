@@ -35,6 +35,8 @@ public class Mojian extends Application {
             R.drawable.bottom_boat,
             R.drawable.bottom_tree
     };
+    //当前日记是否为解锁状态
+    public static boolean isLocked = true;
 
     @Override
     public void onCreate() {

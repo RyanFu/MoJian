@@ -32,6 +32,8 @@
         <activity android:name=".Activity.AddActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".Activity.CalendarActivity" />
+        <activity android:name=".Activity.PatternSetActivity" />
+        <activity android:name=".Activity.PatternConfirmActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
         <!--<receiver android:name=".BroadcastReceiver.FeedbackReceiver" />-->
     </application>

@@ -34,6 +34,10 @@
     <string name="set_backup_detail">备份文件存放路径：“/sdcard/Mojian.db”</string>
     <string name="set_restore">恢复</string>
     <string name="set_restore_detail">备份文件需提前移动到“/sdcard/Mojian.db”路径下</string>
+    <string name="set_lock">日记锁定</string>
+    <string name="set_lock_detail">给你的日记加把锁吧: )</string>
+    <string name="set_clear_lock">清除锁定</string>
+    <string name="set_clear_lock_detail">清除日记锁定: (</string>
     <string name="set_feedback">反馈</string>
     <string name="set_feedback_detail">「墨笺」需要听到你的声音~</string>
     <string name="set_about">关于</string>
@@ -51,6 +55,11 @@
     <string name="toast_thanks">感谢使用墨笺(～￣▽￣)～</string>
     <string name="toast_to_picture">成功导出为图片（路径：/sdcard/mojian/）</string>
     <string name="toast_to_picture_error">导出图片失败……</string>
+    <string name="toast_no_lock">你还没有设置过解锁图案呢……</string>
+    <string name="toast_clear_success">解锁图案清除成功~</string>
+
+    <string name="dialog_forget_pattern">忘记图案</string>
+    <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>
 
     <string name="note_remind">「墨笺」会在%1$s提醒你：）</string>
     <!--<string name="feedback_notify">您有%1$d条反馈未读消息</string>-->
