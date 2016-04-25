@@ -31,9 +31,9 @@ public class Mojian extends Application {
     //ViewActivity&AddActivity背景
     public static final int[] backgrounds = {
             R.drawable.bottom_mei,
-            R.drawable.bottom_bird,
-            R.drawable.bottom_boat,
-            R.drawable.bottom_tree
+            R.drawable.bottom_lan,
+            R.drawable.bottom_zhu,
+            R.drawable.bottom_ju
     };
     //当前日记是否为解锁状态
     public static boolean isLocked = true;

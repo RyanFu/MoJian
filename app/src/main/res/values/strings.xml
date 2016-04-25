@@ -31,9 +31,9 @@
     <string name="set_signature">个性签名</string>
     
     <string name="set_backup">备份</string>
-    <string name="set_backup_detail">备份文件存放路径：“/sdcard/Mojian.db”</string>
+    <string name="set_backup_detail">备份文件存放路径：“/sdcard/Mojian.backup”</string>
     <string name="set_restore">恢复</string>
-    <string name="set_restore_detail">备份文件需提前移动到“/sdcard/Mojian.db”路径下</string>
+    <string name="set_restore_detail">备份文件需提前移动到“/sdcard/Mojian.backup”路径下</string>
     <string name="set_lock">日记锁定</string>
     <string name="set_lock_detail">给你的日记加把锁吧: )</string>
     <string name="set_clear_lock">清除锁定</string>
@@ -43,7 +43,7 @@
     <string name="set_about">关于</string>
     <string name="set_about_detail">「墨笺」的故事</string>
     <string name="path_databases">/data/data/net.roocky.mojian/databases/</string>
-    <string name="path_sdcard">/sdcard/Mojian.db</string>
+    <string name="path_sdcard">/sdcard/Mojian.backup</string>
 
     <string name="tt_add_diary">写日记</string>
     <string name="tt_add_note">记便笺</string>

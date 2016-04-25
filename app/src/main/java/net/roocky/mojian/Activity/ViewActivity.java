@@ -33,6 +33,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -77,6 +78,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     TextView tvRemind;
     @Bind(R.id.rl_header)
     RelativeLayout rlHeader;
+    @Bind(R.id.fl_content)
+    FrameLayout flContent;
     @Bind(R.id.iv_weather)
     ImageView ivWeather;
     @Bind(R.id.tv_year)
@@ -91,8 +94,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivBottom;
     @Bind(R.id.iv_background)
     ImageView ivBackground;
-    @Bind(R.id.ll_content)
-    LinearLayout llContent;
     @Bind(R.id.cl_main)
     CoordinatorLayout clMain;
 
@@ -465,8 +466,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             ivBackground.setVisibility(View.GONE);
             ivBottom.setVisibility(View.VISIBLE);
         } else {
-            if (toolbar.getMeasuredHeight() + llContent.getMeasuredHeight() + ivBackground.getMeasuredHeight()
-                    > ScreenUtil.getHeight(this)) {         //如果TextView过长需要隐藏background显示Bottom
+            if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
+                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this)) {//如果TextView过长需要隐藏background显示Bottom
                 ivBackground.setVisibility(View.GONE);
                 ivBottom.setVisibility(View.VISIBLE);
             } else {

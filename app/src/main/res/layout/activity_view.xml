@@ -80,6 +80,7 @@
             </RelativeLayout>
             <!-- 内容展示-->
             <FrameLayout
+                android:id="@+id/fl_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <EditText
@@ -105,8 +106,8 @@
             </FrameLayout>
             <ImageView
                 android:id="@+id/iv_bottom"
-                android:layout_width="300dp"
-                android:layout_height="150dp"
+                android:layout_width="280dp"
+                android:layout_height="300dp"
                 android:scaleType="fitStart"
                 android:src="@drawable/bottom_mei"
                 android:visibility="gone"/>
@@ -114,8 +115,8 @@
     </android.support.v4.widget.NestedScrollView>
     <ImageView
         android:id="@+id/iv_background"
-        android:layout_width="300dp"
-        android:layout_height="150dp"
+        android:layout_width="280dp"
+        android:layout_height="300dp"
         android:src="@drawable/bottom_mei"
         android:layout_gravity="left|bottom"
         android:scaleType="fitStart"/>
