@@ -46,7 +46,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
      * @param columns           数据库query的列（需要把所有列写进去）
      * @param selection         查询条件
      * @param selectionArgs     查询参数
-     * @param count             第几次获取数据(-1表示获取全部数据，主页=要用于日记fragment分次刷新数据)
+     * @param count             第几次获取数据(-1表示获取全部数据，主要用于日记fragment分次刷新数据)
      */
     public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs, int count) {
         database = new DatabaseHelper(context, "Mojian.db", null, 2).getWritableDatabase();

@@ -25,7 +25,7 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:background="@android:color/white">
+        android:background="@color/grey_100">
         <LinearLayout
             android:id="@+id/ll_content"
             android:layout_width="match_parent"

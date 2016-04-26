@@ -95,7 +95,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 feedbackIntent.setData(Uri.parse("mailto:roocky08@gmail.com"));
                 feedbackIntent.putExtra(Intent.EXTRA_SUBJECT,
                         getString(R.string.feedback_title) + " " + getString(R.string.app_version));
-                startActivity(feedbackIntent);
+                startActivity(Intent.createChooser(feedbackIntent, getString(R.string.feedback_title)));
                 break;
             case R.id.ll_about:
                 Snackbar.make(llAbout, getString(R.string.toast_thanks), Snackbar.LENGTH_SHORT).show();

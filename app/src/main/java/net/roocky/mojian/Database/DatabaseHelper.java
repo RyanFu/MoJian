@@ -19,15 +19,6 @@ import java.util.List;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context mContext;
-    //日记表
-    public static final String CREATE_DIARY = "create table diary ("
-            + "id integer primary key autoincrement, "
-            + "year integer, "
-            + "month integer, "
-            + "day integer, "
-            + "content text, "
-            + "background integer, "
-            + "weather integer)";
     //便笺表
     public static final String CREATE_NOTE = "create table note ("
             + "id integer primary key autoincrement, "
@@ -37,6 +28,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + "content text, "
             + "background integer, "
             + "remind text)";
+    //日记表
+    public static final String CREATE_DIARY = "create table diary ("
+            + "id integer primary key autoincrement, "
+            + "year integer, "
+            + "month integer, "
+            + "day integer, "
+            + "content text, "
+            + "background integer, "
+            + "weather integer)";
 
     /**
      * 构造
@@ -52,8 +52,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_DIARY);
         db.execSQL(CREATE_NOTE);
+        db.execSQL(CREATE_DIARY);
     }
 
     @Override

@@ -25,7 +25,7 @@ public class BitmapUtil {
         File directory = new File(Environment.getExternalStorageDirectory()
                 + Mojian.getContext().getString(R.string.app_path_pic));
         if (!directory.exists()) {
-            directory.mkdir();
+            directory.mkdirs();
         }
         long currentTimeMill = System.currentTimeMillis();
         String fileName = currentTimeMill + ".jpg";
