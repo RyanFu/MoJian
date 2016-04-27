@@ -18,6 +18,7 @@
     <string name="action_delete">删除</string>
     <string name="action_weather">选择天气</string>
     <string name="action_background">选择背景</string>
+    <string name="action_date">修改日期</string>
     <string name="action_share_picture">图片分享</string>
     <string name="action_share_text">文本分享</string>
     <string name="action_remind">提醒我</string>

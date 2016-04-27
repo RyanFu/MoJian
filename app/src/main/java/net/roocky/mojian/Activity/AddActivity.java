@@ -1,6 +1,7 @@
 package net.roocky.mojian.Activity;
 
 import android.annotation.TargetApi;
+import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -44,6 +46,7 @@ public class AddActivity extends AppCompatActivity implements
         View.OnClickListener,
         DialogInterface.OnClickListener,
         SelectDialog.OnItemClickListener,
+        DatePickerDialog.OnDateSetListener,
         ViewTreeObserver.OnGlobalLayoutListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -65,6 +68,10 @@ public class AddActivity extends AppCompatActivity implements
     private SelectDialog bgDialog;
     private int weather = 0;        //记录该条目的天气
     private int background;     //条目的背景
+
+    private int year = Mojian.year;
+    private int month = Mojian.month;
+    private int day = Mojian.day;
 
     private int[] weathers = {
             R.drawable.weather_sun,
@@ -127,9 +134,9 @@ public class AddActivity extends AppCompatActivity implements
                 finish();
             }
         } else {
-            values.put("year", Mojian.year);
-            values.put("month", Mojian.month);
-            values.put("day", Mojian.day);
+            values.put("year", year);
+            values.put("month", month);
+            values.put("day", day);
             values.put("content", etContent.getText().toString());
             values.put("background", background);
             if (from.equals("diary")) {
@@ -147,9 +154,9 @@ public class AddActivity extends AppCompatActivity implements
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             ContentValues values = new ContentValues();
-            values.put("year", Mojian.year);
-            values.put("month", Mojian.month);
-            values.put("day", Mojian.day);
+            values.put("year", year);
+            values.put("month", month);
+            values.put("day", day);
             values.put("content", etContent.getText().toString());
             values.put("background", background);
             values.put("weather", weather);
@@ -188,9 +195,10 @@ public class AddActivity extends AppCompatActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_add, menu);
         if (from.equals("note")) {
-            menu.getItem(0).setVisible(false);
+            menu.findItem(R.id.action_weather).setVisible(false);
+            menu.findItem(R.id.action_date).setVisible(false);
         } else {
-            menu.getItem(0).setIcon(weathers[weather]);
+            menu.findItem(R.id.action_weather).setIcon(weathers[weather]);
         }
         return super.onCreateOptionsMenu(menu);
     }
@@ -212,8 +220,24 @@ public class AddActivity extends AppCompatActivity implements
                 bgDialog.show();
                 bgDialog.setOnItemClickListener(bgDialog, this);
                 break;
+            case R.id.action_date:
+                new DatePickerDialog(
+                        this,
+                        this,
+                        Mojian.year,
+                        Mojian.month,
+                        Mojian.day
+                ).show();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+        this.year = year;
+        this.month = monthOfYear;
+        this.day = dayOfMonth;
     }
 
     @Override

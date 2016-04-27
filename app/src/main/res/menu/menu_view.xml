@@ -8,6 +8,12 @@
         app:showAsAction="always"
         android:visible="false" />
     <item
+        android:id="@+id/action_date"
+        android:title="@string/action_date"
+        android:icon="@mipmap/ic_looks_one_black_24dp"
+        app:showAsAction="always"
+        android:visible="false" />
+    <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete"
         android:icon="@mipmap/ic_delete_black_24dp"

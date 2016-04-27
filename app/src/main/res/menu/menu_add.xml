@@ -11,4 +11,9 @@
         android:title="@string/action_background"
         android:icon="@mipmap/ic_wallpaper_black_24dp"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_date"
+        android:title="@string/action_date"
+        android:icon="@mipmap/ic_looks_one_black_24dp"
+        app:showAsAction="always" />
 </menu>

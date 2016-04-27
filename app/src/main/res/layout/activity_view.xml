@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/grey_100">
+    android:background="@android:color/white">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/abl_toolbar"
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="@color/grey_100">
+            android:background="@android:color/white">
             <!-- 顶部日期 & 天气 & 心情展示-->
             <RelativeLayout
                 android:id="@+id/rl_header"
@@ -43,6 +43,7 @@
                     android:layout_width="80dp"
                     android:layout_height="80dp"/>
                 <LinearLayout
+                    android:id="@+id/ll_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"

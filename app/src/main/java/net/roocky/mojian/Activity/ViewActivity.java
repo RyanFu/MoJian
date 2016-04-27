@@ -105,6 +105,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private AlertDialog dialogDiary;
     private AlertDialog dialogNote;
     private AlertDialog dialogUpdate;
+    private DatePickerDialog remindPicker;
+    private DatePickerDialog datePicker;
 
     private int yearRemind;
     private int monthRemind;
@@ -126,6 +128,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             R.drawable.weather_clouds_with_snow
     };
     private int background = 0;     //标识当前背景
+    private String from;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +142,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         intent = getIntent();
+        from = intent.getStringExtra("from");
         background = intent.getIntExtra("background", 0);
         databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 2);
         database = databaseHelper.getWritableDatabase();
@@ -153,7 +157,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         tvContent.setText(intent.getStringExtra("content"));
         ivBackground.setImageResource(Mojian.backgrounds[background]);
         ivBottom.setImageResource(Mojian.backgrounds[background]);
-        if (intent.getStringExtra("from").equals("diary")) {
+        if (from.equals("diary")) {
             rlHeader.setVisibility(View.VISIBLE);
             //设置顶部日期&天气展示
             ivWeather.setImageResource(weathers[intent.getIntExtra("weather", 0)]);
@@ -179,14 +183,21 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_view, menu);
-        if (intent.getStringExtra("from").equals("diary")) {    //日记无需设置提醒
+        if (from.equals("diary")) {    //日记无需设置提醒
             menu.findItem(R.id.action_remind).setVisible(false);
         }
         if (isEdit) {
-            menu.getItem(0).setVisible(true);       //选择背景
+            if (from.equals("diary")) {
+                menu.findItem(R.id.action_date).setVisible(true);       //修改日期
+            }
+            menu.findItem(R.id.action_background).setVisible(true);       //修改日期
         } else {
-            menu.getItem(0).setVisible(false);
+            if (from.equals("diary")) {
+                menu.findItem(R.id.action_date).setVisible(false);
+            }
+            menu.findItem(R.id.action_background).setVisible(false);
         }
+
         return true;
     }
 
@@ -195,7 +206,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:     //返回箭头
-                if (intent.getStringExtra("from").equals("note") && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
+                if (from.equals("note") && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     values.put("background", background);
@@ -203,8 +214,25 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 finish();
                 break;
+            case R.id.action_background:
+                SelectDialog selectDialog = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
+                Window window = selectDialog.getWindow();
+                window.setGravity(Gravity.TOP | Gravity.RIGHT);
+                selectDialog.show();
+                selectDialog.setOnItemClickListener(selectDialog, this);
+                break;
+            case R.id.action_date:
+                datePicker = new DatePickerDialog(
+                        this,
+                        this,
+                        Mojian.year,
+                        Mojian.month,
+                        Mojian.day
+                );
+                datePicker.show();
+                break;
             case R.id.action_delete:    //删除
-                if (intent.getStringExtra("from").equals("diary")) {
+                if (from.equals("diary")) {
                     dialogDiary = new AlertDialog.Builder(this)
                             .setTitle("删除")
                             .setMessage("确定删除该日记吗？")
@@ -219,13 +247,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                             .setNegativeButton("取消", null)
                             .show();
                 }
-                break;
-            case R.id.action_background:
-                SelectDialog selectDialog = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
-                Window window = selectDialog.getWindow();
-                window.setGravity(Gravity.TOP | Gravity.RIGHT);
-                selectDialog.show();
-                selectDialog.setOnItemClickListener(selectDialog, this);
                 break;
             case R.id.action_share_picture:
                 if (ivBottom.getVisibility() == View.GONE) {
@@ -258,12 +279,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
             case R.id.action_remind:
-                new DatePickerDialog(
+                remindPicker = new DatePickerDialog(
                         this,
                         this,
                         Mojian.year,
                         Mojian.month,
-                        Mojian.day).show();
+                        Mojian.day);
+                remindPicker.show();
                 break;
             default:
                 break;
@@ -302,7 +324,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.fab_edit:
                 isEdit = true;
-                if (intent.getStringExtra("from").equals("diary")) {    //日记编辑状态需要改变Navigation图标
+                if (from.equals("diary")) {    //日记编辑状态需要改变Navigation图标
                     toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
                     toolbar.setNavigationOnClickListener(this);
                 }
@@ -320,12 +342,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 SoftInput.show(etContent);  //显示软键盘
 
                 break;
-            default:       //保存点击事件
+            default:       //toolbar保存点击事件
                 if (isEdit) {
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     values.put("background", background);
-                    if (intent.getStringExtra("from").equals("diary")) {
+                    if (from.equals("diary")) {
                         database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
                     } else {
                         database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
@@ -379,17 +401,29 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //便笺提醒选择器设置监听
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        yearRemind = year;
-        monthRemind = monthOfYear;
-        dayRemind = dayOfMonth;
-        TimePickerDialog timePickerDialog = new TimePickerDialog(
-                this,
-                this,
-                Mojian.hour,
-                Mojian.minute,
-                false);
-        timePickerDialog.setCancelable(false);
-        timePickerDialog.show();
+        if (from.equals("note")) {      //便笺设置提醒
+            yearRemind = year;
+            monthRemind = monthOfYear;
+            dayRemind = dayOfMonth;
+            TimePickerDialog timePickerDialog = new TimePickerDialog(
+                    this,
+                    this,
+                    Mojian.hour,
+                    Mojian.minute,
+                    false);
+            timePickerDialog.setCancelable(false);
+            timePickerDialog.show();
+        } else {                        //日记修改日期
+            ContentValues values = new ContentValues();
+            values.put("year", year);
+            values.put("month", monthOfYear);
+            values.put("day", dayOfMonth);
+            database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
+            tvYear.setText(getResources().getStringArray(R.array.year_array)[year - 2010]);
+            tvMonthDay.setText(getString(R.string.diary_month_day,
+                    getResources().getStringArray(R.array.number_array)[monthOfYear],
+                    getResources().getStringArray(R.array.number_array)[dayOfMonth - 1]));
+        }
     }
 
     @Override
@@ -467,7 +501,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             ivBottom.setVisibility(View.VISIBLE);
         } else {
             if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
-                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 300) {//如果TextView过长需要隐藏background显示Bottom
+                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 200) {//如果TextView过长需要隐藏background显示Bottom
                 ivBackground.setVisibility(View.GONE);
                 ivBottom.setVisibility(View.VISIBLE);
             } else {
@@ -499,7 +533,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         if (isEdit) {
-            if (intent.getStringExtra("from").equals("note")) {
+            if (from.equals("note")) {
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
