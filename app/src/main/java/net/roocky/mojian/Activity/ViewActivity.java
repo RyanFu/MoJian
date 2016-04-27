@@ -467,7 +467,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             ivBottom.setVisibility(View.VISIBLE);
         } else {
             if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
-                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this)) {//如果TextView过长需要隐藏background显示Bottom
+                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 300) {//如果TextView过长需要隐藏background显示Bottom
                 ivBackground.setVisibility(View.GONE);
                 ivBottom.setVisibility(View.VISIBLE);
             } else {
@@ -481,6 +481,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 //        MobclickAgent.onResume(this);
+        char c = 'a';
+        switch (c) {
+            case 'a':
+                break;
+            case 'b':
+                break;
+        }
     }
 
     @Override
