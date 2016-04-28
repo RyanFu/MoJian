@@ -274,7 +274,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.action_share_text:
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT,
-                        tvContent.getText() + "\n——「墨笺」");
+                        tvContent.getText());
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
@@ -515,13 +515,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 //        MobclickAgent.onResume(this);
-        char c = 'a';
-        switch (c) {
-            case 'a':
-                break;
-            case 'b':
-                break;
-        }
     }
 
     @Override

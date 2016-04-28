@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import net.roocky.mojian.Activity.MainActivity;
 import net.roocky.mojian.Adapter.NoteAdapter;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
@@ -63,5 +64,12 @@ public class NoteFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         flush(Mojian.FLUSH_ALL, -1);
+        //不同Fragment菜单有区别
+        getActivity().invalidateOptionsMenu();
+        //当由当前fragment切换至其他fragment时需要清空删除list
+        MainActivity.setBaseFragment(MainActivity.getNoteFragment());
+        MainActivity.getBaseFragment().isDeleting = false;
+        MainActivity.getBaseFragment().deleteList.clear();
+        MainActivity.getBaseFragment().positionList.clear();
     }
 }

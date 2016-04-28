@@ -87,7 +87,7 @@ public class AddActivity extends AppCompatActivity implements
         ButterKnife.bind(this);
 
         initView();
-        setOnClickListener();
+        setListener();
     }
 
     private void initView() {
@@ -114,7 +114,7 @@ public class AddActivity extends AppCompatActivity implements
         SoftInput.show(etContent);
     }
 
-    private void setOnClickListener() {
+    private void setListener() {
         toolbar.setNavigationOnClickListener(this);
         clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
@@ -224,9 +224,9 @@ public class AddActivity extends AppCompatActivity implements
                 new DatePickerDialog(
                         this,
                         this,
-                        Mojian.year,
-                        Mojian.month,
-                        Mojian.day
+                        year,
+                        month,
+                        day
                 ).show();
                 break;
         }

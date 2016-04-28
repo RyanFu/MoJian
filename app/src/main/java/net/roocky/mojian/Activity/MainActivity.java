@@ -76,9 +76,10 @@ public class MainActivity extends BaseActivity implements
     private EditText etSignature;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
-    private NoteFragment noteFragment = new NoteFragment();
-    private DiaryFragment diaryFragment = new DiaryFragment();
+    private static NoteFragment noteFragment = new NoteFragment();
+    private static DiaryFragment diaryFragment = new DiaryFragment();
     private SettingFragment settingFragment = new SettingFragment();
+    private static BaseFragment baseFragment;
 
     private List<Fragment> fragmentList = new ArrayList<>();        //存放便笺、日记、设置三个Fragment
     private String[] ttMenus = {"便笺", "日记", "设置"};
@@ -207,26 +208,17 @@ public class MainActivity extends BaseActivity implements
                 etSignature.requestFocus();
                 break;
             case R.id.fab_add:
-                if (noteFragment.isDeleting || diaryFragment.isDeleting) {
-                    dialogDelete = new AlertDialog.Builder(this)
-                            .setTitle("删除")
-                            .setMessage("确定删除吗？")
-                            .setPositiveButton("确定", this)
-                            .setNegativeButton("取消", null)
-                            .show();
-                } else {
-                    Intent intent = new Intent(MainActivity.this, AddActivity.class);
-                    //新建日记和便笺的Activity为同一个，但是Intent携带参数不同
-                    switch (fragmentId) {
-                        case FRAGMENT_NOTE:
-                            intent.putExtra("from", "note");
-                            break;
-                        case FRAGMENT_DIARY:
-                            intent.putExtra("from", "diary");
-                            break;
-                    }
-                    startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, AddActivity.class);
+                //新建日记和便笺的Activity为同一个，但是Intent携带参数不同
+                switch (fragmentId) {
+                    case FRAGMENT_NOTE:
+                        intent.putExtra("from", "note");
+                        break;
+                    case FRAGMENT_DIARY:
+                        intent.putExtra("from", "diary");
+                        break;
                 }
+                startActivity(intent);
                 break;
             case R.id.iv_background:        //修改背景图片
                 setWhat = BACKGROUND;
@@ -261,7 +253,6 @@ public class MainActivity extends BaseActivity implements
                     }
                     fragmentManager.beginTransaction().replace(R.id.fl_content, fragmentList.get(i)).commit();
                     fragmentId = i;
-                    invalidateOptionsMenu();    //完成fragmentId的设置后刷新菜单
                     if (!preferences.getString("background" + i, "").equals("")) {        //用户有自定义背景图片
                         ivBackground.setImageURI(Uri.parse(preferences.getString("background" + i, "")));
                     } else {        //用户未自定义背景图片
@@ -328,7 +319,6 @@ public class MainActivity extends BaseActivity implements
         super.onClick(dialog, which);           //更改头像&背景图片
         if (dialog.equals(dialogDelete)) {      //删除item
             final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 2).getWritableDatabase();
-            final BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
             //对List进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
             Collections.sort(baseFragment.deleteList);
             Collections.sort(baseFragment.positionList);
@@ -367,7 +357,7 @@ public class MainActivity extends BaseActivity implements
             }
             //情况delete列表，切换回普通状态
             baseFragment.isDeleting = false;
-            fabAdd.setImageResource(R.mipmap.ic_add_white_24dp);
+            invalidateOptionsMenu();
             Snackbar.make(toolbar, getString(R.string.toast_delete_success), Snackbar.LENGTH_LONG)
                     .setAction("撤销", new View.OnClickListener() {
                         @Override
@@ -414,6 +404,11 @@ public class MainActivity extends BaseActivity implements
         if (fragmentId != FRAGMENT_DIARY) {    //非日记无需设置日历
             menu.findItem(R.id.action_calendar).setVisible(false);
         }
+        if (baseFragment != null && baseFragment.isDeleting) {
+            menu.findItem(R.id.action_delete).setVisible(true);
+        } else {
+            menu.findItem(R.id.action_delete).setVisible(false);
+        }
         return true;
     }
 
@@ -421,6 +416,14 @@ public class MainActivity extends BaseActivity implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_delete:
+                dialogDelete = new AlertDialog.Builder(this)
+                        .setTitle("删除")
+                        .setMessage("确定删除吗？")
+                        .setPositiveButton("确定", this)
+                        .setNegativeButton("取消", null)
+                        .show();
+                break;
             case R.id.action_calendar:
                 startActivity(new Intent(this, CalendarActivity.class));
                 break;
@@ -428,13 +431,25 @@ public class MainActivity extends BaseActivity implements
         return super.onOptionsItemSelected(item);
     }
 
+    public static BaseFragment getBaseFragment() {
+        return baseFragment;
+    }
+
+    public static void setBaseFragment(BaseFragment fragment) {
+        baseFragment = fragment;
+    }
+
+    public static NoteFragment getNoteFragment() {
+        return noteFragment;
+    }
+
+    public static DiaryFragment getDiaryFragment() {
+        return diaryFragment;
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        //当由当前fragment切换至其他fragment时需要清空删除list
-        BaseFragment baseFragment = fragmentId == FRAGMENT_NOTE ? noteFragment : diaryFragment;
-        baseFragment.deleteList.clear();
-        baseFragment.positionList.clear();
         //刷新抽屉部分
         if (preferences.getString("avatar", null) != null) {
             sdvAvatar.setImageURI(Uri.parse(preferences.getString("avatar", null)));

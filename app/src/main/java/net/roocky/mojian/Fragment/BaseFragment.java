@@ -6,6 +6,7 @@ import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -65,7 +66,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                 positionList.remove(Integer.valueOf(position));
                 if (deleteList.size() == 0) {
                     isDeleting = false;     //当最后一个被选中的项被取消时需退出删除状态
-                    ((FloatingActionButton) getActivity().findViewById(R.id.fab_add)).setImageResource(R.mipmap.ic_add_white_24dp);
+                    getActivity().invalidateOptionsMenu();      //刷新菜单
                 }
                 if (view.findViewById(R.id.tv_remind) != null) {
                     noteList.remove(new Note(Integer.parseInt(idSelect),
@@ -122,7 +123,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
         noteList.clear();
 
         view.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);    //grey_500
-        ((FloatingActionButton) getActivity().findViewById(R.id.fab_add)).setImageResource(R.mipmap.ic_delete_white_24dp);
+        getActivity().invalidateOptionsMenu();
         deleteList.add((view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString());
         positionList.add(position);
         if (view.findViewById(R.id.tv_remind) != null) {

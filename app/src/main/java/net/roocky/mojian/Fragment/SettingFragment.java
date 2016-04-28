@@ -167,6 +167,13 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        //不同Fragment菜单有区别
+        getActivity().invalidateOptionsMenu();
+    }
+
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
