@@ -69,4 +69,14 @@ public class Mojian extends Application {
     public static Context getContext() {
         return context;
     }
+
+    //刷新时间
+    public static void flushTime() {
+        Calendar calendar = Calendar.getInstance();
+        year = calendar.get(Calendar.YEAR);
+        month = calendar.get(Calendar.MONTH);
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        hour = calendar.get(Calendar.HOUR_OF_DAY);
+        minute = calendar.get(Calendar.MINUTE);
+    }
 }
