@@ -1,10 +1,5 @@
 # 「墨笺」
 一款中国风的便笺&日记应用
-
-
-----------
-
-
 回忆生活点滴，记录生活琐事。对了，你的小快乐不要忘记和「墨笺」说说哦：）
 
 ## 主要功能：
@@ -24,7 +19,7 @@
 ## 部分截图：
 
 ![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/a.jpg)
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshotsb.jpg)
+![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/b.jpg)
 ![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/c.jpg)
 ![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/d.jpg)
 ![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/e.jpg)
