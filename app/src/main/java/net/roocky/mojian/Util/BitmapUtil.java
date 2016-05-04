@@ -29,7 +29,7 @@ public class BitmapUtil {
      * @param name      文件名
      * @return          返回值为0表明没有成功保存
      */
-    public static long save(Bitmap bitmap, String path, String name) {
+    public static long save(Bitmap bitmap, String path, String name, int quality) {
         File directory = new File(Environment.getExternalStorageDirectory()
                 + path);
         if (!directory.exists()) {
@@ -40,7 +40,7 @@ public class BitmapUtil {
         File file = new File(directory, fileName);
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
             outputStream.flush();
             outputStream.close();
             return currentTimeMill;
@@ -50,8 +50,8 @@ public class BitmapUtil {
         }
     }
 
-    public static long save(Bitmap bitmap, String path) {
-        return save(bitmap, path, "");
+    public static long save(Bitmap bitmap, String path, int quality) {
+        return save(bitmap, path, "", quality);
     }
 
     /**

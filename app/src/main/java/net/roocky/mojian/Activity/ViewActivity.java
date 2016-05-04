@@ -11,10 +11,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +28,12 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -50,6 +60,7 @@ import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 import net.roocky.mojian.Widget.SelectDialog;
 
+import java.io.FileNotFoundException;
 import java.util.Calendar;
 
 import butterknife.Bind;
@@ -130,6 +141,19 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private int background = 0;     //标识当前背景
     private String from;
 
+    private final int SELECT_IMAGE = 0;
+    private final int INIT_CONTENT = 1;
+
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case INIT_CONTENT:
+                    tvContent.setText((SpannableStringBuilder)msg.obj);
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,8 +177,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.app_name));
         }
-        //显示内容
-        tvContent.setText(intent.getStringExtra("content"));
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Message message = new Message();
+                message.what = INIT_CONTENT;
+                message.obj = initContent();
+                handler.sendMessage(message);
+            }
+        }).run();
         ivBackground.setImageResource(Mojian.backgrounds[background]);
         ivBottom.setImageResource(Mojian.backgrounds[background]);
         if (from.equals("diary")) {
@@ -171,6 +203,41 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             tvRemind.setVisibility(View.VISIBLE);
             tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
         }
+    }
+
+    //初始化内容
+    private SpannableStringBuilder initContent() {
+        SpannableStringBuilder ssbContent = new SpannableStringBuilder();
+        String strContent = intent.getStringExtra("content");
+        StringBuilder strUrl = new StringBuilder();
+        boolean isUrl = false;
+        for (int i = 0; i < strContent.length(); i ++) {
+            if (strContent.charAt(i) == '<') {          //路径开始标志
+                isUrl = true;
+            } else if (strContent.charAt(i) == '>') {   //路径结束标志
+                String tag = "<" + strUrl + ">";
+                Bitmap bitmap = BitmapFactory.decodeFile(strUrl.toString());
+                if (bitmap == null) {                   //该路径并不是一个真实的图片路径
+                    ssbContent.append("<").append(strUrl).append(">");
+                    strUrl.delete(0, strUrl.length());
+                    isUrl = false;
+                    continue;
+                }
+                ImageSpan imageSpan = new ImageSpan(this, bitmap);
+                SpannableString spannableString = new SpannableString(tag);
+                spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                ssbContent.append(spannableString);
+                strUrl.delete(0, strUrl.length());
+                isUrl = false;
+            } else {
+                if (isUrl){     //路径
+                    strUrl.append(String.valueOf(strContent.charAt(i)));
+                } else {        //普通文本
+                    ssbContent.append(String.valueOf(strContent.charAt(i)));
+                }
+            }
+        }
+        return ssbContent;
     }
 
     private void setListener() {
@@ -257,7 +324,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
                 //先检查权限在进行保存
                 if (PermissionUtil.checkA(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
-                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache));     //保存至SD卡
+                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
                     if (currentTimeMill != 0) {
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
@@ -299,7 +366,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case PER_EXTERNAL_STORAGE:  //存储空间权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache));     //保存至SD卡
+                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
                     if (currentTimeMill != 0) {
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
@@ -323,24 +390,30 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fab_edit:
-                isEdit = true;
-                if (from.equals("diary")) {    //日记编辑状态需要改变Navigation图标
-                    toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
-                    toolbar.setNavigationOnClickListener(this);
+                if (isEdit) {       //添加图片
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, SELECT_IMAGE);
+                } else {            //切换至编辑状态
+                    isEdit = true;
+                    if (from.equals("diary")) {    //日记编辑状态需要改变Navigation图标
+                        toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
+                        toolbar.setNavigationOnClickListener(this);
+                    }
+                    //更新menu
+                    invalidateOptionsMenu();
+                    //将背景图片“移到”TextView底部
+                    ivBackground.setVisibility(View.GONE);
+                    ivBottom.setVisibility(View.VISIBLE);
+                    //将TextView“转为”EditText
+                    tvContent.setVisibility(View.GONE);
+                    etContent.setText(tvContent.getText());
+                    etContent.setVisibility(View.VISIBLE);
+                    etContent.requestFocus();
+                    fabEdit.setImageResource(R.mipmap.ic_add_white_24dp);
+                    SoftInput.show(etContent);  //显示软键盘
                 }
-                //更新menu
-                invalidateOptionsMenu();
-                //将背景图片“移到”TextView底部
-                ivBackground.setVisibility(View.GONE);
-                ivBottom.setVisibility(View.VISIBLE);
-                //将TextView“转为”EditText
-                tvContent.setVisibility(View.GONE);
-                etContent.setText(tvContent.getText());
-                etContent.setVisibility(View.VISIBLE);
-                etContent.requestFocus();
-                fabEdit.hide();
-                SoftInput.show(etContent);  //显示软键盘
-
                 break;
             default:       //toolbar保存点击事件
                 if (isEdit) {
@@ -360,7 +433,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     tvContent.setText(etContent.getText().toString());
                     tvContent.setVisibility(View.VISIBLE);
                     SoftInput.hide(etContent);
-                    fabEdit.show();
+                    fabEdit.setImageResource(R.mipmap.ic_edit_white_24dp);
 
                     isEdit = false;
                     invalidateOptionsMenu();
@@ -368,6 +441,33 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     finish();
                 }
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SELECT_IMAGE && resultCode == RESULT_OK) {
+            Bitmap bitmap = null;
+            try {   //Bitmap压缩
+                bitmap = BitmapUtil.compress(this, getContentResolver().openInputStream(data.getData()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_pic), 40);   //保存至本地
+            ImageSpan imageSpan = new ImageSpan(this, bitmap);
+            String tag = "<"
+                    + Environment.getExternalStorageDirectory() + getString(R.string.path_pic) + currentTimeMill
+                    + ".jpg"
+                    + ">";
+            SpannableString spannableString = new SpannableString(tag);
+            spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            int index = etContent.getSelectionStart();
+            Editable editable = etContent.getEditableText();
+            if (index < 0 || index >= editable.length()) {
+                editable.append(spannableString);
+            } else {
+                editable.insert(index, spannableString);
+            }
         }
     }
 
