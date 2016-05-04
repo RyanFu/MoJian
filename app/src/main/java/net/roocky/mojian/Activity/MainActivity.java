@@ -14,13 +14,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -36,7 +34,7 @@ import net.roocky.mojian.Model.Diary;
 import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
-import net.roocky.mojian.Util.FileCopy;
+import net.roocky.mojian.Util.FileUtil;
 import net.roocky.mojian.Util.SoftInput;
 
 import java.io.File;
@@ -117,7 +115,7 @@ public class MainActivity extends BaseActivity implements
                     dir.mkdirs();
                 }
                 InputStream inputStream = getAssets().open("Mojian.db");
-                FileCopy.copy(inputStream, getString(R.string.path_databases) + "Mojian.db");
+                FileUtil.copy(inputStream, getString(R.string.path_databases) + "Mojian.db");
             } catch (IOException e) {
                 e.printStackTrace();
             }

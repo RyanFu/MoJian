@@ -7,7 +7,6 @@
     <string name="app_name_eng">MoJian</string>
     <string name="app_version">1.0.5</string>
     <string name="app_author">Roocky强力驱动</string>
-    <string name="app_path_pic">/Mojian/Picture/</string>
 
     <string name="mn_diary">日记</string>
     <string name="mn_diary_vertical">日\n记</string>
@@ -44,8 +43,10 @@
     <string name="set_feedback_detail">「墨笺」需要听到你的声音~</string>
     <string name="set_about">关于</string>
     <string name="set_about_detail">「墨笺」的故事</string>
+
     <string name="path_databases">/data/data/net.roocky.mojian/databases/</string>
-    <string name="path_sdcard">/sdcard/</string>
+    <string name="path_pic">/Mojian/Picture/</string>
+    <string name="path_cache">/Mojian/Cache/</string>
 
     <string name="tt_add_diary">写日记</string>
     <string name="tt_add_note">记便笺</string>

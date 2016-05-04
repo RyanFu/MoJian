@@ -6,15 +6,23 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -30,10 +38,13 @@ import android.widget.ImageView;
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.BitmapUtil;
 import net.roocky.mojian.Util.SDKVersion;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 import net.roocky.mojian.Widget.SelectDialog;
+
+import java.io.FileNotFoundException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -58,6 +69,8 @@ public class AddActivity extends AppCompatActivity implements
     ImageView ivBottom;
     @Bind(R.id.iv_background)
     ImageView ivBackground;
+    @Bind(R.id.fab_add)
+    FloatingActionButton fabAdd;
 
     private Intent intent;
     private String from;    //标识当前添加的条目是日记or便笺
@@ -80,6 +93,7 @@ public class AddActivity extends AppCompatActivity implements
             R.drawable.weather_clouds_with_snow
     };
 
+    private final int SELECT_IMAGE = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,36 +131,40 @@ public class AddActivity extends AppCompatActivity implements
     private void setListener() {
         toolbar.setNavigationOnClickListener(this);
         clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        fabAdd.setOnClickListener(this);
     }
 
-    /**
-     * 只有Toolbar的NavigationIcon绑定了点击事件，所以这里就没有进行id判断
-     * @param v
-     */
     @Override
     public void onClick(View v) {
-        ContentValues values = new ContentValues();
-        if (etContent.getText().length() == 0) {
-            if (from.equals("diary")) {
-                SoftInput.hide(etContent);
-                Snackbar.make(etContent, "内容不能为空！", Snackbar.LENGTH_SHORT).show();
+        if (v.getId() == R.id.fab_add) {        //添加图片
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(intent, SELECT_IMAGE);
+        } else {                                //ToolBar保存
+            ContentValues values = new ContentValues();
+            if (etContent.getText().length() == 0) {
+                if (from.equals("diary")) {
+                    SoftInput.hide(etContent);
+                    Snackbar.make(etContent, "内容不能为空！", Snackbar.LENGTH_SHORT).show();
+                } else {
+                    finish();
+                }
             } else {
+                values.put("year", year);
+                values.put("month", month);
+                values.put("day", day);
+                values.put("content", etContent.getText().toString());
+                values.put("background", background);
+                if (from.equals("diary")) {
+                    values.put("weather", weather);
+                    database.insert("diary", null, values);
+                } else {
+                    database.insert("note", null, values);
+                }
+                SoftInput.hide(etContent);
                 finish();
             }
-        } else {
-            values.put("year", year);
-            values.put("month", month);
-            values.put("day", day);
-            values.put("content", etContent.getText().toString());
-            values.put("background", background);
-            if (from.equals("diary")) {
-                values.put("weather", weather);
-                database.insert("diary", null, values);
-            } else {
-                database.insert("note", null, values);
-            }
-            SoftInput.hide(etContent);
-            finish();
         }
     }
 
@@ -176,6 +194,38 @@ public class AddActivity extends AppCompatActivity implements
             ivBottom.setImageResource(Mojian.backgrounds[background]);
         }
         dialog.dismiss();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case SELECT_IMAGE:
+                if (resultCode == RESULT_OK) {
+                    Bitmap bitmap;
+                    try {   //Bitmap压缩
+                        bitmap = BitmapUtil.compress(this, getContentResolver().openInputStream(data.getData()));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                        break;
+                    }
+                    long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_pic));   //保存至本地
+                    ImageSpan imageSpan = new ImageSpan(this, bitmap);
+                    String tag = "<img src=\""
+                            + Environment.getExternalStorageDirectory() + getString(R.string.path_pic) + currentTimeMill
+                            + ".jpg"
+                            + "\" />";
+                    SpannableString spannableString = new SpannableString(tag);
+                    spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    int index = etContent.getSelectionStart();
+                    Editable editable = etContent.getEditableText();
+                    if (index < 0 || index >= editable.length()) {
+                        editable.append(spannableString);
+                    } else {
+                        editable.insert(index, spannableString);
+                    }
+                }
+                break;
+        }
     }
 
     //界面view变化监听

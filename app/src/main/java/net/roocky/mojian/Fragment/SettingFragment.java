@@ -4,12 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +19,8 @@ import net.roocky.mojian.Activity.PatternConfirmActivity;
 import net.roocky.mojian.Activity.PatternSetActivity;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
-import net.roocky.mojian.Util.FileCopy;
+import net.roocky.mojian.Util.FileUtil;
 import net.roocky.mojian.Util.PermissionUtil;
-
-import java.io.File;
-import java.net.URI;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -142,7 +138,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 if (data != null) {
                     String result;
                     Uri uri = data.getData();
-                    if (FileCopy.copy(uri.getPath(), getString(R.string.path_databases) + "Mojian.db")) {
+                    if (FileUtil.copy(uri.getPath(), getString(R.string.path_databases) + "Mojian.db")) {
                         result = "恢复成功！";
                     } else {
                         result = "恢复失败！";
@@ -172,8 +168,9 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
     private void backStore(int id) {
         String result;
         if (id == R.id.ll_backup) {
-            if (FileCopy.copy(getString(R.string.path_databases) + "Mojian.db",
-                    getString(R.string.path_sdcard) + getString(R.string.app_name_eng)
+            if (FileUtil.copy(getString(R.string.path_databases) + "Mojian.db",
+                    Environment.getExternalStorageDirectory() + "/"
+                            + getString(R.string.app_name_eng)
                             + Mojian.year + "-" + (Mojian.month + 1) + "-" + Mojian.day + "_"     //年月日
                             + Mojian.hour + "-" + Mojian.minute + ".backup")) {                   //时分
                 result = "备份成功！";

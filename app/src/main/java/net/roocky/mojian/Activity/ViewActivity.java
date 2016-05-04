@@ -257,12 +257,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
                 //先检查权限在进行保存
                 if (PermissionUtil.checkA(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
-                    long currentTimeMill = BitmapUtil.save(bmpContent);     //保存至SD卡
+                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache));     //保存至SD卡
                     if (currentTimeMill != 0) {
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                        + getString(R.string.app_path_pic)
+                                        + getString(R.string.path_cache)
                                         + currentTimeMill + ".jpg"));
                         shareIntent.setType("image/*");
                         startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_picture)));
@@ -299,12 +299,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case PER_EXTERNAL_STORAGE:  //存储空间权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    long currentTimeMill = BitmapUtil.save(bmpContent);     //保存至SD卡
+                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache));     //保存至SD卡
                     if (currentTimeMill != 0) {
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                        + getString(R.string.app_path_pic)
+                                        + getString(R.string.path_cache)
                                         + currentTimeMill + ".jpg"));
                         shareIntent.setType("image/*");
                         startActivity(Intent.createChooser(shareIntent, "图片分享"));
