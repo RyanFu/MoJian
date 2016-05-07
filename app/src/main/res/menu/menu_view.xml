@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_background"
         android:title="@string/action_background"
-        android:icon="@mipmap/ic_wallpaper_black_24dp"
+        android:icon="@mipmap/ic_color_lens_black_24dp"
         app:showAsAction="always"
         android:visible="false" />
     <item
@@ -13,6 +13,12 @@
         android:icon="@mipmap/ic_looks_one_black_24dp"
         app:showAsAction="always"
         android:visible="false" />
+    <item
+        android:id="@+id/action_remind"
+        android:title="@string/action_remind"
+        android:icon="@mipmap/ic_alarm_black_24dp"
+        app:showAsAction="always"
+        android:visible="false"/>
     <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete"
@@ -25,9 +31,5 @@
     <item
         android:id="@+id/action_share_text"
         android:title="@string/action_share_text"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_remind"
-        android:title="@string/action_remind"
         app:showAsAction="never" />
 </menu>

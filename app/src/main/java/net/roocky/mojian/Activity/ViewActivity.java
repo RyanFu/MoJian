@@ -119,6 +119,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private int yearRemind;
     private int monthRemind;
     private int dayRemind;
+    public static boolean hasRemind = false;      //标识当前便笺是否包含提醒，用于在删除提醒时判断
 
     private final int PER_EXTERNAL_STORAGE = 0;
     private Bitmap bmpContent;
@@ -140,12 +141,32 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     private final int SELECT_IMAGE = 0;
     private final int INIT_CONTENT = 1;
+    private final int SCREEN_SHOT = 2;
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INIT_CONTENT:
                     tvContent.setText((SpannableStringBuilder) msg.obj);
+                    break;
+                case SCREEN_SHOT:
+                    bmpContent = (Bitmap)msg.obj;
+                    //先检查权限在进行保存
+                    if (PermissionUtil.checkA(ViewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
+                        long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
+                        if (currentTimeMill != 0) {
+                            Toast.makeText(ViewActivity.this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
+                            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                            shareIntent.putExtra(Intent.EXTRA_STREAM,
+                                    Uri.parse("file:///" + Environment.getExternalStorageDirectory()
+                                            + getString(R.string.path_cache)
+                                            + currentTimeMill + ".jpg"));
+                            shareIntent.setType("image/*");
+                            startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_picture)));
+                        } else {
+                            Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
+                        }
+                    }
                     break;
             }
         }
@@ -209,8 +230,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_view, menu);
-        if (from.equals("diary")) {    //日记无需设置提醒
-            menu.findItem(R.id.action_remind).setVisible(false);
+        if (from.equals("note")) {    //便笺需设置提醒
+            menu.findItem(R.id.action_remind).setVisible(true);
         }
         if (isEdit) {
             if (from.equals("diary")) {
@@ -275,23 +296,19 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.action_share_picture:
-                int width = ScreenUtil.getWidth(this);                  //获取屏幕宽度
-                bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
-                //先检查权限在进行保存
-                if (PermissionUtil.checkA(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
-                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
-                    if (currentTimeMill != 0) {
-                        Toast.makeText(this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
-                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                        shareIntent.putExtra(Intent.EXTRA_STREAM,
-                                Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                        + getString(R.string.path_cache)
-                                        + currentTimeMill + ".jpg"));
-                        shareIntent.setType("image/*");
-                        startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_picture)));
-                    } else {
-                        Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
-                    }
+                if (tvContent.getText().length() > 3000) {
+                    Snackbar.make(toolbar, getString(R.string.toast_text_overflow), Snackbar.LENGTH_SHORT).show();
+                } else {
+                    final int width = ScreenUtil.getWidth(this);                  //获取屏幕宽度
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Message message = new Message();
+                            message.what = SCREEN_SHOT;
+                            message.obj = ScreenUtil.screenshot(findViewById(R.id.ll_content), width); //截长图
+                            handler.sendMessage(message);
+                        }
+                    }).run();
                 }
                 break;
             case R.id.action_share_text:
@@ -302,13 +319,34 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
             case R.id.action_remind:
-                remindPicker = new DatePickerDialog(
-                        this,
-                        this,
-                        Mojian.year,
-                        Mojian.month,
-                        Mojian.day);
-                remindPicker.show();
+                //如果已经设置了提醒，该menu的功能为取消提醒
+                if (hasRemind || !intent.getStringExtra("remind").equals("")) {
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                            this,       //Context
+                            Integer.parseInt(intent.getStringExtra("id")),      //requestCode
+                            new Intent(this, RemindReceiver.class),     //Intent
+                            PendingIntent.FLAG_UPDATE_CURRENT);     //Flag
+                    alarmManager.cancel(pendingIntent);
+
+                    tvRemind.setVisibility(View.GONE);
+                    Snackbar.make(toolbar, getString(R.string.toast_remind_cancel), Snackbar.LENGTH_SHORT).show();
+
+                    ContentValues values = new ContentValues();
+                    String string = null;
+                    values.put("remind", string);       //清空该便笺的remind
+                    database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+
+                    hasRemind = false;
+                } else {
+                    remindPicker = new DatePickerDialog(
+                            this,
+                            this,
+                            Mojian.year,
+                            Mojian.month,
+                            Mojian.day);
+                    remindPicker.show();
+                }
                 break;
             default:
                 break;
@@ -530,6 +568,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);   //开启定时
         }
+        hasRemind = true;
     }
 
     //NestedScrollView滚动事件
@@ -548,6 +587,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 //        MobclickAgent.onResume(this);
+        if (from.equals("note") && intent.getStringExtra("remind").equals("")) {
+            tvRemind.setVisibility(View.GONE);       //隐藏提醒语句
+        }
     }
 
     @Override

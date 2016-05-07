@@ -21,7 +21,7 @@
     <string name="action_date">修改日期</string>
     <string name="action_share_picture">图片分享</string>
     <string name="action_share_text">文本分享</string>
-    <string name="action_remind">提醒我</string>
+    <string name="action_remind">提醒</string>
     <string name="action_calendar">日历</string>
 
     <string name="set_account">个人信息</string>
@@ -62,6 +62,8 @@
     <string name="toast_clear_success">解锁图案清除成功~</string>
     <string name="toast_image_overflow">最多插入5张图片(╯﹏╰)</string>
     <string name="toast_image_save">图片已保存至“/sdcard/Mojian/Cache/%1$s”</string>
+    <string name="toast_text_overflow">文本长度超出图片分享最大限制</string>
+    <string name="toast_remind_cancel">提醒已取消</string>
 
     <string name="dialog_forget_pattern">忘记图案</string>
     <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>

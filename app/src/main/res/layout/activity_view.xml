@@ -88,7 +88,7 @@
                     android:id="@+id/et_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:textColor="@android:color/black"
                     android:background="@null"
                     android:visibility="gone"
@@ -100,7 +100,7 @@
                     android:id="@+id/tv_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:textColor="@android:color/black"
                     android:padding="10dp"
                     android:lineSpacingExtra="10dp" />

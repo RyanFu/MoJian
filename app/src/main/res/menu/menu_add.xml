@@ -9,7 +9,7 @@
     <item
         android:id="@+id/action_background"
         android:title="@string/action_background"
-        android:icon="@mipmap/ic_wallpaper_black_24dp"
+        android:icon="@mipmap/ic_color_lens_black_24dp"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_date"
