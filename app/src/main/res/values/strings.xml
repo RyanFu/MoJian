@@ -3,9 +3,9 @@
     <!--<string name="baichuan_app_key">23336545</string>-->
 
     <string name="app_name">墨笺</string>
-    <string name="app_name_full">墨笺 1.0.5</string>
+    <string name="app_name_full">墨笺 1.0.6</string>
     <string name="app_name_eng">MoJian</string>
-    <string name="app_version">1.0.5</string>
+    <string name="app_version">1.0.6</string>
     <string name="app_author">Roocky强力驱动</string>
 
     <string name="mn_diary">日记</string>
@@ -60,6 +60,7 @@
     <string name="toast_to_picture_error">导出图片失败……</string>
     <string name="toast_no_lock">你还没有设置过解锁图案呢……</string>
     <string name="toast_clear_success">解锁图案清除成功~</string>
+    <string name="toast_image_overflow">最多插入5张图片(╯﹏╰)</string>
 
     <string name="dialog_forget_pattern">忘记图案</string>
     <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>
@@ -69,6 +70,8 @@
     <string name="feedback_title">「墨笺」用户反馈</string>
 
     <string name="diary_month_day">%1$s月%2$s</string>
+
+    <string name="show_image_only">图片</string>
 
     <string-array name="year_array">
         <item>二零一零</item>
@@ -127,6 +130,7 @@
     <item type="id" name="tag_year" />
     <item type="id" name="tag_month"/>
     <item type="id" name="tag_day" />
+    <item type="id" name="tag_content" />
     <item type="id" name="tag_background" />
     <item type="id" name="tag_weather" />
 </resources>

@@ -19,6 +19,7 @@ import net.roocky.mojian.Model.Diary;
 import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.ImageSpanUtil;
 import net.roocky.mojian.Util.SDKVersion;
 
 import java.util.ArrayList;
@@ -71,7 +72,11 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         } else {
             holder.tvDate.setText(Mojian.numbers[month] + " · " + Mojian.numbers[day - 1]);
         }
-        holder.tvContent.setText(baseList.get(baseList.size() - position - 1).getContent());
+        String strContent = ImageSpanUtil.getString(baseList.get(baseList.size() - position - 1).getContent()).toString();
+        if (strContent.equals("")) {            //如果便笺内只有图片，则需在卡片上显示“图片”
+            strContent = Mojian.context.getString(R.string.show_image_only);
+        }
+        holder.tvContent.setText(strContent);
         //绑定监听事件
         holder.cvItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +96,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         holder.cvItem.setTag(R.id.tag_year, baseList.get(baseList.size() - position - 1).getYear());
         holder.cvItem.setTag(R.id.tag_month, baseList.get(baseList.size() - position - 1).getMonth());
         holder.cvItem.setTag(R.id.tag_day, baseList.get(baseList.size() - position - 1).getDay());
+        holder.cvItem.setTag(R.id.tag_content, baseList.get(baseList.size() - position - 1).getContent());
         holder.cvItem.setTag(R.id.tag_background, baseList.get(baseList.size() - position - 1).getBackground());
         if (type.equals("diary")) {
             holder.cvItem.setTag(R.id.tag_weather, ((Diary) baseList.get(baseList.size() - position - 1)).getWeather());

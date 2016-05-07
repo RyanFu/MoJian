@@ -42,7 +42,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
         if (!isDeleting) {      //若未处于删除状态，直接进行跳转
             Intent intent = new Intent(getActivity(), ViewActivity.class);
             intent.putExtra("id", idSelect);     //id作为删除和修改的标识
-            intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
+            intent.putExtra("content", (String)view.findViewById(R.id.cv_item).getTag(R.id.tag_content));
             intent.putExtra("background", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background));
             if (view.findViewById(R.id.tv_remind) != null) {    //判断当前的Fragment是diary还是note
                 intent.putExtra("from", "note");

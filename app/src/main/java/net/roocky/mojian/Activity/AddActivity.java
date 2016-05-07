@@ -42,6 +42,7 @@ import net.roocky.mojian.Util.BitmapUtil;
 import net.roocky.mojian.Util.SDKVersion;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
+import net.roocky.mojian.Widget.AlignImageSpan;
 import net.roocky.mojian.Widget.SelectDialog;
 
 import java.io.FileNotFoundException;
@@ -57,18 +58,11 @@ public class AddActivity extends AppCompatActivity implements
         View.OnClickListener,
         DialogInterface.OnClickListener,
         SelectDialog.OnItemClickListener,
-        DatePickerDialog.OnDateSetListener,
-        ViewTreeObserver.OnGlobalLayoutListener{
+        DatePickerDialog.OnDateSetListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
     EditText etContent;
-    @Bind(R.id.cl_main)
-    CoordinatorLayout clMain;
-    @Bind(R.id.iv_bottom)
-    ImageView ivBottom;
-    @Bind(R.id.iv_background)
-    ImageView ivBackground;
     @Bind(R.id.fab_add)
     FloatingActionButton fabAdd;
 
@@ -94,6 +88,8 @@ public class AddActivity extends AppCompatActivity implements
     };
 
     private final int SELECT_IMAGE = 0;
+
+    private int imgCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,17 +126,20 @@ public class AddActivity extends AppCompatActivity implements
 
     private void setListener() {
         toolbar.setNavigationOnClickListener(this);
-        clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
         fabAdd.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fab_add) {        //添加图片
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("image/*");
-            startActivityForResult(intent, SELECT_IMAGE);
+            if (imgCount < 5) {         //最多插入5张图片
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(intent, SELECT_IMAGE);
+            } else {
+                Snackbar.make(toolbar, getString(R.string.toast_image_overflow), Snackbar.LENGTH_SHORT).show();
+            }
         } else {                                //ToolBar保存
             ContentValues values = new ContentValues();
             if (etContent.getText().length() == 0) {
@@ -190,8 +189,7 @@ public class AddActivity extends AppCompatActivity implements
             invalidateOptionsMenu();    //更新menu
         } else {
             background = position;
-            ivBackground.setImageResource(Mojian.backgrounds[background]);
-            ivBottom.setImageResource(Mojian.backgrounds[background]);
+            //设置背景纸张
         }
         dialog.dismiss();
     }
@@ -209,11 +207,10 @@ public class AddActivity extends AppCompatActivity implements
                         break;
                     }
                     long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_pic), 40);   //保存至本地
-                    ImageSpan imageSpan = new ImageSpan(this, bitmap);
+                    AlignImageSpan imageSpan = new AlignImageSpan(this, bitmap, AlignImageSpan.ALIGN_CENTER);
                     String tag = "<"
                             + Environment.getExternalStorageDirectory() + getString(R.string.path_pic) + currentTimeMill
-                            + ".jpg"
-                            + ">";
+                            + ".jpg>\n";
                     SpannableString spannableString = new SpannableString(tag);
                     spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     int index = etContent.getSelectionStart();
@@ -221,23 +218,11 @@ public class AddActivity extends AppCompatActivity implements
                     if (index < 0 || index >= editable.length()) {
                         editable.append(spannableString);
                     } else {
-                        editable.insert(index, spannableString);
+                        editable.insert(index + 1, spannableString);
                     }
+                    imgCount ++;    //标识当前插入的图片数量
                 }
                 break;
-        }
-    }
-
-    //界面view变化监听
-    @Override
-    public void onGlobalLayout() {
-        //根据软键盘是否显示决定背景图片的位置
-        if (ScreenUtil.isSoftInputShow(clMain)) {
-            ivBackground.setVisibility(View.GONE);
-            ivBottom.setVisibility(View.VISIBLE);
-        } else {
-            ivBackground.setVisibility(View.VISIBLE);
-            ivBottom.setVisibility(View.GONE);
         }
     }
 
@@ -327,15 +312,5 @@ public class AddActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
 //        MobclickAgent.onPause(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-            clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
-        } else {
-            clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-        }
     }
 }

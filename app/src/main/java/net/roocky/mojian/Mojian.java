@@ -28,13 +28,6 @@ public class Mojian extends Application {
     public static final int WEATHER_CLOUD = 1;
     public static final int WEATHER_RAIN = 2;
     public static final int WEATHER_SNOW = 3;
-    //ViewActivity&AddActivity背景
-    public static final int[] backgrounds = {
-            R.drawable.bottom_mei,
-            R.drawable.bottom_lan,
-            R.drawable.bottom_zhu,
-            R.drawable.bottom_ju
-    };
     //当前日记是否为解锁状态
     public static boolean isLocked = true;
 

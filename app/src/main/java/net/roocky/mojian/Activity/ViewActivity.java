@@ -33,6 +33,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.style.DynamicDrawableSpan;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -55,9 +56,11 @@ import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.BitmapUtil;
+import net.roocky.mojian.Util.ImageSpanUtil;
 import net.roocky.mojian.Util.PermissionUtil;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
+import net.roocky.mojian.Widget.AlignImageSpan;
 import net.roocky.mojian.Widget.SelectDialog;
 
 import java.io.FileNotFoundException;
@@ -75,7 +78,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         NestedScrollView.OnScrollChangeListener,
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener,
-        ViewTreeObserver.OnGlobalLayoutListener,
         SelectDialog.OnItemClickListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -101,12 +103,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivWeatherIcon;
     @Bind(R.id.nsv_content)
     NestedScrollView nsvContent;
-    @Bind(R.id.iv_bottom)
-    ImageView ivBottom;
-    @Bind(R.id.iv_background)
-    ImageView ivBackground;
-    @Bind(R.id.cl_main)
-    CoordinatorLayout clMain;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -148,7 +144,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INIT_CONTENT:
-                    tvContent.setText((SpannableStringBuilder)msg.obj);
+                    tvContent.setText((SpannableStringBuilder) msg.obj);
                     break;
             }
         }
@@ -183,12 +179,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 Message message = new Message();
                 message.what = INIT_CONTENT;
-                message.obj = initContent();
+                message.obj = ImageSpanUtil.str2spanStrBuilder(intent.getStringExtra("content"));
                 handler.sendMessage(message);
             }
         }).run();
-        ivBackground.setImageResource(Mojian.backgrounds[background]);
-        ivBottom.setImageResource(Mojian.backgrounds[background]);
         if (from.equals("diary")) {
             rlHeader.setVisibility(View.VISIBLE);
             //设置顶部日期&天气展示
@@ -205,46 +199,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //初始化内容
-    private SpannableStringBuilder initContent() {
-        SpannableStringBuilder ssbContent = new SpannableStringBuilder();
-        String strContent = intent.getStringExtra("content");
-        StringBuilder strUrl = new StringBuilder();
-        boolean isUrl = false;
-        for (int i = 0; i < strContent.length(); i ++) {
-            if (strContent.charAt(i) == '<') {          //路径开始标志
-                isUrl = true;
-            } else if (strContent.charAt(i) == '>') {   //路径结束标志
-                String tag = "<" + strUrl + ">";
-                Bitmap bitmap = BitmapFactory.decodeFile(strUrl.toString());
-                if (bitmap == null) {                   //该路径并不是一个真实的图片路径
-                    ssbContent.append("<").append(strUrl).append(">");
-                    strUrl.delete(0, strUrl.length());
-                    isUrl = false;
-                    continue;
-                }
-                ImageSpan imageSpan = new ImageSpan(this, bitmap);
-                SpannableString spannableString = new SpannableString(tag);
-                spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                ssbContent.append(spannableString);
-                strUrl.delete(0, strUrl.length());
-                isUrl = false;
-            } else {
-                if (isUrl){     //路径
-                    strUrl.append(String.valueOf(strContent.charAt(i)));
-                } else {        //普通文本
-                    ssbContent.append(String.valueOf(strContent.charAt(i)));
-                }
-            }
-        }
-        return ssbContent;
-    }
-
     private void setListener() {
         fabEdit.setOnClickListener(this);
         nsvContent = (NestedScrollView) findViewById(R.id.nsv_content);
         nsvContent.setOnScrollChangeListener(this);
-        clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     @Override
@@ -316,10 +274,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.action_share_picture:
-                if (ivBottom.getVisibility() == View.GONE) {
-                    ivBottom.setVisibility(View.VISIBLE);
-                    ivBackground.setVisibility(View.GONE);
-                }
                 int width = ScreenUtil.getWidth(this);                  //获取屏幕宽度
                 bmpContent = ScreenUtil.screenshot(findViewById(R.id.nsv_content), width); //截长图
                 //先检查权限在进行保存
@@ -341,7 +295,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.action_share_text:
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.putExtra(Intent.EXTRA_TEXT,
-                        tvContent.getText());
+                        ImageSpanUtil.getString(tvContent.getText().toString()).toString());
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
@@ -403,9 +357,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     //更新menu
                     invalidateOptionsMenu();
-                    //将背景图片“移到”TextView底部
-                    ivBackground.setVisibility(View.GONE);
-                    ivBottom.setVisibility(View.VISIBLE);
                     //将TextView“转为”EditText
                     tvContent.setVisibility(View.GONE);
                     etContent.setText(tvContent.getText());
@@ -430,7 +381,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     toolbar.setNavigationOnClickListener(this);
                     //将EditText“转为”TextView
                     etContent.setVisibility(View.GONE);
-                    tvContent.setText(etContent.getText().toString());
+                    tvContent.setText(ImageSpanUtil.str2spanStrBuilder(etContent.getText().toString()));
                     tvContent.setVisibility(View.VISIBLE);
                     SoftInput.hide(etContent);
                     fabEdit.setImageResource(R.mipmap.ic_edit_white_24dp);
@@ -457,8 +408,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             ImageSpan imageSpan = new ImageSpan(this, bitmap);
             String tag = "<"
                     + Environment.getExternalStorageDirectory() + getString(R.string.path_pic) + currentTimeMill
-                    + ".jpg"
-                    + ">";
+                    + ".jpg>\n";
             SpannableString spannableString = new SpannableString(tag);
             spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             int index = etContent.getSelectionStart();
@@ -466,7 +416,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             if (index < 0 || index >= editable.length()) {
                 editable.append(spannableString);
             } else {
-                editable.insert(index, spannableString);
+                editable.insert(index + 1, spannableString);
             }
         }
     }
@@ -493,8 +443,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onItemClick(SelectDialog dialog, int position) {
         background = position;
-        ivBackground.setImageResource(Mojian.backgrounds[background]);
-        ivBottom.setImageResource(Mojian.backgrounds[background]);
+        //设置背景纸张
         dialog.dismiss();
     }
 
@@ -592,25 +541,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //界面view变化监听
-    @Override
-    public void onGlobalLayout() {
-        //根据软键盘是否显示决定背景图片的位置
-        if (ScreenUtil.isSoftInputShow(clMain)) {
-            ivBackground.setVisibility(View.GONE);
-            ivBottom.setVisibility(View.VISIBLE);
-        } else {
-            if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
-                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 200) {//如果TextView过长需要隐藏background显示Bottom
-                ivBackground.setVisibility(View.GONE);
-                ivBottom.setVisibility(View.VISIBLE);
-            } else {
-                ivBackground.setVisibility(View.VISIBLE);
-                ivBottom.setVisibility(View.GONE);
-            }
-        }
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -648,16 +578,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
             super.onBackPressed();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
-            clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
-        } else {
-            clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
         }
     }
 }
