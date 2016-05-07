@@ -468,8 +468,12 @@ public class MainActivity extends BaseActivity implements
         if (slidingMenu.isMenuShowing()) {
             slidingMenu.showContent();
         } else {
-            Mojian.isLocked = true;
-            super.onBackPressed();
+            if (fragmentId != FRAGMENT_NOTE) {  //若点击返回键时不在便笺Fragment，需要先返回至便笺Fragment
+                itemSelected(R.id.btn_note);
+            } else {
+                Mojian.isLocked = true;     //应用退出后需要将日记设定为锁定状态
+                super.onBackPressed();
+            }
         }
     }
 

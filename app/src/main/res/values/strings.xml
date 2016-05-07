@@ -61,6 +61,7 @@
     <string name="toast_no_lock">你还没有设置过解锁图案呢……</string>
     <string name="toast_clear_success">解锁图案清除成功~</string>
     <string name="toast_image_overflow">最多插入5张图片(╯﹏╰)</string>
+    <string name="toast_image_save">图片已保存至“/sdcard/Mojian/Cache/%1$s”</string>
 
     <string name="dialog_forget_pattern">忘记图案</string>
     <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>

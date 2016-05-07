@@ -28,7 +28,7 @@ public class Mojian extends Application {
     public static final int WEATHER_CLOUD = 1;
     public static final int WEATHER_RAIN = 2;
     public static final int WEATHER_SNOW = 3;
-    //当前日记是否为解锁状态
+    //当前日记是否为锁定状态
     public static boolean isLocked = true;
 
     @Override

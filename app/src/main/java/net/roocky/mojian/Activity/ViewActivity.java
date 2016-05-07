@@ -50,6 +50,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import net.roocky.mojian.BroadcastReceiver.RemindReceiver;
 import net.roocky.mojian.Database.DatabaseHelper;
@@ -280,6 +281,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 if (PermissionUtil.checkA(this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
                     long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
                     if (currentTimeMill != 0) {
+                        Toast.makeText(this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
@@ -322,6 +324,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
                     if (currentTimeMill != 0) {
+                        Toast.makeText(this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
