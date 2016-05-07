@@ -119,7 +119,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private int yearRemind;
     private int monthRemind;
     private int dayRemind;
-    public static boolean hasRemind = false;      //标识当前便笺是否包含提醒，用于在删除提醒时判断
+    private boolean hasRemind = false;      //标识当前便笺是否包含提醒，用于在删除提醒时判断
 
     private final int PER_EXTERNAL_STORAGE = 0;
     private Bitmap bmpContent;

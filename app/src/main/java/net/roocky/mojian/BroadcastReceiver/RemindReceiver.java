@@ -57,6 +57,5 @@ public class RemindReceiver extends BroadcastReceiver {
         String string = null;
         values.put("remind", string);   //清空该便笺的remind
         database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
-        ViewActivity.hasRemind = false;
     }
 }
