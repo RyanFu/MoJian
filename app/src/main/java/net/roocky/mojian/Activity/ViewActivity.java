@@ -135,6 +135,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     };
     private int background = 0;     //标识当前背景
     private String from;
+    private SystemBarTintManager tintManager;
 
     private final int SELECT_IMAGE = 0;
     private final int INIT_CONTENT = 1;
@@ -183,7 +184,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     //设置透明状态栏
     private void initStatusBar(int background) {
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
         tintManager.setStatusBarTintColor(Mojian.colors[background]);
     }
@@ -511,7 +512,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         //设置背景纸张
         nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
         llContent.setBackgroundResource(Mojian.backgroundIds[background]);
-        //设置ToolBar颜色
+        //设置StatusBar&ToolBar颜色
+        tintManager.setStatusBarTintColor(Mojian.colors[background]);
         toolbar.setBackgroundColor(Mojian.colors[background]);
         dialog.dismiss();
     }

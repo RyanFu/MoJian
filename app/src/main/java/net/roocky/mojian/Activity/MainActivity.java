@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -37,6 +39,7 @@ import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileUtil;
+import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 
 import java.io.File;
@@ -94,11 +97,11 @@ public class MainActivity extends BaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         Fresco.initialize(this);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.slidingmenu);
+        setSlidingMenu();       //设置SlidingMenu
         ButterKnife.bind(this);
 //        FeedbackAPI.getFeedbackUnreadCount(this, null, this);   //检查百川反馈未读消息
         initExplain();          //使用说明初始化
-        setSlidingMenu();       //设置SlidingMenu
         initView();             //View初始化
         setOnClickListener();
 
@@ -139,7 +142,7 @@ public class MainActivity extends BaseActivity implements
 
     //设置侧滑抽屉菜单
     private void setSlidingMenu() {
-        slidingMenu = new SlidingMenu(this);
+        slidingMenu = (SlidingMenu)findViewById(R.id.slm_main);
         slidingMenu.setMode(SlidingMenu.SLIDING_WINDOW);      //菜单位置
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);    //滑动位置
         slidingMenu.setBehindWidth((int) (0.75f * getResources().getDisplayMetrics().widthPixels));  //菜单宽度
@@ -147,8 +150,10 @@ public class MainActivity extends BaseActivity implements
         slidingMenu.setBehindScrollScale(0f);   //菜单缩放
         slidingMenu.setShadowDrawable(R.drawable.shadow);       //阴影设置
         slidingMenu.setShadowWidthRes(R.dimen.slidingmenu_shadow_width);
-        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);     //设置此项可解决虚拟键遮挡问题
+//        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);     //设置此项可解决虚拟键遮挡问题
         slidingMenu.setMenu(R.layout.menu_slidingmenu);
+        slidingMenu.setContent(R.layout.activity_main);
+        slidingMenu.getMenu().setPadding(0, ScreenUtil.dip2px(this, 25), 0, 0);     //解决沉浸状态栏布局上移问题
     }
 
     //绑定控件点击事件

@@ -40,6 +40,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
@@ -76,6 +78,8 @@ public class AddActivity extends AppCompatActivity implements
     @Bind(R.id.ll_content)
     LinearLayout llContent;
 
+    private SystemBarTintManager tintManager;
+
     private Intent intent;
     private String from;    //标识当前添加的条目是日记or便笺
     private DatabaseHelper databaseHelper;
@@ -103,6 +107,7 @@ public class AddActivity extends AppCompatActivity implements
     private int imgCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initStatusBar(background);
         setTheme(Mojian.themeIds[background]);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
@@ -110,6 +115,12 @@ public class AddActivity extends AppCompatActivity implements
 
         initView();
         setListener();
+    }
+
+    private void initStatusBar(int background) {
+        tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintColor(Mojian.colors[background]);
     }
 
     private void initView() {
@@ -226,7 +237,8 @@ public class AddActivity extends AppCompatActivity implements
             //设置背景纸张
             nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
             llContent.setBackgroundResource(Mojian.backgroundIds[background]);
-            //设置ToolBar颜色
+            //设置StatusBar&ToolBar颜色
+            tintManager.setStatusBarTintColor(Mojian.colors[background]);
             toolbar.setBackgroundColor(Mojian.colors[background]);
         }
         dialog.dismiss();
