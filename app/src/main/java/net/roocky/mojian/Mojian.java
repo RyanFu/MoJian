@@ -30,6 +30,37 @@ public class Mojian extends Application {
     public static final int WEATHER_SNOW = 3;
     //当前日记是否为锁定状态
     public static boolean isLocked = true;
+    //纸张背景&颜色id
+    public static int[] backgroundIds = {
+            R.drawable.bg_content_a,
+            R.drawable.bg_content_b,
+            R.drawable.bg_content_c,
+            R.drawable.bg_content_d
+    };
+    public static int[] colors = {          //纸张颜色
+            0xffE5E2DE,
+            0xffEDEAD2,
+            0xffE0DDE3,
+            0xffE8DDD8
+    };
+    public static int[] darkColors = {      //纸张颜色+12
+            0xffD3D0CC,
+            0xffDBD8C0,
+            0xffCECBD1,
+            0xffD6CBC6
+    };
+    public static int[] themeIds = {
+            R.style.ActivityPaperA,
+            R.style.ActivityPaperB,
+            R.style.ActivityPaperC,
+            R.style.ActivityPaperD
+    };
+    public static int[] ripples = {
+            R.drawable.bg_ripple_paper_a,
+            R.drawable.bg_ripple_paper_b,
+            R.drawable.bg_ripple_paper_c,
+            R.drawable.bg_ripple_paper_d
+    };
 
     @Override
     public void onCreate() {

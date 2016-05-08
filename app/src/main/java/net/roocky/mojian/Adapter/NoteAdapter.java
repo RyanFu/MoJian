@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 
 /**

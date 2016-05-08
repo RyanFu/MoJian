@@ -11,6 +11,27 @@
         <!-- 图案解锁-->
         <item name="patternViewStyle">@style/PatternView</item>
     </style>
+    <!-- 对应四种纸张的activity主题-->
+    <style name="ActivityPaperA" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/paper_a</item>
+        <item name="colorPrimaryDark">@color/grey_700</item>
+        <item name="colorAccent">@color/grey_500</item>
+    </style>
+    <style name="ActivityPaperB" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/paper_b</item>
+        <item name="colorPrimaryDark">@color/grey_700</item>
+        <item name="colorAccent">@color/grey_500</item>
+    </style>
+    <style name="ActivityPaperC" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/paper_c</item>
+        <item name="colorPrimaryDark">@color/grey_700</item>
+        <item name="colorAccent">@color/grey_500</item>
+    </style>
+    <style name="ActivityPaperD" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/paper_d</item>
+        <item name="colorPrimaryDark">@color/grey_700</item>
+        <item name="colorAccent">@color/grey_500</item>
+    </style>
 
     <!-- 裁剪器-->
     <style name="Widget.CropImageView" parent="android:Widget">

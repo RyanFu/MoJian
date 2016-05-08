@@ -9,6 +9,11 @@
     <color name="grey_700">#616161</color>
     <color name="grey_800">#424242</color>
     <color name="grey_original">#484848</color>
+    <!-- 纸张颜色-->
+    <color name="paper_a">#E5E2DE</color>
+    <color name="paper_b">#EDEAD2</color>
+    <color name="paper_c">#E0DDE3</color>
+    <color name="paper_d">#E8DDD8</color>
     <!-- 文字颜色-->
     <color name="grey_text">#363636</color>
     <!-- 背景颜色-->

@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -104,6 +105,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivWeatherIcon;
     @Bind(R.id.nsv_content)
     NestedScrollView nsvContent;
+    @Bind(R.id.ll_content)
+    LinearLayout llContent;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -122,6 +125,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private boolean hasRemind = false;      //标识当前便笺是否包含提醒，用于在删除提醒时判断
 
     private final int PER_EXTERNAL_STORAGE = 0;
+    private final int PER_EXTERNAL_STORAGE_ADD = 1;
     private Bitmap bmpContent;
 
     private int[] weathers = {
@@ -174,12 +178,18 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initTheme(getIntent().getIntExtra("background", 0));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
         ButterKnife.bind(this);
 
         initView();
         setListener();
+    }
+
+    //设置主题（ActionBar&StatusBar颜色）
+    private void initTheme(int background) {
+        setTheme(Mojian.themeIds[background]);
     }
 
     private void initView() {
@@ -195,6 +205,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.app_name));
         }
+        nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
+        llContent.setBackgroundResource(Mojian.backgroundIds[background]);
 
         new Thread(new Runnable() {
             @Override
@@ -377,6 +389,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
                 }
                 break;
+            case PER_EXTERNAL_STORAGE_ADD:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, SELECT_IMAGE);
+                } else {
+                    Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 
@@ -386,10 +408,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.fab_edit:
                 if (isEdit) {       //添加图片
-                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    intent.setType("image/*");
-                    startActivityForResult(intent, SELECT_IMAGE);
+                    if (PermissionUtil.checkA(ViewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE_ADD)) {
+                        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("image/*");
+                        startActivityForResult(intent, SELECT_IMAGE);
+                    }
                 } else {            //切换至编辑状态
                     isEdit = true;
                     if (from.equals("diary")) {    //日记编辑状态需要改变Navigation图标
@@ -485,6 +509,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public void onItemClick(SelectDialog dialog, int position) {
         background = position;
         //设置背景纸张
+        nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
+        llContent.setBackgroundResource(Mojian.backgroundIds[background]);
+        //设置ToolBar颜色
+        toolbar.setBackgroundColor(Mojian.colors[background]);
         dialog.dismiss();
     }
 
@@ -556,6 +584,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         intentReceiver.putExtra("from", "note");
         intentReceiver.putExtra("id", requestCode);
         intentReceiver.putExtra("content", intent.getStringExtra("content"));
+        intentReceiver.putExtra("background", background);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,       //Context
                 Integer.parseInt(requestCode),      //requestCode

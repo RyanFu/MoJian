@@ -7,8 +7,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.prolificinteractive.materialcalendarview.CalendarDay;
@@ -41,6 +43,8 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     private List<Integer> positionList = new ArrayList<>();
 
+    protected int background;
+
     /**
      * @param context
      * @param type              "diary" or "note"
@@ -65,6 +69,23 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         int month = baseList.get(baseList.size() - position - 1).getMonth();
         int day = baseList.get(baseList.size() - position - 1).getDay();
         //设置显示
+        background = baseList.get(baseList.size() - position - 1).getBackground();
+        holder.tvDate.setBackgroundColor(Mojian.darkColors[background]);
+        if (positionList.contains(position)) {          //被选中，需要被删除的
+            holder.tvContent.setBackgroundColor(Mojian.darkColors[background]);
+            if (type.equals("note")) {
+                holder.tvRemind.setBackgroundColor(Mojian.darkColors[background]);
+            }
+        } else {                                        //未被选中，不需要被删除的
+            if (SDKVersion.isHigher(Build.VERSION_CODES.LOLLIPOP)) {
+                holder.tvContent.setBackgroundResource(Mojian.ripples[background]);
+            } else {
+                holder.tvContent.setBackgroundColor(Mojian.colors[background]);
+            }
+            if (type.equals("note")){
+                holder.tvRemind.setBackgroundColor(Mojian.colors[background]);
+            }
+        }
         if (type.equals("diary")) {
             String strMonth = (Mojian.numbers[month].length() == 1 ? Mojian.numbers[month] : new StringBuilder(Mojian.numbers[month]).insert(1, "\n")).toString();
             String strDay = (Mojian.numbers[day - 1].length() == 1 ? Mojian.numbers[day - 1] : new StringBuilder(Mojian.numbers[day - 1]).insert(1, "\n")).toString();
@@ -100,16 +121,6 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         holder.cvItem.setTag(R.id.tag_background, baseList.get(baseList.size() - position - 1).getBackground());
         if (type.equals("diary")) {
             holder.cvItem.setTag(R.id.tag_weather, ((Diary) baseList.get(baseList.size() - position - 1)).getWeather());
-        }
-        //设置item的点击效果（5.0以上版本）
-        if (positionList.contains(position)) {
-            holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);
-        } else {
-            if (SDKVersion.isHigher(Build.VERSION_CODES.LOLLIPOP)) {
-                holder.tvContent.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
-            } else {
-                holder.tvContent.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);
-            }
         }
     }
 

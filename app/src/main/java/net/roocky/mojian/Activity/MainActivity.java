@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -369,7 +370,12 @@ public class MainActivity extends BaseActivity implements
                                     values.put("month", baseFragment.noteList.get(i).getMonth());
                                     values.put("day", baseFragment.noteList.get(i).getDay());
                                     values.put("content", baseFragment.noteList.get(i).getContent());
+                                    if (!baseFragment.noteList.get(i).getRemind().equals("")) {
+                                        values.put("remind", baseFragment.noteList.get(i).getRemind());
+                                    }
+                                    values.put("background", baseFragment.noteList.get(i).getBackground());
                                     database.insert("note", null, values);
+                                    values.clear();
                                     noteFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i));
                                 }
                             } else {
@@ -381,7 +387,9 @@ public class MainActivity extends BaseActivity implements
                                     values.put("day", baseFragment.diaryList.get(i).getDay());
                                     values.put("weather", baseFragment.diaryList.get(i).getWeather());
                                     values.put("content", baseFragment.diaryList.get(i).getContent());
+                                    values.put("background", baseFragment.diaryList.get(i).getBackground());
                                     database.insert("diary", null, values);
+                                    values.clear();
                                     diaryFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i), diaryFragment.count);
                                 }
                             }

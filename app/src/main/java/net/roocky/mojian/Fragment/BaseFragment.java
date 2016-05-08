@@ -14,6 +14,7 @@ import net.roocky.mojian.Activity.ViewActivity;
 import net.roocky.mojian.Adapter.BaseAdapter;
 import net.roocky.mojian.Model.Diary;
 import net.roocky.mojian.Model.Note;
+import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.SDKVersion;
 
@@ -39,6 +40,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
     @Override
     public void onItemClick(View view, int position) {
         idSelect = (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString();
+        int background = (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background);
         if (!isDeleting) {      //若未处于删除状态，直接进行跳转
             Intent intent = new Intent(getActivity(), ViewActivity.class);
             intent.putExtra("id", idSelect);     //id作为删除和修改的标识
@@ -58,9 +60,9 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
         } else {        //若处于删除状态，选择被点击的该项
             if (deleteList.contains(idSelect)) {    //如果已选则设置为未选
                 if (SDKVersion.isHigher(Build.VERSION_CODES.LOLLIPOP)) {
-                    view.findViewById(R.id.tv_content).setBackgroundResource(R.drawable.bg_ripple_white);
+                    view.findViewById(R.id.tv_content).setBackgroundResource(Mojian.ripples[background]);
                 } else {
-                    view.findViewById(R.id.tv_content).setBackgroundColor(Color.WHITE);
+                    view.findViewById(R.id.tv_content).setBackgroundColor(Mojian.colors[background]);
                 }
                 deleteList.remove(idSelect);
                 positionList.remove(Integer.valueOf(position));
@@ -69,6 +71,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                     getActivity().invalidateOptionsMenu();      //刷新菜单
                 }
                 if (view.findViewById(R.id.tv_remind) != null) {
+                    view.findViewById(R.id.tv_remind).setBackgroundColor(Mojian.colors[background]);
                     noteList.remove(new Note(Integer.parseInt(idSelect),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
@@ -87,10 +90,11 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                 }
 
             } else {        //如果未选则设置为已选
-                view.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);    //grey_500
+                view.findViewById(R.id.tv_content).setBackgroundColor(Mojian.darkColors[background]);    //grey_500
                 deleteList.add(idSelect);
                 positionList.add(position);
                 if (view.findViewById(R.id.tv_remind) != null) {
+                    view.findViewById(R.id.tv_remind).setBackgroundColor(Mojian.darkColors[background]);
                     noteList.add(new Note(Integer.parseInt(idSelect),
                             (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                             (Integer) view.findViewById(R.id.cv_item).getTag(R.id.tag_month),
@@ -115,6 +119,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
     @Override
     public void onItemLongClick(View view, int position) {
         idSelect = (view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString();
+        int background = (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background);
         isDeleting = true;
 
         deleteList.clear();
@@ -122,11 +127,12 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
         diaryList.clear();
         noteList.clear();
 
-        view.findViewById(R.id.tv_content).setBackgroundColor(0xff9e9e9e);    //grey_500
+        view.findViewById(R.id.tv_content).setBackgroundColor(Mojian.darkColors[background]);    //grey_500
         getActivity().invalidateOptionsMenu();
         deleteList.add((view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString());
         positionList.add(position);
         if (view.findViewById(R.id.tv_remind) != null) {
+            view.findViewById(R.id.tv_remind).setBackgroundColor(Mojian.darkColors[background]);
             noteList.add(new Note(Integer.parseInt(idSelect),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_year),
                     (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month),

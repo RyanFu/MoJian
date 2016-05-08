@@ -1,13 +1,16 @@
 package net.roocky.mojian.Activity;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,6 +18,7 @@ import android.os.Environment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -34,11 +38,13 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.BitmapUtil;
+import net.roocky.mojian.Util.PermissionUtil;
 import net.roocky.mojian.Util.SDKVersion;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
@@ -65,6 +71,10 @@ public class AddActivity extends AppCompatActivity implements
     EditText etContent;
     @Bind(R.id.fab_add)
     FloatingActionButton fabAdd;
+    @Bind(R.id.nsv_content)
+    NestedScrollView nsvContent;
+    @Bind(R.id.ll_content)
+    LinearLayout llContent;
 
     private Intent intent;
     private String from;    //标识当前添加的条目是日记or便笺
@@ -74,7 +84,7 @@ public class AddActivity extends AppCompatActivity implements
     private SelectDialog weatherDialog;
     private SelectDialog bgDialog;
     private int weather = 0;        //记录该条目的天气
-    private int background;     //条目的背景
+    private int background = 0;     //条目的背景
 
     private int year = Mojian.year;
     private int month = Mojian.month;
@@ -88,10 +98,12 @@ public class AddActivity extends AppCompatActivity implements
     };
 
     private final int SELECT_IMAGE = 0;
+    private final int PER_EXTERNAL_STORAGE = 0;
 
     private int imgCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(Mojian.themeIds[background]);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         ButterKnife.bind(this);
@@ -111,6 +123,8 @@ public class AddActivity extends AppCompatActivity implements
             toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
         }
         ActionBar actionBar = getSupportActionBar();
+        nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
+        llContent.setBackgroundResource(Mojian.backgroundIds[background]);
 
         if (actionBar != null) {
             if (from.equals("diary")) {
@@ -132,13 +146,15 @@ public class AddActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.fab_add) {        //添加图片
-            if (imgCount < 5) {         //最多插入5张图片
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, SELECT_IMAGE);
-            } else {
-                Snackbar.make(toolbar, getString(R.string.toast_image_overflow), Snackbar.LENGTH_SHORT).show();
+            if (PermissionUtil.checkA(this, Manifest.permission.READ_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
+                if (imgCount < 5) {         //最多插入5张图片
+                    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    intent.setType("image/*");
+                    startActivityForResult(intent, SELECT_IMAGE);
+                } else {
+                    Snackbar.make(toolbar, getString(R.string.toast_image_overflow), Snackbar.LENGTH_SHORT).show();
+                }
             }
         } else {                                //ToolBar保存
             ContentValues values = new ContentValues();
@@ -168,6 +184,24 @@ public class AddActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == PER_EXTERNAL_STORAGE
+                && grantResults.length > 0
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (imgCount < 5) {         //最多插入5张图片
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                startActivityForResult(intent, SELECT_IMAGE);
+            } else {
+                Snackbar.make(toolbar, getString(R.string.toast_image_overflow), Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
     public void onClick(DialogInterface dialog, int which) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
             ContentValues values = new ContentValues();
@@ -190,6 +224,10 @@ public class AddActivity extends AppCompatActivity implements
         } else {
             background = position;
             //设置背景纸张
+            nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
+            llContent.setBackgroundResource(Mojian.backgroundIds[background]);
+            //设置ToolBar颜色
+            toolbar.setBackgroundColor(Mojian.colors[background]);
         }
         dialog.dismiss();
     }
