@@ -35,31 +35,41 @@ public class Mojian extends Application {
             R.drawable.bg_content_a,
             R.drawable.bg_content_b,
             R.drawable.bg_content_c,
-            R.drawable.bg_content_d
+            R.drawable.bg_content_d,
+            android.R.color.white,
+            R.color.grey_200
     };
     public static int[] colors = {          //纸张颜色
-            0xffE5E2DE,
-            0xffEDEAD2,
-            0xffE0DDE3,
-            0xffE8DDD8
+            0xffE8DDD8,     //红
+            0xffEAE8D5,     //黄
+            0xffDEE8D5,     //绿
+            0xffD8E0E9,     //蓝
+            0xffFFFFFF,
+            0xffEEEEEE
     };
-    public static int[] darkColors = {      //纸张颜色+12
-            0xffD3D0CC,
-            0xffDBD8C0,
-            0xffCECBD1,
-            0xffD6CBC6
+    public static int[] darkColors = {      //纸张颜色-12
+            0xffD6CBC6,     //红
+            0xffD8D6C3,     //黄
+            0xffCCD6C3,     //绿
+            0xffC6CED7,     //蓝
+            0xffCCCCCC,
+            0xffBBBBBB
     };
     public static int[] themeIds = {
             R.style.ActivityPaperA,
             R.style.ActivityPaperB,
             R.style.ActivityPaperC,
-            R.style.ActivityPaperD
+            R.style.ActivityPaperD,
+            R.style.ActivityPaperE,
+            R.style.ActivityPaperF
     };
     public static int[] ripples = {
             R.drawable.bg_ripple_paper_a,
             R.drawable.bg_ripple_paper_b,
             R.drawable.bg_ripple_paper_c,
-            R.drawable.bg_ripple_paper_d
+            R.drawable.bg_ripple_paper_d,
+            R.drawable.bg_ripple_white,
+            R.drawable.bg_ripple_grey_200
     };
 
     @Override

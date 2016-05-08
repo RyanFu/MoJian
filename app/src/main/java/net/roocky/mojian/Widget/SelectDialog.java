@@ -40,6 +40,12 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
         ivDialogB.setOnClickListener(this);
         ivDialogC.setOnClickListener(this);
         ivDialogD.setOnClickListener(this);
+        if (idLayout == R.layout.dialog_background) {
+            ImageView ivDialogW = (ImageView) findViewById(R.id.iv_dialog_white);
+            ImageView ivDialogG = (ImageView) findViewById(R.id.iv_dialog_grey);
+            ivDialogW.setOnClickListener(this);
+            ivDialogG.setOnClickListener(this);
+        }
     }
 
     @Override
@@ -56,6 +62,16 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.iv_dialog_d:
                 onItemClickListener.onItemClick(dialog, 3);
+                break;
+            default:        //设置背景时多出的两个（白色&灰色）
+                switch (v.getId()) {
+                    case R.id.iv_dialog_white:
+                        onItemClickListener.onItemClick(dialog, 4);
+                        break;
+                    case R.id.iv_dialog_grey:
+                        onItemClickListener.onItemClick(dialog, 5);
+                        break;
+                }
                 break;
         }
     }

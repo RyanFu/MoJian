@@ -2,6 +2,7 @@
 <resources>
     <!-- UI主题颜色-->
     <color name="grey_100">#F5F5F5</color>
+    <color name="grey_200">#EEEEEE</color>
     <color name="grey_300">#E0E0E0</color>
     <color name="grey_400">#bdbdbd</color>
     <color name="grey_500">#9e9e9e</color>
@@ -10,10 +11,12 @@
     <color name="grey_800">#424242</color>
     <color name="grey_original">#484848</color>
     <!-- 纸张颜色-->
-    <color name="paper_a">#E5E2DE</color>
-    <color name="paper_b">#EDEAD2</color>
-    <color name="paper_c">#E0DDE3</color>
-    <color name="paper_d">#E8DDD8</color>
+    <color name="paper_a">#E8DDD8</color>
+    <color name="paper_b">#EAE8D5</color>
+    <color name="paper_c">#DEE8D5</color>
+    <color name="paper_d">#D8E0E9</color>
+    <color name="paper_e">#FFFFFF</color>
+    <color name="paper_f">#EEEEEE</color>
     <!-- 文字颜色-->
     <color name="grey_text">#363636</color>
     <!-- 背景颜色-->

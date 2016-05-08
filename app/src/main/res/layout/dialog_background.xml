@@ -3,8 +3,14 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="3dp"
-    android:background="@android:color/white">
+    android:background="@color/grey_100">
     <TableRow>
+        <ImageView
+            android:id="@+id/iv_dialog_white"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@android:color/white"
+            android:layout_margin="3dp"/>
         <ImageView
             android:id="@+id/iv_dialog_a"
             android:layout_width="50dp"
@@ -19,6 +25,12 @@
             android:layout_margin="3dp"/>
     </TableRow>
     <TableRow>
+        <ImageView
+            android:id="@+id/iv_dialog_grey"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@color/grey_200"
+            android:layout_margin="3dp"/>
         <ImageView
             android:id="@+id/iv_dialog_c"
             android:layout_width="50dp"

@@ -12,25 +12,27 @@
         <item name="patternViewStyle">@style/PatternView</item>
     </style>
     <!-- 对应四种纸张的activity主题-->
-    <style name="ActivityPaperA" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ActivityPaperBase" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/grey_700</item>
+        <item name="colorAccent">@color/grey_500</item>
+    </style>
+    <style name="ActivityPaperA" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_a</item>
-        <item name="colorPrimaryDark">@color/grey_700</item>
-        <item name="colorAccent">@color/grey_500</item>
     </style>
-    <style name="ActivityPaperB" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ActivityPaperB" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_b</item>
-        <item name="colorPrimaryDark">@color/grey_700</item>
-        <item name="colorAccent">@color/grey_500</item>
     </style>
-    <style name="ActivityPaperC" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ActivityPaperC" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_c</item>
-        <item name="colorPrimaryDark">@color/grey_700</item>
-        <item name="colorAccent">@color/grey_500</item>
     </style>
-    <style name="ActivityPaperD" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="ActivityPaperD" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_d</item>
-        <item name="colorPrimaryDark">@color/grey_700</item>
-        <item name="colorAccent">@color/grey_500</item>
+    </style>
+    <style name="ActivityPaperE" parent="ActivityPaperBase">
+        <item name="colorPrimary">@color/paper_e</item>
+    </style>
+    <style name="ActivityPaperF" parent="ActivityPaperBase">
+        <item name="colorPrimary">@color/paper_f</item>
     </style>
 
     <!-- 裁剪器-->
