@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Fragment.BaseFragment;
@@ -95,7 +96,6 @@ public class MainActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
 //        FeedbackAPI.getFeedbackUnreadCount(this, null, this);   //检查百川反馈未读消息
         initExplain();          //使用说明初始化
         setSlidingMenu();       //设置SlidingMenu

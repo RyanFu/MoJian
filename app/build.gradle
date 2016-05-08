@@ -47,4 +47,5 @@ dependencies {
 //    compile 'com.umeng.analytics:analytics:latest.integration'  //友盟用户统计
     compile 'com.prolificinteractive:material-calendarview:1.2.0'   //日历
     compile 'me.zhanghai.android.patternlock:library:2.0.2'     //图案解锁
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.4'  //沉浸状态栏
 }

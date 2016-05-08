@@ -1,7 +1,9 @@
 <resources>
 
+    <style name="AppTheme" parent="AppTheme.Base">
+    </style>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/grey_500</item>
         <item name="colorPrimaryDark">@color/grey_700</item>
@@ -11,7 +13,8 @@
         <!-- 图案解锁-->
         <item name="patternViewStyle">@style/PatternView</item>
     </style>
-    <!-- 对应四种纸张的activity主题-->
+
+    <!-- 对应六种纸张的activity主题-->
     <style name="ActivityPaperBase" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/grey_700</item>
         <item name="colorAccent">@color/grey_500</item>
