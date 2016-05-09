@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.prolificinteractive.materialcalendarview.CalendarDay;
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.roocky.mojian.Adapter.BaseAdapter;
 import net.roocky.mojian.Decorator.CalendarDecorator;
@@ -43,6 +44,7 @@ public class CalendarActivity extends AppCompatActivity implements
     RecyclerView rvDiary;
 
     private DiaryAdapter adapter;
+    private SystemBarTintManager tintManager;
 
     //日历中当前所选择的日期
     private int year = Mojian.year;
@@ -51,12 +53,22 @@ public class CalendarActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initStatusBar();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         ButterKnife.bind(this);
 
         initView();
         setOnClickListener();
+    }
+
+    //设置透明状态栏
+    private void initStatusBar() {
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+            tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintResource(R.color.grey_600);
+        }
     }
 
     //初始化view
@@ -132,6 +144,7 @@ public class CalendarActivity extends AppCompatActivity implements
         intent.putExtra("month", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_month));
         intent.putExtra("day", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day));
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
+        intent.putExtra("background", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background));
         intent.putExtra("from", "diary");
         startActivity(intent);
     }

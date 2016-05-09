@@ -117,10 +117,15 @@ public class AddActivity extends AppCompatActivity implements
         setListener();
     }
 
+    //设置透明状态栏
     private void initStatusBar(int background) {
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+            tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+        } else {
+            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        }
     }
 
     private void initView() {
@@ -238,7 +243,11 @@ public class AddActivity extends AppCompatActivity implements
             nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
             llContent.setBackgroundResource(Mojian.backgroundIds[background]);
             //设置StatusBar&ToolBar颜色
-            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+            if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+                tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+            } else {
+                tintManager.setStatusBarTintColor(Mojian.colors[background]);
+            }
             toolbar.setBackgroundColor(Mojian.colors[background]);
         }
         dialog.dismiss();

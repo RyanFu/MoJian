@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -39,6 +40,7 @@ import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.FileUtil;
+import net.roocky.mojian.Util.SDKVersion;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 
@@ -96,6 +98,7 @@ public class MainActivity extends BaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Fresco.initialize(this);
+        initStatusBar();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.slidingmenu);
         setSlidingMenu();       //设置SlidingMenu
@@ -106,6 +109,16 @@ public class MainActivity extends BaseActivity implements
         setOnClickListener();
 
         itemSelected(R.id.btn_note);   //设置默认“便笺”项被选中
+    }
+
+    //设置透明状态栏
+    private void initStatusBar() {
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setStatusBarTintColor(0xff9e9e9e);
+            tintManager.setStatusBarAlpha(0.8f);
+        }
     }
 
     //初始化使用说明
@@ -153,7 +166,9 @@ public class MainActivity extends BaseActivity implements
 //        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);     //设置此项可解决虚拟键遮挡问题
         slidingMenu.setMenu(R.layout.menu_slidingmenu);
         slidingMenu.setContent(R.layout.activity_main);
-        slidingMenu.getMenu().setPadding(0, ScreenUtil.dip2px(this, 25), 0, 0);     //解决沉浸状态栏布局上移问题
+        if (SDKVersion.isHigher(Build.VERSION_CODES.KITKAT)) {
+            slidingMenu.getMenu().setPadding(0, ScreenUtil.dip2px(this, 25), 0, 0);     //解决沉浸状态栏布局上移问题
+        }
     }
 
     //绑定控件点击事件

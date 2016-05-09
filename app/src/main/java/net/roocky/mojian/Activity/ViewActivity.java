@@ -186,7 +186,11 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private void initStatusBar(int background) {
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+            tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+        } else {
+            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        }
     }
     //设置主题（ActionBar&StatusBar颜色）
     private void initTheme(int background) {
@@ -513,7 +517,11 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
         llContent.setBackgroundResource(Mojian.backgroundIds[background]);
         //设置StatusBar&ToolBar颜色
-        tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+            tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+        } else {
+            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        }
         toolbar.setBackgroundColor(Mojian.colors[background]);
         dialog.dismiss();
     }
