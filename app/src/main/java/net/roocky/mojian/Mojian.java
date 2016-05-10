@@ -47,13 +47,13 @@ public class Mojian extends Application {
             0xffFFFFFF,
             0xffEEEEEE
     };
-    public static int[] darkColors = {      //纸张颜色-12
-            0xffD6CBC6,     //红
-            0xffD8D6C3,     //黄
-            0xffCCD6C3,     //绿
-            0xffC6CED7,     //蓝
-            0xffCCCCCC,
-            0xffBBBBBB
+    public static int[] darkColors = {      //纸张dark颜色
+            0xffC6BBB6,     //红
+            0xffC8C6B3,     //黄
+            0xffBCC6B3,     //绿
+            0xffB6BEC7,     //蓝
+            0xffBDBDBD,
+            0xff9E9E9E
     };
     public static int[] themeIds = {
             R.style.ActivityPaperA,

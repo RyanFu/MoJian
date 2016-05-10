@@ -9,7 +9,6 @@
     <color name="grey_600">#757575</color>
     <color name="grey_700">#616161</color>
     <color name="grey_800">#424242</color>
-    <color name="grey_original">#484848</color>
     <!-- 纸张颜色-->
     <color name="paper_a">#E8DDD8</color>
     <color name="paper_b">#EAE8D5</color>
@@ -17,10 +16,19 @@
     <color name="paper_d">#D8E0E9</color>
     <color name="paper_e">#FFFFFF</color>
     <color name="paper_f">#EEEEEE</color>
+    <!-- 纸张dark颜色-->
+    <color name="paper_a_dark">#C6BBB6</color>
+    <color name="paper_b_dark">#C8C6B3</color>
+    <color name="paper_c_dark">#BCC6B3</color>
+    <color name="paper_d_dark">#B6BEC7</color>
+    <color name="paper_e_dark">@color/grey_400</color>
+    <color name="paper_f_dark">@color/grey_500</color>
     <!-- 文字颜色-->
     <color name="grey_text">#363636</color>
     <!-- 背景颜色-->
     <color name="blue_grey_50">#ECEFF1</color>
     <!-- Android 5.0主题色-->
     <color name="teal_500">#009688</color>
+    <!-- 链接颜色-->
+    <color name="link_text">@color/teal_500</color>
 </resources>

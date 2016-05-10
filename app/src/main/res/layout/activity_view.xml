@@ -97,6 +97,7 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@android:color/black"
+                    android:textColorLink="@color/link_text"
                     android:background="@null"
                     android:visibility="gone"
                     android:gravity="top"
@@ -109,8 +110,10 @@
                     android:layout_height="match_parent"
                     android:textSize="16sp"
                     android:textColor="@android:color/black"
+                    android:textColorLink="@color/link_text"
                     android:padding="10dp"
-                    android:lineSpacingExtra="10dp" />
+                    android:lineSpacingExtra="10dp"
+                    android:autoLink="all" />
             </FrameLayout>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

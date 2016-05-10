@@ -17,25 +17,30 @@
     <!-- 对应六种纸张的activity主题-->
     <style name="ActivityPaperBase" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/grey_700</item>
-        <item name="colorAccent">@color/grey_500</item>
     </style>
     <style name="ActivityPaperA" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_a</item>
+        <item name="colorAccent">@color/paper_a_dark</item>
     </style>
     <style name="ActivityPaperB" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_b</item>
+        <item name="colorAccent">@color/paper_b_dark</item>
     </style>
     <style name="ActivityPaperC" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_c</item>
+        <item name="colorAccent">@color/paper_c_dark</item>
     </style>
     <style name="ActivityPaperD" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_d</item>
+        <item name="colorAccent">@color/paper_d_dark</item>
     </style>
     <style name="ActivityPaperE" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_e</item>
+        <item name="colorAccent">@color/paper_e_dark</item>
     </style>
     <style name="ActivityPaperF" parent="ActivityPaperBase">
         <item name="colorPrimary">@color/paper_f</item>
+        <item name="colorAccent">@color/paper_f_dark</item>
     </style>
 
     <!-- 裁剪器-->
