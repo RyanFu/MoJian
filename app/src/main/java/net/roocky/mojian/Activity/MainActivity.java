@@ -394,6 +394,7 @@ public class MainActivity extends BaseActivity implements
                                         values.put("remind", baseFragment.noteList.get(i).getRemind());
                                     }
                                     values.put("background", baseFragment.noteList.get(i).getBackground());
+                                    values.put("paper", baseFragment.noteList.get(i).getPaper());
                                     database.insert("note", null, values);
                                     values.clear();
                                     noteFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i));
@@ -408,6 +409,7 @@ public class MainActivity extends BaseActivity implements
                                     values.put("weather", baseFragment.diaryList.get(i).getWeather());
                                     values.put("content", baseFragment.diaryList.get(i).getContent());
                                     values.put("background", baseFragment.diaryList.get(i).getBackground());
+                                    values.put("paper", baseFragment.diaryList.get(i).getPaper());
                                     database.insert("diary", null, values);
                                     values.clear();
                                     diaryFragment.flush(Mojian.FLUSH_ADD, baseFragment.positionList.get(i), diaryFragment.count);

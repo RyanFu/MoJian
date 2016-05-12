@@ -1,5 +1,6 @@
 package net.roocky.mojian.Util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -13,12 +14,17 @@ public class FileUtil {
      * 文件拷贝
      * @param src       从这里拷贝
      * @param target    拷贝到这里
+     * @param name      拷贝得到的文件名
      * @return
      */
-    public static boolean copy(String src, String target) {
+    public static boolean copy(String src, String target, String name) {
         try {
             FileInputStream inputStream = new FileInputStream(src);
-            FileOutputStream outputStream = new FileOutputStream(target);
+            File dir = new File(target);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            FileOutputStream outputStream = new FileOutputStream(new File(dir, name));
             byte buffer[] = new byte[1024];
             while ((inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer);

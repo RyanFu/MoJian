@@ -1,34 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="120dp"
-    android:layout_height="120dp"
-    android:background="@android:color/white">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="6dp"
+    android:background="@color/grey_50">
     <TableRow>
         <ImageView
             android:id="@+id/iv_dialog_a"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_bottom_mei"
-            android:layout_margin="5dp"/>
+            android:src="@drawable/ic_bottom_null"
+            android:layout_margin="6dp"/>
         <ImageView
             android:id="@+id/iv_dialog_b"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_bottom_lan"
-            android:layout_margin="5dp"/>
-    </TableRow>
-    <TableRow>
+            android:src="@drawable/ic_bottom_mei"
+            android:layout_margin="6dp"/>
         <ImageView
             android:id="@+id/iv_dialog_c"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_bottom_zhu"
-            android:layout_margin="5dp"/>
+            android:src="@drawable/ic_bottom_lan"
+            android:layout_margin="6dp"/>
+    </TableRow>
+    <TableRow>
         <ImageView
             android:id="@+id/iv_dialog_d"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:src="@drawable/ic_bottom_he"
+            android:layout_margin="6dp"/>
+        <ImageView
+            android:id="@+id/iv_dialog_e"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_bottom_zhu"
+            android:layout_margin="6dp"/>
+        <ImageView
+            android:id="@+id/iv_dialog_f"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:src="@drawable/ic_bottom_ju"
-            android:layout_margin="5dp"/>
+            android:layout_margin="6dp"/>
     </TableRow>
 </TableLayout>

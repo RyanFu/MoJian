@@ -59,6 +59,12 @@
         <item name="android:windowBackground">@drawable/abc_popup_background_mtrl_mult</item>   <!-- 借用Spinner背景-->
         <item name="android:windowAnimationStyle">@style/Animation.SelectDialog</item>
     </style>
+    <style name="ColorDialog" parent="Base.Theme.AppCompat.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowBackground">@drawable/abc_popup_background_mtrl_mult</item>   <!-- 借用Spinner背景-->
+        <item name="android:windowAnimationStyle">@style/Animation.AppCompat.Dialog</item>
+    </style>
     <style name="Animation.SelectDialog" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/dialog_select_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_select_exit</item>

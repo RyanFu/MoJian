@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -100,6 +101,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivWeatherIcon;
     @Bind(R.id.nsv_content)
     NestedScrollView nsvContent;
+    @Bind(R.id.ll_content)
+    LinearLayout llContent;
     @Bind(R.id.iv_bottom)
     ImageView ivBottom;
     @Bind(R.id.iv_background)
@@ -161,13 +164,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     bmpContent = (Bitmap)msg.obj;
                     //先检查权限在进行保存
                     if (PermissionUtil.checkA(ViewActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE)) {
-                        long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
+                        long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_pic), 80);     //保存至SD卡
                         if (currentTimeMill != 0) {
                             Toast.makeText(ViewActivity.this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
                             Intent shareIntent = new Intent(Intent.ACTION_SEND);
                             shareIntent.putExtra(Intent.EXTRA_STREAM,
                                     Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                            + getString(R.string.path_cache)
+                                            + getString(R.string.path_pic)
                                             + currentTimeMill + ".jpg"));
                             shareIntent.setType("image/*");
                             startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_picture)));
@@ -222,6 +225,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             actionBar.setTitle(getString(R.string.app_name));
         }
         nsvContent.setBackgroundColor(Mojian.colors[paper]);
+        llContent.setBackgroundColor(Mojian.colors[paper]);
 
         new Thread(new Runnable() {
             @Override
@@ -344,6 +348,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
+                            ivBackground.setVisibility(View.GONE);
+                            ivBottom.setVisibility(View.VISIBLE);
                             Message message = new Message();
                             message.what = SCREEN_SHOT;
                             message.obj = ScreenUtil.screenshot(findViewById(R.id.ll_content), width); //截长图
@@ -401,13 +407,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         switch (requestCode) {
             case PER_EXTERNAL_STORAGE:  //存储空间权限
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_cache), 80);     //保存至SD卡
+                    long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_pic), 80);     //保存至SD卡
                     if (currentTimeMill != 0) {
                         Toast.makeText(this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
                         Intent shareIntent = new Intent(Intent.ACTION_SEND);
                         shareIntent.putExtra(Intent.EXTRA_STREAM,
                                 Uri.parse("file:///" + Environment.getExternalStorageDirectory()
-                                        + getString(R.string.path_cache)
+                                        + getString(R.string.path_pic)
                                         + currentTimeMill + ".jpg"));
                         shareIntent.setType("image/*");
                         startActivity(Intent.createChooser(shareIntent, "图片分享"));
@@ -499,10 +505,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_pic), 40);   //保存至本地
+            long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_cache), 40);   //保存至本地
             ImageSpan imageSpan = new ImageSpan(this, bitmap);
             String tag = "<"
-                    + Environment.getExternalStorageDirectory() + getString(R.string.path_pic) + currentTimeMill
+                    + Environment.getExternalStorageDirectory() + getString(R.string.path_cache) + currentTimeMill
                     + ".jpg>\n";
             SpannableString spannableString = new SpannableString(tag);
             spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -546,6 +552,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             paper = position;
             //设置背景纸张
             nsvContent.setBackgroundColor(Mojian.colors[paper]);
+            llContent.setBackgroundColor(Mojian.colors[paper]);
             //设置StatusBar&ToolBar颜色
             if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
                 tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);

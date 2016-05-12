@@ -284,10 +284,10 @@ public class AddActivity extends AppCompatActivity implements
                         e.printStackTrace();
                         break;
                     }
-                    long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_pic), 40);   //保存至本地
+                    long currentTimeMill = BitmapUtil.save(bitmap, getString(R.string.path_cache), 40);   //保存至本地
                     AlignImageSpan imageSpan = new AlignImageSpan(this, bitmap, AlignImageSpan.ALIGN_CENTER);
                     String tag = "<"
-                            + Environment.getExternalStorageDirectory() + getString(R.string.path_pic) + currentTimeMill
+                            + Environment.getExternalStorageDirectory() + getString(R.string.path_cache) + currentTimeMill
                             + ".jpg>\n";
                     SpannableString spannableString = new SpannableString(tag);
                     spannableString.setSpan(imageSpan, 0, tag.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

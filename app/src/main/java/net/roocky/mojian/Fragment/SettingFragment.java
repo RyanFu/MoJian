@@ -1,6 +1,7 @@
 package net.roocky.mojian.Fragment;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +31,8 @@ import butterknife.ButterKnife;
  * Created by roocky on 03/16.
  * 设置Fragment
  */
-public class SettingFragment extends Fragment implements View.OnClickListener {
+public class SettingFragment extends Fragment implements View.OnClickListener,
+        DialogInterface.OnClickListener {
     @Bind(R.id.ll_backup)
     LinearLayout llBackup;
     @Bind(R.id.tv_backup_detail)
@@ -138,7 +141,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
                 if (data != null) {
                     String result;
                     Uri uri = data.getData();
-                    if (FileUtil.copy(uri.getPath(), getString(R.string.path_databases) + "Mojian.db")) {
+                    if (FileUtil.copy(uri.getPath(), getString(R.string.path_databases), "Mojian.db")) {
                         result = "恢复成功！";
                     } else {
                         result = "恢复失败！";
@@ -166,24 +169,34 @@ public class SettingFragment extends Fragment implements View.OnClickListener {
 
     //备份 & 恢复
     private void backStore(int id) {
-        String result;
         if (id == R.id.ll_backup) {
-            if (FileUtil.copy(getString(R.string.path_databases) + "Mojian.db",
-                    Environment.getExternalStorageDirectory() + "/"
-                            + getString(R.string.app_name_eng)
-                            + Mojian.year + "-" + (Mojian.month + 1) + "-" + Mojian.day + "_"     //年月日
-                            + Mojian.hour + "-" + Mojian.minute + ".backup")) {                   //时分
-                result = "备份成功！";
-            } else {
-                result = "备份失败！";
-            }
-            Snackbar.make(llBackup, result, Snackbar.LENGTH_SHORT).show();
-        } else {
+            new AlertDialog.Builder(getContext())
+                    .setTitle(getString(R.string.set_backup))
+                    .setMessage(getString(R.string.dialog_backup))
+                    .setPositiveButton("确定", this)
+                    .setNegativeButton("取消", null)
+                    .show();
+        } else if (id == R.id.ll_restore) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             startActivityForResult(intent, SELECT_FILE);
         }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        String result;
+        if (FileUtil.copy(getString(R.string.path_databases) + "Mojian.db",
+                Environment.getExternalStorageDirectory() + "/InkMemo/",
+                getString(R.string.app_name_eng)
+                        + Mojian.year + "-" + (Mojian.month + 1) + "-" + Mojian.day + "_"     //年月日
+                        + Mojian.hour + "-" + Mojian.minute + ".backup")) {                   //时分
+            result = "备份成功！";
+        } else {
+            result = "备份失败！";
+        }
+        Snackbar.make(llBackup, result, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override

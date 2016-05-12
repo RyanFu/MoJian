@@ -23,11 +23,6 @@ public class Mojian extends Application {
     public static final int FLUSH_ADD = 0;
     public static final int FLUSH_REMOVE = 1;
     public static final int FLUSH_ALL = 2;
-    //天气
-    public static final int WEATHER_SUN = 0;
-    public static final int WEATHER_CLOUD = 1;
-    public static final int WEATHER_RAIN = 2;
-    public static final int WEATHER_SNOW = 3;
     //当前日记是否为锁定状态
     public static boolean isLocked = true;
     /**
@@ -46,11 +41,11 @@ public class Mojian extends Application {
      */
     public static int[] darkColors = {//纸张dark颜色，用于CardView的日期背景
             0xffbdbdbd,
-            0xffEDD9DC,
-            0xffEDEBD5,
+            0xffDFCBCE,
+            0xffDFDDC7,
             0xff9e9e9e,
-            0xffD6E3D7,
-            0xffD1E0EB
+            0xffC8D5C9,
+            0xffC3D2DD
     };
     /**
      * 不同纸张颜色对应的主题
@@ -77,8 +72,10 @@ public class Mojian extends Application {
 
     //背景图片
     public static int[] backgrounds = {
+            R.drawable.bottom_null,
             R.drawable.bottom_mei,
             R.drawable.bottom_lan,
+            R.drawable.bottom_he,
             R.drawable.bottom_zhu,
             R.drawable.bottom_ju
     };

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- UI主题颜色-->
+    <color name="grey_50">#FAFAFA</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_200">#EEEEEE</color>
     <color name="grey_300">#E0E0E0</color>
@@ -18,11 +19,11 @@
     <color name="paper_f">@color/blue_50</color>
     <!-- 纸张dark颜色，用于colorAccent-->
     <color name="paper_a_dark">@color/grey_400</color>
-    <color name="paper_b_dark">@color/red_300</color>
-    <color name="paper_c_dark">@color/yellow_300</color>
+    <color name="paper_b_dark">@color/red_50_dark</color>
+    <color name="paper_c_dark">@color/yellow_50_dark</color>
     <color name="paper_d_dark">@color/grey_500</color>
-    <color name="paper_e_dark">@color/green_300</color>
-    <color name="paper_f_dark">@color/blue_300</color>
+    <color name="paper_e_dark">@color/green_50_dark</color>
+    <color name="paper_f_dark">@color/blue_50_dark</color>
     <!-- 背景颜色-->
     <color name="blue_grey_50">#ECEFF1</color>
     <!-- Android 5.0主题色-->
@@ -31,11 +32,11 @@
     <color name="link_text">@color/teal_500</color>
     <!-- 红黄绿蓝-->
     <color name="red_50">#FFEBEE</color>
-    <color name="red_300">#E57373</color>
+    <color name="red_50_dark">#DFCBCE</color>
     <color name="yellow_50">#FFFDE7</color>
-    <color name="yellow_300">#FFF176</color>
+    <color name="yellow_50_dark">#DFDDC7</color>
     <color name="green_50">#E8F5E9</color>
-    <color name="green_300">#81C784</color>
+    <color name="green_50_dark">#C8D5C9</color>
     <color name="blue_50">#E3F2FD</color>
-    <color name="blue_300">#64B5F6</color>
+    <color name="blue_50_dark">#C3D2DD</color>
 </resources>

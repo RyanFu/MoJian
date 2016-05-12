@@ -35,7 +35,7 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
         ivDialogB.setOnClickListener(this);
         ivDialogC.setOnClickListener(this);
         ivDialogD.setOnClickListener(this);
-        if (idLayout == R.layout.dialog_paper) {
+        if (idLayout != R.layout.dialog_weather) {
             ImageView ivDialogW = (ImageView) findViewById(R.id.iv_dialog_e);
             ImageView ivDialogG = (ImageView) findViewById(R.id.iv_dialog_f);
             ivDialogW.setOnClickListener(this);
@@ -58,7 +58,7 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
             case R.id.iv_dialog_d:
                 onItemClickListener.onItemClick(dialog, 3);
                 break;
-            default:        //设置背景时多出的两个
+            default:        //设置背景&纸张时多出的两个
                 switch (v.getId()) {
                     case R.id.iv_dialog_e:
                         onItemClickListener.onItemClick(dialog, 4);
