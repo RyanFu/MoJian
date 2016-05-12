@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -33,6 +34,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -72,6 +74,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         NestedScrollView.OnScrollChangeListener,
         DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener,
+        ViewTreeObserver.OnGlobalLayoutListener,
         SelectDialog.OnItemClickListener{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -97,8 +100,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivWeatherIcon;
     @Bind(R.id.nsv_content)
     NestedScrollView nsvContent;
-    @Bind(R.id.ll_content)
-    LinearLayout llContent;
+    @Bind(R.id.iv_bottom)
+    ImageView ivBottom;
+    @Bind(R.id.iv_background)
+    ImageView ivBackground;
+    @Bind(R.id.cl_main)
+    CoordinatorLayout clMain;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -239,12 +246,15 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             tvRemind.setVisibility(View.VISIBLE);
             tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
         }
+        ivBackground.setImageResource(Mojian.backgrounds[background]);
+        ivBottom.setImageResource(Mojian.backgrounds[background]);
     }
 
     private void setListener() {
         fabEdit.setOnClickListener(this);
         nsvContent = (NestedScrollView) findViewById(R.id.nsv_content);
         nsvContent.setOnScrollChangeListener(this);
+        clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     @Override
@@ -529,7 +539,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onItemClick(SelectDialog dialog, int position) {
         if (dialog == sdBackground) {
-
+            background = position;
+            ivBackground.setImageResource(Mojian.backgrounds[background]);
+            ivBottom.setImageResource(Mojian.backgrounds[background]);
         } else if (dialog == sdPaper) {
             paper = position;
             //设置背景纸张
@@ -643,6 +655,24 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    public void onGlobalLayout() {
+        //根据软键盘是否显示决定背景图片的位置
+        if (ScreenUtil.isSoftInputShow(clMain)) {
+            ivBackground.setVisibility(View.GONE);
+            ivBottom.setVisibility(View.VISIBLE);
+        } else {
+            if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
+                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 200) {//如果TextView过长需要隐藏background显示Bottom
+                ivBackground.setVisibility(View.GONE);
+                ivBottom.setVisibility(View.VISIBLE);
+            } else {
+                ivBackground.setVisibility(View.VISIBLE);
+                ivBottom.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 //        MobclickAgent.onResume(this);
@@ -684,6 +714,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             }
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
+        } else {
+            clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
         }
     }
 }

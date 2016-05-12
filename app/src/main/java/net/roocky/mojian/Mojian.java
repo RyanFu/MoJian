@@ -75,6 +75,14 @@ public class Mojian extends Application {
             R.drawable.bg_ripple_paper_f
     };
 
+    //背景图片
+    public static int[] backgrounds = {
+            R.drawable.bottom_mei,
+            R.drawable.bottom_lan,
+            R.drawable.bottom_zhu,
+            R.drawable.bottom_ju
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();

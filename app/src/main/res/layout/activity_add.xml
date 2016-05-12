@@ -48,8 +48,22 @@
                 android:hint="内容……"
                 android:padding="10dp"
                 android:lineSpacingExtra="10dp" />
+            <ImageView
+                android:id="@+id/iv_bottom"
+                android:layout_width="280dp"
+                android:layout_height="300dp"
+                android:scaleType="fitStart"
+                android:src="@drawable/bottom_mei"
+                android:visibility="gone"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="280dp"
+        android:layout_height="300dp"
+        android:src="@drawable/bottom_mei"
+        android:layout_gravity="left|bottom"
+        android:scaleType="fitStart"/>
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"

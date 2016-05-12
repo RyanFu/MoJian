@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -24,9 +26,11 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -36,6 +40,7 @@ import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.BitmapUtil;
 import net.roocky.mojian.Util.PermissionUtil;
+import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 import net.roocky.mojian.Widget.AlignImageSpan;
 import net.roocky.mojian.Widget.SelectDialog;
@@ -53,7 +58,8 @@ public class AddActivity extends AppCompatActivity implements
         View.OnClickListener,
         DialogInterface.OnClickListener,
         SelectDialog.OnItemClickListener,
-        DatePickerDialog.OnDateSetListener {
+        DatePickerDialog.OnDateSetListener,
+        ViewTreeObserver.OnGlobalLayoutListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
@@ -62,8 +68,12 @@ public class AddActivity extends AppCompatActivity implements
     FloatingActionButton fabAdd;
     @Bind(R.id.nsv_content)
     NestedScrollView nsvContent;
-    @Bind(R.id.ll_content)
-    LinearLayout llContent;
+    @Bind(R.id.iv_background)
+    ImageView ivBackground;
+    @Bind(R.id.iv_bottom)
+    ImageView ivBottom;
+    @Bind(R.id.cl_main)
+    CoordinatorLayout clMain;
 
     private SystemBarTintManager tintManager;
 
@@ -77,7 +87,7 @@ public class AddActivity extends AppCompatActivity implements
     private SelectDialog sdBackground;
     private int weather = 0;        //记录该条目的天气
     private int paper = 0;     //条目的纸张颜色
-    private int background = 0;
+    private int background = 0; //背景图片
 
     private int year = Mojian.year;
     private int month = Mojian.month;
@@ -150,6 +160,7 @@ public class AddActivity extends AppCompatActivity implements
     private void setListener() {
         toolbar.setNavigationOnClickListener(this);
         fabAdd.setOnClickListener(this);
+        clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
 
     private void handleShare() {
@@ -254,7 +265,9 @@ public class AddActivity extends AppCompatActivity implements
             }
             toolbar.setBackgroundColor(Mojian.colors[paper]);
         } else if (dialog == sdBackground) {
-
+            background = position;
+            ivBackground.setImageResource(Mojian.backgrounds[background]);
+            ivBottom.setImageResource(Mojian.backgrounds[background]);
         }
         dialog.dismiss();
     }
@@ -349,6 +362,18 @@ public class AddActivity extends AppCompatActivity implements
     }
 
     @Override
+    public void onGlobalLayout() {
+        //根据软键盘是否显示决定背景图片的位置
+        if (ScreenUtil.isSoftInputShow(clMain)) {
+            ivBackground.setVisibility(View.GONE);
+            ivBottom.setVisibility(View.VISIBLE);
+        } else {
+            ivBackground.setVisibility(View.VISIBLE);
+            ivBottom.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         //记便笺时可以退出保存，写日记时需要提示是否保存
         if (!etContent.getText().toString().equals("")) {
@@ -386,5 +411,15 @@ public class AddActivity extends AppCompatActivity implements
     protected void onPause() {
         super.onPause();
 //        MobclickAgent.onPause(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN) {
+            clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
+        } else {
+            clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        }
     }
 }
