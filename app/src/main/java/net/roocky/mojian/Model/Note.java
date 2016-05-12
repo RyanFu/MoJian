@@ -11,8 +11,8 @@ public class Note extends Base {
 
     }
 
-    public Note(int id, int year, int month, int day, String content, int background, String remind) {
-        super(id, year, month, day, content, background);
+    public Note(int id, int year, int month, int day, String content, int background, int paper, String remind) {
+        super(id, year, month, day, content, background, paper);
         this.remind = remind;
     }
 

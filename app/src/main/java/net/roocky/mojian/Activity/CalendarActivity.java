@@ -83,7 +83,7 @@ public class CalendarActivity extends AppCompatActivity implements
         //设置RecyclerView
         LinearLayoutManager manager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         adapter = new DiaryAdapter(this,
-                new String[]{"id", "year", "month", "day", "weather", "content", "background"},
+                new String[]{"id", "year", "month", "day", "weather", "content", "background", "paper"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
                 -1);
@@ -123,7 +123,7 @@ public class CalendarActivity extends AppCompatActivity implements
         this.day = date.getDay();
         adapter.listRefresh("diary",
                 Mojian.FLUSH_ALL,
-                new String[]{"id", "year", "month", "day", "weather", "content", "background"},
+                new String[]{"id", "year", "month", "day", "weather", "content", "background", "paper"},
                 "year=? and month=? and day=?",
                 new String[]{String.valueOf(year), String.valueOf(month), String.valueOf(day)},
                 -1,
@@ -145,6 +145,7 @@ public class CalendarActivity extends AppCompatActivity implements
         intent.putExtra("day", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_day));
         intent.putExtra("content", ((TextView) (view.findViewById(R.id.tv_content))).getText().toString());
         intent.putExtra("background", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background));
+        intent.putExtra("paper", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_paper));
         intent.putExtra("from", "diary");
         startActivity(intent);
     }

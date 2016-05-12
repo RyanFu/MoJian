@@ -4,6 +4,12 @@
     <item
         android:id="@+id/action_background"
         android:title="@string/action_background"
+        android:icon="@mipmap/ic_filter_vintage_black_24dp"
+        app:showAsAction="always"
+        android:visible="false" />
+    <item
+        android:id="@+id/action_paper"
+        android:title="@string/action_paper"
         android:icon="@mipmap/ic_color_lens_black_24dp"
         app:showAsAction="always"
         android:visible="false" />
@@ -20,16 +26,16 @@
         app:showAsAction="always"
         android:visible="false"/>
     <item
-        android:id="@+id/action_delete"
-        android:title="@string/action_delete"
-        android:icon="@mipmap/ic_delete_black_24dp"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/action_share_picture"
         android:title="@string/action_share_picture"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_share_text"
         android:title="@string/action_share_text"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_delete"
+        android:title="@string/action_delete"
+        android:icon="@mipmap/ic_delete_black_24dp"
         app:showAsAction="never" />
 </menu>

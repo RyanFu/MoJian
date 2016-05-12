@@ -337,7 +337,7 @@ public class MainActivity extends BaseActivity implements
     public void onClick(DialogInterface dialog, int which) {
         super.onClick(dialog, which);           //更改头像&背景图片
         if (dialog.equals(dialogDelete)) {      //删除item
-            final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 2).getWritableDatabase();
+            final SQLiteDatabase database = new DatabaseHelper(this, "Mojian.db", null, 3).getWritableDatabase();
             //对List进行升序排序，使得删除自顶向下，以保证删除过程中position不会出问题
             Collections.sort(baseFragment.deleteList);
             Collections.sort(baseFragment.positionList);

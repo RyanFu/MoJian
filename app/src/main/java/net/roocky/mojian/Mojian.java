@@ -30,31 +30,31 @@ public class Mojian extends Application {
     public static final int WEATHER_SNOW = 3;
     //当前日记是否为锁定状态
     public static boolean isLocked = true;
-    //纸张背景&颜色id
-    public static int[] backgroundIds = {
-            R.drawable.bg_content_a,
-            R.drawable.bg_content_b,
-            R.drawable.bg_content_c,
-            R.drawable.bg_content_d,
-            android.R.color.white,
-            R.color.grey_200
-    };
-    public static int[] colors = {          //纸张颜色
-            0xffE8DDD8,     //红
-            0xffEAE8D5,     //黄
-            0xffDEE8D5,     //绿
-            0xffD8E0E9,     //蓝
+    /**
+     * normal，StatusBar背景色 & Toolbar背景色 & 4.x版本CardView的内容背景 & ViewActivity纸张背景
+     */
+    public static int[] colors = {
             0xffFFFFFF,
-            0xffEEEEEE
+            0xffFFEBEE,
+            0xffFFFDE7,
+            0xffEEEEEE,
+            0xffE8F5E9,
+            0xffE3F2FD
     };
-    public static int[] darkColors = {      //纸张dark颜色
-            0xffC6BBB6,     //红
-            0xffC8C6B3,     //黄
-            0xffBCC6B3,     //绿
-            0xffB6BEC7,     //蓝
-            0xffBDBDBD,
-            0xff9E9E9E
+    /**
+     * dark，华为等机型的StatusBar背景色，CardView的日期背景
+     */
+    public static int[] darkColors = {//纸张dark颜色，用于CardView的日期背景
+            0xffbdbdbd,
+            0xffEDD9DC,
+            0xffEDEBD5,
+            0xff9e9e9e,
+            0xffD6E3D7,
+            0xffD1E0EB
     };
+    /**
+     * 不同纸张颜色对应的主题
+     */
     public static int[] themeIds = {
             R.style.ActivityPaperA,
             R.style.ActivityPaperB,
@@ -63,13 +63,16 @@ public class Mojian extends Application {
             R.style.ActivityPaperE,
             R.style.ActivityPaperF
     };
+    /**
+     * 5.x版本CardView的内容背景
+     */
     public static int[] ripples = {
             R.drawable.bg_ripple_paper_a,
             R.drawable.bg_ripple_paper_b,
             R.drawable.bg_ripple_paper_c,
             R.drawable.bg_ripple_paper_d,
-            R.drawable.bg_ripple_white,
-            R.drawable.bg_ripple_grey_200
+            R.drawable.bg_ripple_paper_e,
+            R.drawable.bg_ripple_paper_f
     };
 
     @Override

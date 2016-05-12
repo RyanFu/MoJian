@@ -9,26 +9,33 @@
     <color name="grey_600">#757575</color>
     <color name="grey_700">#616161</color>
     <color name="grey_800">#424242</color>
-    <!-- 纸张颜色-->
-    <color name="paper_a">#E8DDD8</color>
-    <color name="paper_b">#EAE8D5</color>
-    <color name="paper_c">#DEE8D5</color>
-    <color name="paper_d">#D8E0E9</color>
-    <color name="paper_e">#FFFFFF</color>
-    <color name="paper_f">#EEEEEE</color>
-    <!-- 纸张dark颜色-->
-    <color name="paper_a_dark">#C6BBB6</color>
-    <color name="paper_b_dark">#C8C6B3</color>
-    <color name="paper_c_dark">#BCC6B3</color>
-    <color name="paper_d_dark">#B6BEC7</color>
-    <color name="paper_e_dark">@color/grey_400</color>
-    <color name="paper_f_dark">@color/grey_500</color>
-    <!-- 文字颜色-->
-    <color name="grey_text">#363636</color>
+    <!-- 纸张颜色，用于5.x版本CardView的内容背景，颜色选择Dialog中的标识，用于colorPrimary-->
+    <color name="paper_a">@android:color/white</color>
+    <color name="paper_b">@color/red_50</color>
+    <color name="paper_c">@color/yellow_50</color>
+    <color name="paper_d">@color/grey_200</color>
+    <color name="paper_e">@color/green_50</color>
+    <color name="paper_f">@color/blue_50</color>
+    <!-- 纸张dark颜色，用于colorAccent-->
+    <color name="paper_a_dark">@color/grey_400</color>
+    <color name="paper_b_dark">@color/red_300</color>
+    <color name="paper_c_dark">@color/yellow_300</color>
+    <color name="paper_d_dark">@color/grey_500</color>
+    <color name="paper_e_dark">@color/green_300</color>
+    <color name="paper_f_dark">@color/blue_300</color>
     <!-- 背景颜色-->
     <color name="blue_grey_50">#ECEFF1</color>
     <!-- Android 5.0主题色-->
     <color name="teal_500">#009688</color>
     <!-- 链接颜色-->
     <color name="link_text">@color/teal_500</color>
+    <!-- 红黄绿蓝-->
+    <color name="red_50">#FFEBEE</color>
+    <color name="red_300">#E57373</color>
+    <color name="yellow_50">#FFFDE7</color>
+    <color name="yellow_300">#FFF176</color>
+    <color name="green_50">#E8F5E9</color>
+    <color name="green_300">#81C784</color>
+    <color name="blue_50">#E3F2FD</color>
+    <color name="blue_300">#64B5F6</color>
 </resources>

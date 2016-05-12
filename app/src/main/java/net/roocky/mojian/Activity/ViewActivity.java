@@ -11,7 +11,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -133,13 +132,17 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             R.drawable.weather_clouds_with_rain,
             R.drawable.weather_clouds_with_snow
     };
-    private int background = 0;     //标识当前背景
+    private int background = 0;     //标识当前背景图片
+    private int paper = 0;          //标识当前纸张
     private String from;
     private SystemBarTintManager tintManager;
 
     private final int SELECT_IMAGE = 0;
     private final int INIT_CONTENT = 1;
     private final int SCREEN_SHOT = 2;
+
+    private SelectDialog sdPaper;
+    private SelectDialog sdBackground;
 
     private Handler handler = new Handler() {
         public void handleMessage(Message msg) {
@@ -172,8 +175,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initStatusBar(getIntent().getIntExtra("background", 0));
-        initTheme(getIntent().getIntExtra("background", 0));
+        initStatusBar(getIntent().getIntExtra("paper", 0));
+        initTheme(getIntent().getIntExtra("paper", 0));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
         ButterKnife.bind(this);
@@ -183,25 +186,26 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     //设置透明状态栏
-    private void initStatusBar(int background) {
+    private void initStatusBar(int paper) {
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
         if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
-            tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+            tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
         } else {
-            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+            tintManager.setStatusBarTintColor(Mojian.colors[paper]);
         }
     }
     //设置主题（ActionBar&StatusBar颜色）
-    private void initTheme(int background) {
-        setTheme(Mojian.themeIds[background]);
+    private void initTheme(int paper) {
+        setTheme(Mojian.themeIds[paper]);
     }
 
     private void initView() {
         intent = getIntent();
         from = intent.getStringExtra("from");
         background = intent.getIntExtra("background", 0);
-        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 2);
+        paper = intent.getIntExtra("paper", 0);
+        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 3);
         database = databaseHelper.getWritableDatabase();
 
         setSupportActionBar(toolbar);
@@ -210,8 +214,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setTitle(getString(R.string.app_name));
         }
-        nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
-        llContent.setBackgroundResource(Mojian.backgroundIds[background]);
+        nsvContent.setBackgroundColor(Mojian.colors[paper]);
 
         new Thread(new Runnable() {
             @Override
@@ -254,12 +257,14 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             if (from.equals("diary")) {
                 menu.findItem(R.id.action_date).setVisible(true);       //修改日期
             }
-            menu.findItem(R.id.action_background).setVisible(true);       //修改日期
+            menu.findItem(R.id.action_background).setVisible(true);       //修改背景
+            menu.findItem(R.id.action_paper).setVisible(true);
         } else {
             if (from.equals("diary")) {
                 menu.findItem(R.id.action_date).setVisible(false);
             }
             menu.findItem(R.id.action_background).setVisible(false);
+            menu.findItem(R.id.action_paper).setVisible(false);
         }
 
         return true;
@@ -268,22 +273,31 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //ActionBar菜单点击事件
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Window window;
         switch (item.getItemId()) {
             case android.R.id.home:     //返回箭头
                 if (from.equals("note") && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     values.put("background", background);
+                    values.put("paper", paper);
                     database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
                 }
                 finish();
                 break;
-            case R.id.action_background:
-                SelectDialog selectDialog = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
-                Window window = selectDialog.getWindow();
+            case R.id.action_paper:
+                sdPaper = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_paper);
+                window = sdPaper.getWindow();
                 window.setGravity(Gravity.TOP | Gravity.RIGHT);
-                selectDialog.show();
-                selectDialog.setOnItemClickListener(selectDialog, this);
+                sdPaper.show();
+                sdPaper.setOnItemClickListener(sdPaper, this);
+                break;
+            case R.id.action_background:
+                sdBackground = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
+                window = sdBackground.getWindow();
+                window.setGravity(Gravity.TOP | Gravity.RIGHT);
+                sdBackground.show();
+                sdBackground.setOnItemClickListener(sdBackground, this);
                 break;
             case R.id.action_date:
                 datePicker = new DatePickerDialog(
@@ -441,6 +455,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     values.put("background", background);
+                    values.put("paper", paper);
                     if (from.equals("diary")) {
                         database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
                     } else {
@@ -503,6 +518,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
+                values.put("paper", paper);
                 database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
             }
         }
@@ -512,17 +528,20 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //背景选择dialog点击事件
     @Override
     public void onItemClick(SelectDialog dialog, int position) {
-        background = position;
-        //设置背景纸张
-        nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
-        llContent.setBackgroundResource(Mojian.backgroundIds[background]);
-        //设置StatusBar&ToolBar颜色
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
-            tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
-        } else {
-            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+        if (dialog == sdBackground) {
+
+        } else if (dialog == sdPaper) {
+            paper = position;
+            //设置背景纸张
+            nsvContent.setBackgroundColor(Mojian.colors[paper]);
+            //设置StatusBar&ToolBar颜色
+            if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+                tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
+            } else {
+                tintManager.setStatusBarTintColor(Mojian.colors[paper]);
+            }
+            toolbar.setBackgroundColor(Mojian.colors[paper]);
         }
-        toolbar.setBackgroundColor(Mojian.colors[background]);
         dialog.dismiss();
     }
 
@@ -595,6 +614,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         intentReceiver.putExtra("id", requestCode);
         intentReceiver.putExtra("content", intent.getStringExtra("content"));
         intentReceiver.putExtra("background", background);
+        intentReceiver.putExtra("paper", paper);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,       //Context
                 Integer.parseInt(requestCode),      //requestCode
@@ -644,11 +664,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
+                values.put("paper", paper);
                 database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
                 super.onBackPressed();
             } else {
                 if (!tvContent.getText().toString().equals(etContent.getText().toString()) ||
-                        background != intent.getIntExtra("background", 0)) {
+                        background != intent.getIntExtra("background", 0) ||
+                        paper != intent.getIntExtra("paper", 0)) {
                     dialogUpdate = new AlertDialog.Builder(this)
                             .setTitle("修改")
                             .setMessage("需要保存修改吗？")

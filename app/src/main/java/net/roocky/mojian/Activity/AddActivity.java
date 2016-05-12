@@ -1,7 +1,6 @@
 package net.roocky.mojian.Activity;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -9,13 +8,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -26,18 +20,13 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
@@ -47,8 +36,6 @@ import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.BitmapUtil;
 import net.roocky.mojian.Util.PermissionUtil;
-import net.roocky.mojian.Util.SDKVersion;
-import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
 import net.roocky.mojian.Widget.AlignImageSpan;
 import net.roocky.mojian.Widget.SelectDialog;
@@ -85,10 +72,12 @@ public class AddActivity extends AppCompatActivity implements
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase database;
 
-    private SelectDialog weatherDialog;
-    private SelectDialog bgDialog;
+    private SelectDialog sdWeather;
+    private SelectDialog sdPaper;
+    private SelectDialog sdBackground;
     private int weather = 0;        //记录该条目的天气
-    private int background = 0;     //条目的背景
+    private int paper = 0;     //条目的纸张颜色
+    private int background = 0;
 
     private int year = Mojian.year;
     private int month = Mojian.month;
@@ -107,31 +96,36 @@ public class AddActivity extends AppCompatActivity implements
     private int imgCount = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initStatusBar(background);
-        setTheme(Mojian.themeIds[background]);
+        initStatusBar(paper);
+        setTheme(Mojian.themeIds[paper]);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
         ButterKnife.bind(this);
+
+        intent = getIntent();
+        if (intent.getStringExtra("from") == null) {
+            handleShare();      //接收其他应用的文本分享
+            intent.putExtra("from", "note");
+        }
 
         initView();
         setListener();
     }
 
     //设置透明状态栏
-    private void initStatusBar(int background) {
+    private void initStatusBar(int paper) {
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
         if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
-            tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+            tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
         } else {
-            tintManager.setStatusBarTintColor(Mojian.colors[background]);
+            tintManager.setStatusBarTintColor(Mojian.colors[paper]);
         }
     }
 
     private void initView() {
-        intent = getIntent();
         from = intent.getStringExtra("from");
-        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 2);
+        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 3);
         database = databaseHelper.getWritableDatabase();
 
         setSupportActionBar(toolbar);
@@ -139,8 +133,7 @@ public class AddActivity extends AppCompatActivity implements
             toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
         }
         ActionBar actionBar = getSupportActionBar();
-        nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
-        llContent.setBackgroundResource(Mojian.backgroundIds[background]);
+        nsvContent.setBackgroundColor(Mojian.colors[paper]);
 
         if (actionBar != null) {
             if (from.equals("diary")) {
@@ -157,6 +150,16 @@ public class AddActivity extends AppCompatActivity implements
     private void setListener() {
         toolbar.setNavigationOnClickListener(this);
         fabAdd.setOnClickListener(this);
+    }
+
+    private void handleShare() {
+        if (intent.getAction().equals(Intent.ACTION_SEND) && intent.getType().equals("text/plain")) {
+            String shareText = intent.getStringExtra(Intent.EXTRA_TEXT);
+            String title = intent.getStringExtra(Intent.EXTRA_SUBJECT);
+            if (shareText != null) {
+                etContent.setText(shareText);
+            }
+        }
     }
 
     @Override
@@ -187,6 +190,7 @@ public class AddActivity extends AppCompatActivity implements
                 values.put("day", day);
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
+                values.put("paper", paper);
                 if (from.equals("diary")) {
                     values.put("weather", weather);
                     database.insert("diary", null, values);
@@ -226,6 +230,7 @@ public class AddActivity extends AppCompatActivity implements
             values.put("day", day);
             values.put("content", etContent.getText().toString());
             values.put("background", background);
+            values.put("paper", paper);
             values.put("weather", weather);
             database.insert("diary", null, values);
         }
@@ -234,21 +239,22 @@ public class AddActivity extends AppCompatActivity implements
 
     @Override
     public void onItemClick(SelectDialog dialog, int position) {
-        if (dialog == weatherDialog) {
+        if (dialog == sdWeather) {
             weather = position;
             invalidateOptionsMenu();    //更新menu
-        } else {
-            background = position;
+        } else if (dialog == sdPaper) {
+            paper = position;
             //设置背景纸张
-            nsvContent.setBackgroundResource(Mojian.backgroundIds[background]);
-            llContent.setBackgroundResource(Mojian.backgroundIds[background]);
+            nsvContent.setBackgroundColor(Mojian.colors[paper]);
             //设置StatusBar&ToolBar颜色
             if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
-                tintManager.setStatusBarTintColor(Mojian.darkColors[background]);
+                tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
             } else {
-                tintManager.setStatusBarTintColor(Mojian.colors[background]);
+                tintManager.setStatusBarTintColor(Mojian.colors[paper]);
             }
-            toolbar.setBackgroundColor(Mojian.colors[background]);
+            toolbar.setBackgroundColor(Mojian.colors[paper]);
+        } else if (dialog == sdBackground) {
+
         }
         dialog.dismiss();
     }
@@ -299,20 +305,28 @@ public class AddActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Window window;
         switch (item.getItemId()) {
             case R.id.action_weather:
-                weatherDialog = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_weather);
-                Window weatherWindow = weatherDialog.getWindow();
-                weatherWindow.setGravity(Gravity.TOP | Gravity.RIGHT);
-                weatherDialog.show();
-                weatherDialog.setOnItemClickListener(weatherDialog, this);
+                sdWeather = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_weather);
+                window = sdWeather.getWindow();
+                window.setGravity(Gravity.TOP | Gravity.RIGHT);
+                sdWeather.show();
+                sdWeather.setOnItemClickListener(sdWeather, this);
                 break;
-            case R.id.action_background:
-                bgDialog = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
-                Window bgWindow = bgDialog.getWindow();
-                bgWindow.setGravity(Gravity.TOP | Gravity.RIGHT);
-                bgDialog.show();
-                bgDialog.setOnItemClickListener(bgDialog, this);
+            case R.id.action_paper:     //纸张颜色
+                sdPaper = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_paper);
+                window = sdPaper.getWindow();
+                window.setGravity(Gravity.TOP | Gravity.RIGHT);
+                sdPaper.show();
+                sdPaper.setOnItemClickListener(sdPaper, this);
+                break;
+            case R.id.action_background:        //底部背景图片
+                sdBackground = new SelectDialog(this, R.style.Widget_SelectDialog, R.layout.dialog_background);
+                window = sdBackground.getWindow();
+                window.setGravity(Gravity.TOP | Gravity.RIGHT);
+                sdBackground.show();
+                sdBackground.setOnItemClickListener(sdBackground, this);
                 break;
             case R.id.action_date:
                 new DatePickerDialog(
@@ -345,6 +359,7 @@ public class AddActivity extends AppCompatActivity implements
                 values.put("day", Mojian.day);
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
+                values.put("paper", paper);
                 database.insert("note", null, values);
                 super.onBackPressed();
             } else {

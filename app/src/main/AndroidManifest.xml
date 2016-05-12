@@ -30,7 +30,13 @@
         <activity android:name=".Activity.ViewActivity"
             android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".Activity.AddActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Activity.CalendarActivity" />
         <activity android:name=".Activity.PatternSetActivity" />
         <activity android:name=".Activity.PatternConfirmActivity" />

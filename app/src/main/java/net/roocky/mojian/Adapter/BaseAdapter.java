@@ -43,7 +43,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
 
     private List<Integer> positionList = new ArrayList<>();
 
-    protected int background;
+    protected int paper;
 
     /**
      * @param context
@@ -54,7 +54,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
      * @param count             第几次获取数据(-1表示获取全部数据，主要用于日记fragment分次刷新数据)
      */
     public BaseAdapter(Context context, String type, String[] columns, String selection, String[] selectionArgs, int count) {
-        database = new DatabaseHelper(context, "Mojian.db", null, 2).getWritableDatabase();
+        database = new DatabaseHelper(context, "Mojian.db", null, 3).getWritableDatabase();
         listRefresh(type, Mojian.FLUSH_ALL, columns, selection, selectionArgs, count, -1);
         this.type = type;
     }
@@ -69,21 +69,21 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         int month = baseList.get(baseList.size() - position - 1).getMonth();
         int day = baseList.get(baseList.size() - position - 1).getDay();
         //设置显示
-        background = baseList.get(baseList.size() - position - 1).getBackground();
-        holder.tvDate.setBackgroundColor(Mojian.darkColors[background]);
+        paper = baseList.get(baseList.size() - position - 1).getPaper();
+        holder.tvDate.setBackgroundColor(Mojian.darkColors[paper]);
         if (positionList.contains(position)) {          //被选中，需要被删除的
-            holder.tvContent.setBackgroundColor(Mojian.darkColors[background]);
+            holder.tvContent.setBackgroundColor(Mojian.darkColors[paper]);
             if (type.equals("note")) {
-                holder.tvRemind.setBackgroundColor(Mojian.darkColors[background]);
+                holder.tvRemind.setBackgroundColor(Mojian.darkColors[paper]);
             }
         } else {                                        //未被选中，不需要被删除的
             if (SDKVersion.isHigher(Build.VERSION_CODES.LOLLIPOP)) {
-                holder.tvContent.setBackgroundResource(Mojian.ripples[background]);
+                holder.tvContent.setBackgroundResource(Mojian.ripples[paper]);
             } else {
-                holder.tvContent.setBackgroundColor(Mojian.colors[background]);
+                holder.tvContent.setBackgroundColor(Mojian.colors[paper]);
             }
             if (type.equals("note")){
-                holder.tvRemind.setBackgroundColor(Mojian.colors[background]);
+                holder.tvRemind.setBackgroundColor(Mojian.colors[paper]);
             }
         }
         if (type.equals("diary")) {
@@ -119,6 +119,7 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
         holder.cvItem.setTag(R.id.tag_day, baseList.get(baseList.size() - position - 1).getDay());
         holder.cvItem.setTag(R.id.tag_content, baseList.get(baseList.size() - position - 1).getContent());
         holder.cvItem.setTag(R.id.tag_background, baseList.get(baseList.size() - position - 1).getBackground());
+        holder.cvItem.setTag(R.id.tag_paper, baseList.get(baseList.size() - position - 1).getPaper());
         if (type.equals("diary")) {
             holder.cvItem.setTag(R.id.tag_weather, ((Diary) baseList.get(baseList.size() - position - 1)).getWeather());
         }

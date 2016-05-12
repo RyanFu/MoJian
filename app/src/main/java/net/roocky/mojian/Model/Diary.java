@@ -11,8 +11,8 @@ public class Diary extends Base {
 
     }
 
-    public Diary(int id, int year, int month, int day, String content, int background, int weather) {
-        super(id, year, month, day, content, background);
+    public Diary(int id, int year, int month, int day, String content, int background, int paper, int weather) {
+        super(id, year, month, day, content, background, paper);
         this.weather = weather;
     }
 

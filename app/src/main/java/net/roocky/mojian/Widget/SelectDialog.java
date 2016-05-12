@@ -3,15 +3,10 @@ package net.roocky.mojian.Widget;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import net.roocky.mojian.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by roocky on 04/23.
@@ -40,9 +35,9 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
         ivDialogB.setOnClickListener(this);
         ivDialogC.setOnClickListener(this);
         ivDialogD.setOnClickListener(this);
-        if (idLayout == R.layout.dialog_background) {
-            ImageView ivDialogW = (ImageView) findViewById(R.id.iv_dialog_white);
-            ImageView ivDialogG = (ImageView) findViewById(R.id.iv_dialog_grey);
+        if (idLayout == R.layout.dialog_paper) {
+            ImageView ivDialogW = (ImageView) findViewById(R.id.iv_dialog_e);
+            ImageView ivDialogG = (ImageView) findViewById(R.id.iv_dialog_f);
             ivDialogW.setOnClickListener(this);
             ivDialogG.setOnClickListener(this);
         }
@@ -63,12 +58,12 @@ public class SelectDialog extends Dialog implements View.OnClickListener {
             case R.id.iv_dialog_d:
                 onItemClickListener.onItemClick(dialog, 3);
                 break;
-            default:        //设置背景时多出的两个（白色&灰色）
+            default:        //设置背景时多出的两个
                 switch (v.getId()) {
-                    case R.id.iv_dialog_white:
+                    case R.id.iv_dialog_e:
                         onItemClickListener.onItemClick(dialog, 4);
                         break;
-                    case R.id.iv_dialog_grey:
+                    case R.id.iv_dialog_f:
                         onItemClickListener.onItemClick(dialog, 5);
                         break;
                 }
