@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -152,6 +153,8 @@ public class AddActivity extends AppCompatActivity implements
                 actionBar.setTitle(getString(R.string.tt_add_note));
             }
         }
+        SharedPreferences preferences = getSharedPreferences("mojian", MODE_PRIVATE);
+        etContent.setTextSize(Mojian.fontSize[preferences.getInt("fontSize", 1)]);
         //显示软键盘
         etContent.requestFocus();
         SoftInput.show(etContent);

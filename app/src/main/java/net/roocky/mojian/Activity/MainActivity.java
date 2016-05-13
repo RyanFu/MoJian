@@ -13,16 +13,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -95,6 +92,10 @@ public class MainActivity extends BaseActivity implements
     private AlertDialog dialogNickname;
     private AlertDialog dialogSignature;
 
+    private int[] drawerPositions = {SlidingMenu.LEFT, SlidingMenu.RIGHT};
+    private int[] drawerShadows = {R.drawable.shadow_left, R.drawable.shadow_right};
+    private int[] drawerMenus = {R.layout.menu_slidingmenu, R.layout.menu_slidingmenu_right};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Fresco.initialize(this);
@@ -156,15 +157,15 @@ public class MainActivity extends BaseActivity implements
     //设置侧滑抽屉菜单
     private void setSlidingMenu() {
         slidingMenu = (SlidingMenu)findViewById(R.id.slm_main);
-        slidingMenu.setMode(SlidingMenu.LEFT);      //菜单位置
+        slidingMenu.setMode(drawerPositions[preferences.getInt("drawerPosition", 0)]);      //菜单位置
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);    //滑动位置
         slidingMenu.setBehindWidth((int) (0.75f * getResources().getDisplayMetrics().widthPixels));  //菜单宽度
         slidingMenu.setFadeDegree(0.5f);        //淡入淡出
         slidingMenu.setBehindScrollScale(0f);   //菜单缩放
-        slidingMenu.setShadowDrawable(R.drawable.shadow);       //阴影设置
+        slidingMenu.setShadowDrawable(drawerShadows[preferences.getInt("drawerPosition", 0)]);       //阴影设置
         slidingMenu.setShadowWidthRes(R.dimen.slidingmenu_shadow_width);
 //        slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);     //设置此项可解决虚拟键遮挡问题
-        slidingMenu.setMenu(R.layout.menu_slidingmenu);
+        slidingMenu.setMenu(drawerMenus[preferences.getInt("drawerPosition", 0)]);
         slidingMenu.setContent(R.layout.activity_main);
         if (SDKVersion.isHigher(Build.VERSION_CODES.KITKAT)) {
             slidingMenu.getMenu().setPadding(0, ScreenUtil.dip2px(this, 25), 0, 0);     //解决沉浸状态栏布局上移问题

@@ -161,7 +161,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INIT_CONTENT:
-                    tvContent.setTextSize(Mojian.fontSize[preferences.getInt("fontSize", 1)]);
                     tvContent.setText((SpannableStringBuilder) msg.obj);
                     break;
                 case SCREEN_SHOT:
@@ -231,6 +230,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         }
         nsvContent.setBackgroundColor(Mojian.colors[paper]);
         llContent.setBackgroundColor(Mojian.colors[paper]);
+
+        tvContent.setTextSize(Mojian.fontSize[preferences.getInt("fontSize", 1)]);
+        etContent.setTextSize(Mojian.fontSize[preferences.getInt("fontSize", 1)]);
 
         new Thread(new Runnable() {
             @Override

@@ -27,7 +27,6 @@ public class Mojian extends Application {
     public static boolean isLocked = true;
     //字体大小
     public static float[] fontSize = {20, 17.5f, 15};
-    public static String[] fontSizeName = {"大", "中", "小"};
     /**
      * normal，StatusBar背景色 & Toolbar背景色 & 4.x版本CardView的内容背景 & ViewActivity纸张背景
      */
