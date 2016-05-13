@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity implements
                     dir.mkdirs();
                 }
                 InputStream inputStream = getAssets().open("Mojian.db");
-                FileUtil.copy(inputStream, getString(R.string.path_databases) + "Mojian.db");
+                FileUtil.copy(inputStream, getString(R.string.path_databases), "Mojian.db");
             } catch (IOException e) {
                 e.printStackTrace();
             }

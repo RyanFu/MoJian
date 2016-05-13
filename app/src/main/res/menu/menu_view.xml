@@ -34,6 +34,10 @@
         android:title="@string/action_share_text"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_export_txt"
+        android:title="@string/action_export_txt"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_delete"
         android:title="@string/action_delete"
         android:icon="@mipmap/ic_delete_black_24dp"

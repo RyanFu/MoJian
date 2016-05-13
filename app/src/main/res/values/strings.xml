@@ -22,6 +22,7 @@
     <string name="action_date">日期</string>
     <string name="action_share_picture">图片分享</string>
     <string name="action_share_text">文本分享</string>
+    <string name="action_export_txt">导出TXT文件</string>
     <string name="action_remind">提醒</string>
     <string name="action_calendar">日历</string>
 
@@ -56,6 +57,7 @@
     <string name="path_databases">/data/data/net.roocky.mojian/databases/</string>
     <string name="path_pic">/InkMemo/Picture/</string>
     <string name="path_cache">/InkMemo/Cache/</string>
+    <string name="path_txt">/InkMemo/TXT/</string>
 
     <string name="tt_add_diary">写日记</string>
     <string name="tt_add_note">记便笺</string>
@@ -72,6 +74,8 @@
     <string name="toast_image_save">图片已保存至“/sdcard/InkMemo/Picture/%1$s”</string>
     <string name="toast_text_overflow">文本长度超出图片分享最大限制</string>
     <string name="toast_remind_cancel">提醒已取消</string>
+    <string name="toast_export_txt_success">TXT文件导出成功！路径：/sdcard/InkMemo/TXT/%1$s</string>
+    <string name="toast_export_txt_failed">TXT文件导出失败！</string>
 
     <string name="dialog_forget_pattern">忘记图案</string>
     <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>

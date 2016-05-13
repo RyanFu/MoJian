@@ -55,6 +55,7 @@ import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.BitmapUtil;
+import net.roocky.mojian.Util.FileUtil;
 import net.roocky.mojian.Util.ImageSpanUtil;
 import net.roocky.mojian.Util.PermissionUtil;
 import net.roocky.mojian.Util.ScreenUtil;
@@ -131,6 +132,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     private final int PER_EXTERNAL_STORAGE = 0;
     private final int PER_EXTERNAL_STORAGE_ADD = 1;
+    private final int PER_EXTERNAL_STORAGE_EXPORT = 2;
     private Bitmap bmpContent;
 
     private int[] weathers = {
@@ -372,6 +374,19 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 shareIntent.setType("text/plain");
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.action_share_text)));
                 break;
+            case R.id.action_export_txt:
+                if (PermissionUtil.checkA(this, Manifest.permission.READ_EXTERNAL_STORAGE, PER_EXTERNAL_STORAGE_EXPORT)) {
+                    if (FileUtil.createTxt(tvContent.getText().toString(),
+                            Environment.getExternalStorageDirectory() + getString(R.string.path_txt),
+                            System.currentTimeMillis() + ".txt")) {
+                        Snackbar.make(toolbar,
+                                getString(R.string.toast_export_txt_success, System.currentTimeMillis() + ".txt"),
+                                Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(toolbar, getString(R.string.toast_export_txt_failed), Snackbar.LENGTH_SHORT).show();
+                    }
+                }
+                break;
             case R.id.action_remind:
                 //如果已经设置了提醒，该menu的功能为取消提醒
                 if (hasRemind || !intent.getStringExtra("remind").equals("")) {
@@ -411,9 +426,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //处理Android 6.0中permission请求完成事件
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PER_EXTERNAL_STORAGE:  //存储空间权限
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            switch (requestCode) {
+                case PER_EXTERNAL_STORAGE:  //分享图片请求权限
                     long currentTimeMill = BitmapUtil.save(bmpContent, getString(R.string.path_pic), 80);     //保存至SD卡
                     if (currentTimeMill != 0) {
                         Toast.makeText(this, getString(R.string.toast_image_save, currentTimeMill + ".jpg"), Toast.LENGTH_SHORT).show();
@@ -427,20 +442,27 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     } else {
                         Snackbar.make(toolbar, getString(R.string.toast_to_picture_error), Snackbar.LENGTH_SHORT).show();
                     }
-                } else {
-                    Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
-                }
-                break;
-            case PER_EXTERNAL_STORAGE_ADD:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    break;
+                case PER_EXTERNAL_STORAGE_ADD:      //添加图片请求权限
                     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                     intent.addCategory(Intent.CATEGORY_OPENABLE);
                     intent.setType("image/*");
                     startActivityForResult(intent, SELECT_IMAGE);
-                } else {
-                    Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
-                }
-                break;
+                    break;
+                case PER_EXTERNAL_STORAGE_EXPORT:       //导出txt请求权限
+                    if (FileUtil.createTxt(tvContent.getText().toString(),
+                            Environment.getExternalStorageDirectory() + getString(R.string.path_txt),
+                            System.currentTimeMillis() + ".txt")) {
+                        Snackbar.make(toolbar,
+                                getString(R.string.toast_export_txt_success, System.currentTimeMillis() + ".txt"),
+                                Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(toolbar, getString(R.string.toast_export_txt_failed), Snackbar.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        } else {
+            Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
         }
     }
 

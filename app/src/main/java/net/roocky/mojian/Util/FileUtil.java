@@ -1,9 +1,15 @@
 package net.roocky.mojian.Util;
 
+import android.widget.TextView;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 
 /**
  * Created by roocky on 10/17.
@@ -38,10 +44,13 @@ public class FileUtil {
         }
     }
 
-    public static boolean copy(InputStream inputS, String target) {
+    public static boolean copy(InputStream inputStream, String target, String name) {
         try {
-            InputStream inputStream = inputS;
-            FileOutputStream outputStream = new FileOutputStream(target);
+            File dir = new File(target);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            FileOutputStream outputStream = new FileOutputStream(new File(dir, name));
             byte[] buffer = new byte[1024];
             while ((inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer);
@@ -53,6 +62,32 @@ public class FileUtil {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    //将String导出为txt文件
+    public static boolean createTxt(String content, String target, String name) {
+        File dir = new File(target);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        BufferedWriter writer = null;
+        try {
+            FileOutputStream outputStream = new FileOutputStream(new File(dir, name));
+            writer = new BufferedWriter(new OutputStreamWriter(outputStream));
+            writer.write(content);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }  finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
