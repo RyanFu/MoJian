@@ -156,7 +156,7 @@ public class MainActivity extends BaseActivity implements
     //设置侧滑抽屉菜单
     private void setSlidingMenu() {
         slidingMenu = (SlidingMenu)findViewById(R.id.slm_main);
-        slidingMenu.setMode(SlidingMenu.SLIDING_WINDOW);      //菜单位置
+        slidingMenu.setMode(SlidingMenu.LEFT);      //菜单位置
         slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);    //滑动位置
         slidingMenu.setBehindWidth((int) (0.75f * getResources().getDisplayMetrics().widthPixels));  //菜单宽度
         slidingMenu.setFadeDegree(0.5f);        //淡入淡出

@@ -4,118 +4,164 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"
+    android:background="@android:color/white"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    <android.support.v7.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="10dp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@android:color/white">
-        <LinearLayout
-            android:id="@+id/ll_backup"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/set_backup"
-                android:textSize="17sp"
-                android:textColor="@android:color/black"
-                android:padding="10dp"/>
-            <TextView
-                android:id="@+id/tv_backup_detail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"/>
-        </LinearLayout>
+            android:text="@string/set_base"
+            android:textColor="@color/teal_500"
+            android:padding="15dp"/>
         <LinearLayout
-            android:id="@+id/ll_restore"
+            android:id="@+id/ll_size"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/set_restore"
+                android:text="@string/set_size"
                 android:textSize="17sp"
-                android:textColor="@android:color/black"
-                android:padding="10dp"/>
+                android:textColor="@android:color/black" />
             <TextView
+                android:id="@+id/tv_size_detail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/set_restore_detail"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"/>
+                android:layout_height="wrap_content" />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey_300"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_security"
+            android:textColor="@color/teal_500"
+            android:padding="15dp"/>
         <LinearLayout
             android:id="@+id/ll_lock"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/set_lock"
                 android:textSize="17sp"
-                android:textColor="@android:color/black"
-                android:padding="10dp"/>
+                android:textColor="@android:color/black" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/set_lock_detail"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"/>
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/ll_clear_lock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/set_clear_lock"
-                android:textSize="17sp"
-                android:textColor="@android:color/black"
-                android:padding="10dp"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/set_clear_lock_detail"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"/>
+                android:text="@string/set_lock_detail" />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/grey_300"/>
         <LinearLayout
+            android:id="@+id/ll_clear_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_clear_lock"
+                android:textSize="17sp"
+                android:textColor="@android:color/black" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_clear_lock_detail" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_data"
+            android:textColor="@color/teal_500"
+            android:padding="15dp"/>
+        <LinearLayout
+            android:id="@+id/ll_backup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_backup"
+                android:textSize="17sp"
+                android:textColor="@android:color/black" />
+            <TextView
+                android:id="@+id/tv_backup_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+        <LinearLayout
+            android:id="@+id/ll_restore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_restore"
+                android:textSize="17sp"
+                android:textColor="@android:color/black"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/set_restore_detail"/>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/grey_300"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/set_help"
+            android:textColor="@color/teal_500"
+            android:padding="15dp"/>
+        <LinearLayout
             android:id="@+id/ll_feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/set_feedback"
                 android:textSize="17sp"
-                android:textColor="@android:color/black"
-                android:padding="10dp"/>
+                android:textColor="@android:color/black" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/set_feedback_detail"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"/>
+                android:text="@string/set_feedback_detail" />
         </LinearLayout>
         <View
             android:layout_width="match_parent"
@@ -125,21 +171,19 @@
             android:id="@+id/ll_about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:background="@android:color/white">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/app_name_full"
                 android:textSize="17sp"
-                android:textColor="@android:color/black"
-                android:padding="10dp"/>
+                android:textColor="@android:color/black" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/app_author"
-                android:paddingLeft="10dp"
-                android:paddingBottom="10dp"/>
+                android:text="@string/app_author" />
         </LinearLayout>
-        </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

@@ -33,6 +33,10 @@ import butterknife.ButterKnife;
  */
 public class SettingFragment extends Fragment implements View.OnClickListener,
         DialogInterface.OnClickListener {
+    @Bind(R.id.ll_size)
+    LinearLayout llSize;
+    @Bind(R.id.tv_size_detail)
+    TextView tvSizeDetail;
     @Bind(R.id.ll_backup)
     LinearLayout llBackup;
     @Bind(R.id.tv_backup_detail)
@@ -59,6 +63,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
 
     private final int RESULT_OK = -1;
 
+    private AlertDialog adBackup;
+    private AlertDialog adSize;
+    private AlertDialog adDrawer;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
@@ -72,6 +80,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
     }
 
     private void setOnClickListener() {
+        llSize.setOnClickListener(this);
         llBackup.setOnClickListener(this);
         llRestore.setOnClickListener(this);
         llLock.setOnClickListener(this);
@@ -84,6 +93,12 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         String patternSha1 = preferences.getString("patternSha1", "");
         switch (v.getId()) {
+            case R.id.ll_size:
+                adSize = new AlertDialog.Builder(getContext())
+                        .setTitle(getString(R.string.set_size))
+                        .setSingleChoiceItems(new String[] {"大", "中", "小"}, preferences.getInt("fontSize", 1), this)
+                        .show();
+                break;
             case R.id.ll_lock:
                 if (patternSha1.equals("")) {
                     startActivity(new Intent(getActivity(), PatternSetActivity.class));
@@ -170,7 +185,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
     //备份 & 恢复
     private void backStore(int id) {
         if (id == R.id.ll_backup) {
-            new AlertDialog.Builder(getContext())
+            adBackup = new AlertDialog.Builder(getContext())
                     .setTitle(getString(R.string.set_backup))
                     .setMessage(getString(R.string.dialog_backup))
                     .setPositiveButton("确定", this)
@@ -186,17 +201,22 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        String result;
-        if (FileUtil.copy(getString(R.string.path_databases) + "Mojian.db",
-                Environment.getExternalStorageDirectory() + "/InkMemo/",
-                getString(R.string.app_name_eng)
-                        + Mojian.year + "-" + (Mojian.month + 1) + "-" + Mojian.day + "_"     //年月日
-                        + Mojian.hour + "-" + Mojian.minute + ".backup")) {                   //时分
-            result = "备份成功！";
-        } else {
-            result = "备份失败！";
+        if (dialog == adBackup) {
+            String result;
+            if (FileUtil.copy(getString(R.string.path_databases) + "Mojian.db",
+                    Environment.getExternalStorageDirectory() + "/InkMemo/",
+                    getString(R.string.app_name_eng)
+                            + Mojian.year + "-" + (Mojian.month + 1) + "-" + Mojian.day + "_"     //年月日
+                            + Mojian.hour + "-" + Mojian.minute + ".backup")) {                   //时分
+                result = "备份成功！";
+            } else {
+                result = "备份失败！";
+            }
+            Snackbar.make(llBackup, result, Snackbar.LENGTH_SHORT).show();
+        } else if (dialog == adSize) {
+            editor.putInt("fontSize", which).apply();   //0->大字号，1->中字号，2->小字号
+            dialog.dismiss();
         }
-        Snackbar.make(llBackup, result, Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -208,6 +228,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
         Mojian.flushTime();
         tvBackupDetail.setText(getString(R.string.set_backup_detail, Mojian.year, Mojian.month + 1, Mojian.day,
                 Mojian.hour, Mojian.minute));
+        tvSizeDetail.setText(Mojian.fontSizeName[preferences.getInt("fontSize", 1)]);
     }
 
     @Override

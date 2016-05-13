@@ -8,6 +8,7 @@ import android.app.TimePickerDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -110,6 +111,8 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.cl_main)
     CoordinatorLayout clMain;
 
+    private SharedPreferences preferences;
+
     private Intent intent;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase database;
@@ -158,6 +161,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INIT_CONTENT:
+                    tvContent.setTextSize(Mojian.fontSize[preferences.getInt("fontSize", 1)]);
                     tvContent.setText((SpannableStringBuilder) msg.obj);
                     break;
                 case SCREEN_SHOT:
@@ -211,6 +215,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
+        preferences = getSharedPreferences("mojian", MODE_PRIVATE);
         intent = getIntent();
         from = intent.getStringExtra("from");
         background = intent.getIntExtra("background", 0);

@@ -31,7 +31,13 @@
     <string name="set_birthday">生日</string>
     <string name="set_address">地址</string>
     <string name="set_signature">个性签名</string>
-    
+
+    <string name="set_base">基本设置</string>
+    <string name="set_data">备份与恢复</string>
+    <string name="set_security">安全设置</string>
+    <string name="set_help">关于与帮助</string>
+
+    <string name="set_size">字体大小</string>
     <string name="set_backup">备份</string>
     <string name="set_backup_detail">备份文件存放路径：“/sdcard/InkMemo/InkMemo%1$s-%2$s-%3$s_%4$s-%5$s.backup”</string>
     <string name="set_restore">恢复</string>
