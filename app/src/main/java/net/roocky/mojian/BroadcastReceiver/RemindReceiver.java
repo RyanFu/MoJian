@@ -30,6 +30,7 @@ public class RemindReceiver extends BroadcastReceiver {
         intentNotify.putExtra("id", intent.getStringExtra("id"));
         intentNotify.putExtra("content", intent.getStringExtra("content"));
         intentNotify.putExtra("background", intent.getIntExtra("background", 0));
+        intentNotify.putExtra("paper", intent.getIntExtra("paper", 0));
         intentNotify.putExtra("remind", "");    //此处的Intent仅用来显示一条便笺，并且该便笺的提醒时间已到
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,

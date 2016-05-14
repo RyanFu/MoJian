@@ -414,6 +414,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                             Mojian.year,
                             Mojian.month,
                             Mojian.day);
+                    remindPicker.setCancelable(true);
                     remindPicker.show();
                 }
                 break;
@@ -606,7 +607,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     Mojian.hour,
                     Mojian.minute,
                     false);
-            timePickerDialog.setCancelable(false);
+            timePickerDialog.setCancelable(true);
             timePickerDialog.show();
         } else {                        //日记修改日期
             ContentValues values = new ContentValues();

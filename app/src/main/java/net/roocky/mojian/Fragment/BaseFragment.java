@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -92,7 +93,6 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_paper),
                             (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_weather)));
                 }
-
             } else {        //如果未选则设置为已选
                 view.findViewById(R.id.tv_content).setBackgroundColor(Mojian.darkColors[paper]);    //grey_500
                 deleteList.add(idSelect);
