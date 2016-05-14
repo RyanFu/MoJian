@@ -4,7 +4,7 @@
 
     <string name="app_name">墨笺</string>
     <string name="app_name_full">墨笺 1.0.7</string>
-    <string name="app_name_eng">InkMemo</string>
+    <string name="app_name_eng">MoJian</string>
     <string name="app_version">1.0.7</string>
     <string name="app_author">Roocky强力驱动</string>
 
@@ -42,7 +42,7 @@
     <string name="set_drawer">抽屉位置</string>
     <string name="set_drawer_detail">%1$s（更改后需重启「墨笺」）</string>
     <string name="set_backup">备份</string>
-    <string name="set_backup_detail">备份文件存放路径：“/sdcard/InkMemo/InkMemo%1$s-%2$s-%3$s_%4$s-%5$s.backup”</string>
+    <string name="set_backup_detail">备份文件存放路径：“/sdcard/MoJian/MoJian%1$s-%2$s-%3$s_%4$s-%5$s.backup”</string>
     <string name="set_restore">恢复</string>
     <string name="set_restore_detail">手动选择需要恢复的备份文件版本</string>
     <string name="set_lock">日记锁定</string>
@@ -55,9 +55,9 @@
     <string name="set_about_detail">「墨笺」的故事</string>
 
     <string name="path_databases">/data/data/net.roocky.mojian/databases/</string>
-    <string name="path_pic">/InkMemo/Picture/</string>
-    <string name="path_cache">/InkMemo/Cache/</string>
-    <string name="path_txt">/InkMemo/TXT/</string>
+    <string name="path_pic">/MoJian/Picture/</string>
+    <string name="path_cache">/MoJian/Cache/</string>
+    <string name="path_txt">/MoJian/TXT/</string>
 
     <string name="tt_add_diary">写日记</string>
     <string name="tt_add_note">记便笺</string>
@@ -71,15 +71,15 @@
     <string name="toast_no_lock">你还没有设置过解锁图案呢……</string>
     <string name="toast_clear_success">解锁图案清除成功~</string>
     <string name="toast_image_overflow">最多插入5张图片(╯﹏╰)</string>
-    <string name="toast_image_save">图片已保存至“/sdcard/InkMemo/Picture/%1$s”</string>
+    <string name="toast_image_save">图片已保存至“/sdcard/MoJian/Picture/%1$s”</string>
     <string name="toast_text_overflow">文本长度超出图片分享最大限制</string>
     <string name="toast_remind_cancel">提醒已取消</string>
-    <string name="toast_export_txt_success">TXT文件导出成功！路径：/sdcard/InkMemo/TXT/%1$s</string>
+    <string name="toast_export_txt_success">TXT文件导出成功！路径：/sdcard/MoJian/TXT/%1$s</string>
     <string name="toast_export_txt_failed">TXT文件导出失败！</string>
 
     <string name="dialog_forget_pattern">忘记图案</string>
     <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>
-    <string name="dialog_backup">「墨笺」将会备份你的便笺和日记，但是你在便笺和日记中插入的图片需要你手动进行备份: )，图片路径：/sdcard/InkMemo/Picture</string>
+    <string name="dialog_backup">「墨笺」将会备份你的便笺和日记，但是你在便笺和日记中插入的图片需要你手动进行备份: )，图片路径：/sdcard/MoJian/Picture</string>
 
     <string name="note_remind">「墨笺」会在%1$s提醒你: )</string>
     <!--<string name="feedback_notify">您有%1$d条反馈未读消息</string>-->

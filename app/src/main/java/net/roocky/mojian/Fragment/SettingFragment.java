@@ -218,7 +218,7 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
         if (dialog == adBackup) {
             String result;
             if (FileUtil.copy(getString(R.string.path_databases) + "Mojian.db",
-                    Environment.getExternalStorageDirectory() + "/InkMemo/",
+                    Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name_eng) + "/",
                     getString(R.string.app_name_eng)
                             + Mojian.year + "-" + (Mojian.month + 1) + "-" + Mojian.day + "_"     //年月日
                             + Mojian.hour + "-" + Mojian.minute + ".backup")) {                   //时分
