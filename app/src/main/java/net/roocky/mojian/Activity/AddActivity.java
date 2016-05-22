@@ -31,8 +31,10 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -105,9 +107,12 @@ public class AddActivity extends AppCompatActivity implements
     private final int PER_EXTERNAL_STORAGE = 0;
 
     private int imgCount = 0;
+
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initStatusBar(paper);
+        initStatusBar();
         setTheme(Mojian.themeIds[paper]);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
@@ -124,7 +129,10 @@ public class AddActivity extends AppCompatActivity implements
     }
 
     //设置透明状态栏
-    private void initStatusBar(int paper) {
+    private void initStatusBar() {
+        preferences = getSharedPreferences("mojian", MODE_PRIVATE);
+        editor = preferences.edit();
+        paper = preferences.getInt("defaultPaper", 0);
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
         if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
@@ -153,11 +161,14 @@ public class AddActivity extends AppCompatActivity implements
                 actionBar.setTitle(getString(R.string.tt_add_note));
             }
         }
-        SharedPreferences preferences = getSharedPreferences("mojian", MODE_PRIVATE);
         etContent.setTextSize(Mojian.fontSize[preferences.getInt("fontSize", 1)]);
         //显示软键盘
         etContent.requestFocus();
         SoftInput.show(etContent);
+        //设置默认背景图
+        background = preferences.getInt("defaultBackground", 0);
+        ivBackground.setImageResource(Mojian.backgrounds[background]);
+        ivBottom.setImageResource(Mojian.backgrounds[background]);
     }
 
     private void setListener() {
@@ -258,6 +269,7 @@ public class AddActivity extends AppCompatActivity implements
             invalidateOptionsMenu();    //更新menu
         } else if (dialog == sdPaper) {
             paper = position;
+            editor.putInt("defaultPaper", paper).apply();
             //设置背景纸张
             nsvContent.setBackgroundColor(Mojian.colors[paper]);
             //设置StatusBar&ToolBar颜色
@@ -269,6 +281,7 @@ public class AddActivity extends AppCompatActivity implements
             toolbar.setBackgroundColor(Mojian.colors[paper]);
         } else if (dialog == sdBackground) {
             background = position;
+            editor.putInt("defaultBackground", background).apply();
             ivBackground.setImageResource(Mojian.backgrounds[background]);
             ivBottom.setImageResource(Mojian.backgrounds[background]);
         }
@@ -371,8 +384,14 @@ public class AddActivity extends AppCompatActivity implements
             ivBackground.setVisibility(View.GONE);
             ivBottom.setVisibility(View.VISIBLE);
         } else {
-            ivBackground.setVisibility(View.VISIBLE);
-            ivBottom.setVisibility(View.GONE);
+            if (toolbar.getMeasuredHeight() + etContent.getMeasuredHeight()
+                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 200) {//如果TextView过长需要隐藏background显示Bottom
+                ivBackground.setVisibility(View.GONE);
+                ivBottom.setVisibility(View.VISIBLE);
+            } else {
+                ivBackground.setVisibility(View.VISIBLE);
+                ivBottom.setVisibility(View.GONE);
+            }
         }
     }
 

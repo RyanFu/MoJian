@@ -109,6 +109,7 @@
                     android:textColor="@android:color/black"
                     android:textColorLink="@color/link_text"
                     android:padding="10dp"
+                    android:textIsSelectable="true"
                     android:lineSpacingExtra="10dp"
                     android:autoLink="all" />
             </FrameLayout>

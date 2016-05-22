@@ -113,6 +113,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     CoordinatorLayout clMain;
 
     private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
 
     private Intent intent;
     private DatabaseHelper databaseHelper;
@@ -217,6 +218,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initView() {
         preferences = getSharedPreferences("mojian", MODE_PRIVATE);
+        editor = preferences.edit();
         intent = getIntent();
         from = intent.getStringExtra("from");
         background = intent.getIntExtra("background", 0);
@@ -576,10 +578,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     public void onItemClick(SelectDialog dialog, int position) {
         if (dialog == sdBackground) {
             background = position;
+            editor.putInt("defaultBackground", background).apply();
             ivBackground.setImageResource(Mojian.backgrounds[background]);
             ivBottom.setImageResource(Mojian.backgrounds[background]);
         } else if (dialog == sdPaper) {
             paper = position;
+            editor.putInt("defaultPaper", paper).apply();
             //设置背景纸张
             nsvContent.setBackgroundColor(Mojian.colors[paper]);
             llContent.setBackgroundColor(Mojian.colors[paper]);
