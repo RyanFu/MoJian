@@ -32,6 +32,7 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -359,8 +360,13 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            ivBackground.setVisibility(View.GONE);
-                            ivBottom.setVisibility(View.VISIBLE);
+                            if (background != 0) {
+                                ivBackground.setVisibility(View.GONE);
+                                ivBottom.setVisibility(View.VISIBLE);
+                            } else {
+                                ivBackground.setVisibility(View.GONE);
+                                ivBottom.setVisibility(View.GONE);
+                            }
                             Message message = new Message();
                             message.what = SCREEN_SHOT;
                             message.obj = ScreenUtil.screenshot(findViewById(R.id.ll_content), width); //截长图
@@ -686,31 +692,28 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //NestedScrollView滚动事件
     @Override
     public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-        if (!isEdit) {
-            if (scrollY - oldScrollY > 0) {
-                fabEdit.hide();
-            } else {
-                fabEdit.show();
-            }
+        if (scrollY - oldScrollY > 0) {
+            fabEdit.hide();
+        } else {
+            fabEdit.show();
         }
     }
 
     @Override
     public void onGlobalLayout() {
-        //根据软键盘是否显示决定背景图片的位置
-        if (ScreenUtil.isSoftInputShow(clMain)) {
-            ivBackground.setVisibility(View.GONE);
-            ivBottom.setVisibility(View.VISIBLE);
-        } else {
-            if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
-                    + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 200) {//如果TextView过长需要隐藏background显示Bottom
+            if (ScreenUtil.isSoftInputShow(clMain)) {       //根据软键盘是否显示决定背景图片的位置
                 ivBackground.setVisibility(View.GONE);
                 ivBottom.setVisibility(View.VISIBLE);
             } else {
-                ivBackground.setVisibility(View.VISIBLE);
-                ivBottom.setVisibility(View.GONE);
+                if (toolbar.getMeasuredHeight() + rlHeader.getMeasuredHeight() + flContent.getMeasuredHeight()
+                        + ivBackground.getMeasuredHeight() > ScreenUtil.getHeight(this) - 200) {//如果TextView过长需要隐藏background显示Bottom
+                    ivBackground.setVisibility(View.GONE);
+                    ivBottom.setVisibility(View.VISIBLE);
+                } else {
+                    ivBackground.setVisibility(View.VISIBLE);
+                    ivBottom.setVisibility(View.GONE);
+                }
             }
-        }
     }
 
     @Override

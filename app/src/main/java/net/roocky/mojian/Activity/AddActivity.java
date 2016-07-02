@@ -62,7 +62,8 @@ public class AddActivity extends AppCompatActivity implements
         DialogInterface.OnClickListener,
         SelectDialog.OnItemClickListener,
         DatePickerDialog.OnDateSetListener,
-        ViewTreeObserver.OnGlobalLayoutListener {
+        ViewTreeObserver.OnGlobalLayoutListener,
+        NestedScrollView.OnScrollChangeListener {
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
@@ -173,6 +174,7 @@ public class AddActivity extends AppCompatActivity implements
 
     private void setListener() {
         toolbar.setNavigationOnClickListener(this);
+        nsvContent.setOnScrollChangeListener(this);
         fabAdd.setOnClickListener(this);
         clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
     }
@@ -282,8 +284,13 @@ public class AddActivity extends AppCompatActivity implements
         } else if (dialog == sdBackground) {
             background = position;
             editor.putInt("defaultBackground", background).apply();
-            ivBackground.setImageResource(Mojian.backgrounds[background]);
-            ivBottom.setImageResource(Mojian.backgrounds[background]);
+            if (background == 0) {  //背景图片选择了null
+                ivBackground.setVisibility(View.GONE);
+                ivBottom.setVisibility(View.GONE);
+            } else {                //背景图片选择了花
+                ivBackground.setImageResource(Mojian.backgrounds[background]);
+                ivBottom.setImageResource(Mojian.backgrounds[background]);
+            }
         }
         dialog.dismiss();
     }
@@ -392,6 +399,16 @@ public class AddActivity extends AppCompatActivity implements
                 ivBackground.setVisibility(View.VISIBLE);
                 ivBottom.setVisibility(View.GONE);
             }
+        }
+    }
+
+    //滚动监听（隐藏 or 显示FAB）
+    @Override
+    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        if (scrollY - oldScrollY > 0) {
+            fabAdd.hide();
+        } else {
+            fabAdd.show();
         }
     }
 

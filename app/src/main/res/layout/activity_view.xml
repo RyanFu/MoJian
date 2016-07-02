@@ -118,8 +118,7 @@
                 android:layout_width="280dp"
                 android:layout_height="300dp"
                 android:scaleType="fitStart"
-                android:src="@drawable/bottom_mei"
-                android:visibility="gone"/>
+                android:src="@drawable/bottom_mei" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
     <ImageView
