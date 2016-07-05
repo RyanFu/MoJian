@@ -76,6 +76,7 @@
     <string name="toast_remind_cancel">提醒已取消</string>
     <string name="toast_export_txt_success">TXT文件导出成功！路径：/sdcard/MoJian/TXT/%1$s</string>
     <string name="toast_export_txt_failed">TXT文件导出失败！</string>
+    <string name="toast_temp_text">你还有未保存的文字吖，新建便笺or日记去恢复吧~</string>
 
     <string name="dialog_forget_pattern">忘记图案</string>
     <string name="dialog_forget_resolve">快去联系Roocky吧~在“设置”->“反馈”里面给Roocky发邮件</string>

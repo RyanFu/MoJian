@@ -9,6 +9,26 @@ import java.util.Calendar;
  * Created by roocky on 04/02.
  *
  */
+
+/**
+ * preference：
+ * ——————————————————
+ * boolean:
+ *      isFirst
+ * int:
+ *      defaultPaper
+ *      defaultBackground
+ *      fontSize
+ *      drawerPosition
+ * String:
+ *      background
+ *      avatar
+ *      nickname
+ *      signature
+ *      patternSha1
+ *      tempDiary
+ *      tempDiary
+ */
 public class Mojian extends Application {
     public static Context context;
 

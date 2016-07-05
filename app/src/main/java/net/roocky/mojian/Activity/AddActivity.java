@@ -23,6 +23,8 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,11 +61,11 @@ import butterknife.ButterKnife;
  */
 public class AddActivity extends AppCompatActivity implements
         View.OnClickListener,
-        DialogInterface.OnClickListener,
         SelectDialog.OnItemClickListener,
         DatePickerDialog.OnDateSetListener,
         ViewTreeObserver.OnGlobalLayoutListener,
-        NestedScrollView.OnScrollChangeListener {
+        NestedScrollView.OnScrollChangeListener,
+        TextWatcher{
     @Bind(R.id.toolbar)
     Toolbar toolbar;
     @Bind(R.id.et_content)
@@ -149,9 +151,6 @@ public class AddActivity extends AppCompatActivity implements
         database = databaseHelper.getWritableDatabase();
 
         setSupportActionBar(toolbar);
-        if (from.equals("note")) {
-            toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
-        }
         ActionBar actionBar = getSupportActionBar();
         nsvContent.setBackgroundColor(Mojian.colors[paper]);
 
@@ -170,6 +169,12 @@ public class AddActivity extends AppCompatActivity implements
         background = preferences.getInt("defaultBackground", 0);
         ivBackground.setImageResource(Mojian.backgrounds[background]);
         ivBottom.setImageResource(Mojian.backgrounds[background]);
+        //恢复草稿
+        if (!preferences.getString("tempNote", "").equals("") && from.equals("note")) {
+            etContent.setText(preferences.getString("tempNote", ""));
+        } else if (!preferences.getString("tempDiary", "").equals("") && from.equals("diary")){
+            etContent.setText(preferences.getString("tempDiary", ""));
+        }
     }
 
     private void setListener() {
@@ -177,6 +182,7 @@ public class AddActivity extends AppCompatActivity implements
         nsvContent.setOnScrollChangeListener(this);
         fabAdd.setOnClickListener(this);
         clMain.getViewTreeObserver().addOnGlobalLayoutListener(this);
+        etContent.addTextChangedListener(this);
     }
 
     private void handleShare() {
@@ -205,12 +211,7 @@ public class AddActivity extends AppCompatActivity implements
         } else {                                //ToolBar保存
             ContentValues values = new ContentValues();
             if (etContent.getText().length() == 0) {
-                if (from.equals("diary")) {
-                    SoftInput.hide(etContent);
-                    Snackbar.make(etContent, "内容不能为空！", Snackbar.LENGTH_SHORT).show();
-                } else {
-                    finish();
-                }
+                finish();
             } else {
                 values.put("year", year);
                 values.put("month", month);
@@ -246,22 +247,6 @@ public class AddActivity extends AppCompatActivity implements
         } else {
             Snackbar.make(toolbar, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    public void onClick(DialogInterface dialog, int which) {
-        if (which == DialogInterface.BUTTON_POSITIVE) {
-            ContentValues values = new ContentValues();
-            values.put("year", year);
-            values.put("month", month);
-            values.put("day", day);
-            values.put("content", etContent.getText().toString());
-            values.put("background", background);
-            values.put("paper", paper);
-            values.put("weather", weather);
-            database.insert("diary", null, values);
-        }
-        finish();
     }
 
     @Override
@@ -416,28 +401,23 @@ public class AddActivity extends AppCompatActivity implements
     public void onBackPressed() {
         //记便笺时可以退出保存，写日记时需要提示是否保存
         if (!etContent.getText().toString().equals("")) {
+            ContentValues values = new ContentValues();
+            values.put("year", year);
+            values.put("month", month);
+            values.put("day", day);
+            values.put("content", etContent.getText().toString());
+            values.put("background", background);
+            values.put("paper", paper);
             if (from.equals("note")) {
-                ContentValues values = new ContentValues();
-                values.put("year", Mojian.year);
-                values.put("month", Mojian.month);
-                values.put("day", Mojian.day);
-                values.put("content", etContent.getText().toString());
-                values.put("background", background);
-                values.put("paper", paper);
                 database.insert("note", null, values);
-                super.onBackPressed();
+                editor.putString("tempNote", "").apply();
             } else {
-                new AlertDialog.Builder(this)
-                        .setTitle("保存")
-                        .setMessage("需要保存该日记吗？")
-                        .setPositiveButton("保存", this)
-                        .setNegativeButton("不保存", this)
-                        .setCancelable(false)
-                        .show();
+                values.put("weather", weather);
+                database.insert("diary", null, values);
+                editor.putString("tempDiary", "").apply();
             }
-        } else {
-            super.onBackPressed();
         }
+        super.onBackPressed();
     }
 
     @Override
@@ -459,6 +439,23 @@ public class AddActivity extends AppCompatActivity implements
             clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
         } else {
             clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (from.equals("note")) {
+            editor.putString("tempNote", s.toString()).apply();
+        } else {
+            editor.putString("tempDiary", s.toString()).apply();
         }
     }
 }

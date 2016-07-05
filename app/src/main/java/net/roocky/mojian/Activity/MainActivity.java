@@ -152,6 +152,11 @@ public class MainActivity extends BaseActivity implements
         fragmentList.add(noteFragment);
         fragmentList.add(diaryFragment);
         fragmentList.add(settingFragment);
+
+        if (!preferences.getString("tempNote", "").equals("") ||
+                !preferences.getString("tempDiary", "").equals("")) {
+            Snackbar.make(toolbar, getString(R.string.toast_temp_text), Snackbar.LENGTH_LONG).show();
+        }
     }
 
     //设置侧滑抽屉菜单
