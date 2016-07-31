@@ -21,6 +21,7 @@ import net.roocky.mojian.Activity.PatternConfirmActivity;
 import net.roocky.mojian.Activity.PatternSetActivity;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.DeviceJudge;
 import net.roocky.mojian.Util.FileUtil;
 import net.roocky.mojian.Util.PermissionUtil;
 
@@ -137,6 +138,10 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
                 break;
             case R.id.ll_about:
                 Snackbar.make(llAbout, getString(R.string.toast_thanks), Snackbar.LENGTH_SHORT).show();
+                //读取设备信息
+                FileUtil.createTxt(DeviceJudge.getHandSetInfo(),
+                        Environment.getExternalStorageDirectory() + getString(R.string.path_txt),
+                        "设备信息" + ".txt");
                 break;
             default:
                 /**
@@ -168,9 +173,15 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
                 break;
             case SELECT_FILE:
                 if (data != null) {
-                    String result;
+                    String result, src;
                     Uri uri = data.getData();
-                    if (FileUtil.copy(uri.getPath(), getString(R.string.path_databases), "Mojian.db")) {
+                    //根据Uri类型来获取备份文件的路径
+                    if (uri.getPath().split(":").length == 1) {     //包含绝对路径的Uri（/storage/emulated/0/Mojian/MoJian2016-7-31_21-11.backup）
+                        src = uri.getPath();
+                    } else {                                        //包含相对路径的Uri（/document/primary:MoJian/MoJian2016-7-31_21-11.backup）
+                        src = Environment.getExternalStorageDirectory() + "/" + uri.getPath().split(":")[1];
+                    }
+                    if (FileUtil.copy(src, getString(R.string.path_databases), "Mojian.db")) {
                         result = "恢复成功！";
                     } else {
                         result = "恢复失败！";
@@ -192,7 +203,6 @@ public class SettingFragment extends Fragment implements View.OnClickListener,
                     Snackbar.make(llBackup, getString(R.string.toast_per_fail), Snackbar.LENGTH_SHORT).show();
                 }
                 return;
-
         }
     }
 

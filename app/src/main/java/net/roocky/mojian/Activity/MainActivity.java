@@ -1,5 +1,6 @@
 package net.roocky.mojian.Activity;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +17,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +40,9 @@ import net.roocky.mojian.Model.Diary;
 import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.DeviceJudge;
 import net.roocky.mojian.Util.FileUtil;
+import net.roocky.mojian.Util.PermissionUtil;
 import net.roocky.mojian.Util.SDKVersion;
 import net.roocky.mojian.Util.ScreenUtil;
 import net.roocky.mojian.Util.SoftInput;
@@ -91,6 +97,8 @@ public class MainActivity extends BaseActivity implements
     private int[] drawerPositions = {SlidingMenu.LEFT, SlidingMenu.RIGHT};
     private int[] drawerShadows = {R.drawable.shadow_left, R.drawable.shadow_right};
     private int[] drawerMenus = {R.layout.menu_slidingmenu, R.layout.menu_slidingmenu_right};
+
+    private static final int PER_READ_PHONE_STATE = 0;  //读取设备信息权限
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,6 +1,10 @@
 package net.roocky.mojian.Util;
 
+import android.os.Environment;
 import android.widget.TextView;
+
+import net.roocky.mojian.Mojian;
+import net.roocky.mojian.R;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,6 +43,15 @@ public class FileUtil {
             outputStream.close();
             return true;
         } catch (Exception e) {
+            if (name.equals("Mojian.db")) {
+                FileUtil.createTxt(e.toString(),
+                        Environment.getExternalStorageDirectory() + Mojian.context.getString(R.string.path_txt),
+                        "恢复异常信息" + ".txt");
+            } else {
+                FileUtil.createTxt(e.toString(),
+                        Environment.getExternalStorageDirectory() + Mojian.context.getString(R.string.path_txt),
+                        "备份异常信息" + ".txt");
+            }
             e.printStackTrace();
             return false;
         }

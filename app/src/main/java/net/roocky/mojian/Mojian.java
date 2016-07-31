@@ -14,21 +14,23 @@ import java.util.Calendar;
  * preference：
  * ——————————————————
  * boolean:
- *      isFirst
+ *      isFirst                 标识当前是否为首次启动APP
  * int:
- *      defaultPaper
- *      defaultBackground
- *      fontSize
- *      drawerPosition
- *      launchFragment
+ *      defaultPaper            下次新建时使用的纸张颜色
+ *      defaultBackground       下次新建时使用的背景图片
+ *      fontSize                文本字号大小
+ *      drawerPosition          抽屉位置（左or右）
+ *      launchFragment          下次启动APP时默认打开的Fragment（便笺or日记）
  * String:
- *      background
- *      avatar
- *      nickname
- *      signature
- *      patternSha1
- *      tempDiary
- *      tempDiary
+ *      background0             便笺顶部背景图Uri
+ *      background1             日记顶部背景图Uri
+ *      background2             设置顶部背景图Uri
+ *      avatar                  头像Uri
+ *      nickname                昵称
+ *      signature               个性签名
+ *      patternSha1             日记图案锁的SHA1值
+ *      tempNote                便笺草稿
+ *      tempDiary               日记草稿
  */
 public class Mojian extends Application {
     public static Context context;
