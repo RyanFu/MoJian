@@ -64,7 +64,7 @@ public class CalendarActivity extends AppCompatActivity implements
 
     //设置透明状态栏
     private void initStatusBar() {
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
             tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.grey_600);

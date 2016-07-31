@@ -138,7 +138,7 @@ public class AddActivity extends AppCompatActivity implements
         paper = preferences.getInt("defaultPaper", 0);
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
             tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
         } else {
             tintManager.setStatusBarTintColor(Mojian.colors[paper]);
@@ -222,8 +222,10 @@ public class AddActivity extends AppCompatActivity implements
                 if (from.equals("diary")) {
                     values.put("weather", weather);
                     database.insert("diary", null, values);
+                    editor.putString("tempDiary", "").apply();
                 } else {
                     database.insert("note", null, values);
+                    editor.putString("tempNote", "").apply();
                 }
                 SoftInput.hide(etContent);
                 finish();
@@ -260,7 +262,7 @@ public class AddActivity extends AppCompatActivity implements
             //设置背景纸张
             nsvContent.setBackgroundColor(Mojian.colors[paper]);
             //设置StatusBar&ToolBar颜色
-            if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+            if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
                 tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
             } else {
                 tintManager.setStatusBarTintColor(Mojian.colors[paper]);

@@ -20,6 +20,7 @@ import java.util.Calendar;
  *      defaultBackground
  *      fontSize
  *      drawerPosition
+ *      launchFragment
  * String:
  *      background
  *      avatar

@@ -66,10 +66,6 @@ public class MainActivity extends BaseActivity implements
     @Bind(R.id.fab_add)
     FloatingActionButton fabAdd;
 
-    private final int FRAGMENT_NOTE = 0;
-    private final int FRAGMENT_DIARY = 1;
-    private final int FRAGMENT_SETTING = 2;
-
     private SlidingMenu slidingMenu;        //侧滑菜单
     private SimpleDraweeView sdvAvatar;     //用户头像
     private TextView tvNickname;            //用户昵称
@@ -109,12 +105,22 @@ public class MainActivity extends BaseActivity implements
         initView();             //View初始化
         setOnClickListener();
 
-        itemSelected(R.id.btn_note);   //设置默认“便笺”项被选中
+        //根据launchFragment来决定启动应用时打开哪个Fragment
+        switch (preferences.getInt("launchFragment", 0)) {
+            case FRAGMENT_NOTE:
+                itemSelected(R.id.btn_note);
+                break;
+            case FRAGMENT_DIARY:
+                itemSelected(R.id.btn_diary);
+                break;
+            default:
+                break;
+        }
     }
 
     //设置透明状态栏
     private void initStatusBar() {
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals("huawei")) {
+        if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(0xff9e9e9e);
@@ -148,14 +154,24 @@ public class MainActivity extends BaseActivity implements
 
         setSupportActionBar(toolbar);
         
-        fragmentManager.beginTransaction().replace(R.id.fl_content, noteFragment).commit();
+//        fragmentManager.beginTransaction().replace(R.id.fl_content, noteFragment).commit();
         fragmentList.add(noteFragment);
         fragmentList.add(diaryFragment);
         fragmentList.add(settingFragment);
 
-        if (!preferences.getString("tempNote", "").equals("") ||
-                !preferences.getString("tempDiary", "").equals("")) {
-            Snackbar.make(toolbar, getString(R.string.toast_temp_text), Snackbar.LENGTH_LONG).show();
+//        if (!preferences.getString("tempNote", "").equals("") ||
+//                !preferences.getString("tempDiary", "").equals("")) {
+//            Snackbar.make(toolbar, getString(R.string.toast_temp_text), Snackbar.LENGTH_LONG).show();
+//        }
+        //判断是否还有未保存的数据，
+        if (!preferences.getString("tempNote", "").equals("")) {
+            if (!preferences.getString("tempDiary", "").equals("")) {
+                Snackbar.make(toolbar, getString(R.string.toast_temp_text), Snackbar.LENGTH_LONG).show();
+            } else {
+                Snackbar.make(toolbar, getString(R.string.toast_temp_note), Snackbar.LENGTH_LONG).show();
+            }
+        } else if (!preferences.getString("tempDiary", "").equals("")) {
+            Snackbar.make(toolbar, getString(R.string.toast_temp_diary), Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -504,10 +520,11 @@ public class MainActivity extends BaseActivity implements
         if (slidingMenu.isMenuShowing()) {
             slidingMenu.showContent();
         } else {
-            if (fragmentId != FRAGMENT_NOTE) {  //若点击返回键时不在便笺Fragment，需要先返回至便笺Fragment
+            if (fragmentId != FRAGMENT_NOTE && fragmentId != FRAGMENT_DIARY) {  //若点击返回键时不在便笺或日记Fragment，需要先返回至便笺Fragment
                 itemSelected(R.id.btn_note);
             } else {
                 Mojian.isLocked = true;     //应用退出后需要将日记设定为锁定状态
+                editor.putInt("launchFragment", fragmentId).apply();    //标记退出应用时所在的Fragment，下次启动时打开上次退出时的Fragment
                 super.onBackPressed();
             }
         }

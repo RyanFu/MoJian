@@ -31,6 +31,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
     protected final int PATTERN_LOCK_DIARY = 3;
     protected final int PATTERN_LOCK_SET = 4;
     protected final int PATTERN_LOCK_CLEAR = 5;
+    protected final int FRAGMENT_NOTE = 0;
+    protected final int FRAGMENT_DIARY = 1;
+    protected final int FRAGMENT_SETTING = 2;
+
 
     protected int fragmentId = 0;         //记录当前所在的Fragment
     protected int setWhat;          //用来判断当前的Activity

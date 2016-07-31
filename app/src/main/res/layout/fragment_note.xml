@@ -8,5 +8,5 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         android:scrollbarStyle="outsideOverlay"
-        android:fadeScrollbars="true"/>
+        android:fadeScrollbars="true" />
 </LinearLayout>
