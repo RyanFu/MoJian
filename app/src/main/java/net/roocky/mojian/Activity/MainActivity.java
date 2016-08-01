@@ -128,7 +128,7 @@ public class MainActivity extends BaseActivity implements
 
     //设置透明状态栏
     private void initStatusBar() {
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
+        if (Mojian.devices.contains(android.os.Build.MANUFACTURER.toLowerCase())) {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintColor(0xff9e9e9e);

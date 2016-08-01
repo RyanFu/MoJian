@@ -51,6 +51,8 @@ import net.roocky.mojian.Widget.AlignImageSpan;
 import net.roocky.mojian.Widget.SelectDialog;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -138,7 +140,7 @@ public class AddActivity extends AppCompatActivity implements
         paper = preferences.getInt("defaultPaper", 0);
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
+        if (Mojian.devices.contains(android.os.Build.MANUFACTURER.toLowerCase())) {
             tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
         } else {
             tintManager.setStatusBarTintColor(Mojian.colors[paper]);
@@ -262,7 +264,7 @@ public class AddActivity extends AppCompatActivity implements
             //设置背景纸张
             nsvContent.setBackgroundColor(Mojian.colors[paper]);
             //设置StatusBar&ToolBar颜色
-            if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
+            if (Mojian.devices.contains(android.os.Build.MANUFACTURER.toLowerCase())) {
                 tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
             } else {
                 tintManager.setStatusBarTintColor(Mojian.colors[paper]);

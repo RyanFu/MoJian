@@ -3,7 +3,10 @@ package net.roocky.mojian;
 import android.app.Application;
 import android.content.Context;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by roocky on 04/02.
@@ -105,6 +108,9 @@ public class Mojian extends Application {
             R.drawable.bottom_ju
     };
 
+    //需要处理的设备型号
+    public static List<String> devices = new ArrayList<>();
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -117,6 +123,8 @@ public class Mojian extends Application {
         day = calendar.get(Calendar.DAY_OF_MONTH);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
+
+        devices = Arrays.asList(getResources().getStringArray(R.array.devices));
 
 //        setBaichuanFb();
     }

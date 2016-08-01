@@ -92,7 +92,10 @@
 
     <string name="show_image_only">图片</string>
 
-    <string name="device_huawei">huawei</string>
+    <string-array name="devices">
+        <item>huawei</item>
+        <item>xiaomi</item>
+    </string-array>
 
     <string-array name="year_array">
         <item>二零一零</item>

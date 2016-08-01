@@ -206,7 +206,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private void initStatusBar(int paper) {
         tintManager = new SystemBarTintManager(this);
         tintManager.setStatusBarTintEnabled(true);
-        if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
+        if (Mojian.devices.contains(android.os.Build.MANUFACTURER.toLowerCase())) {
             tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
         } else {
             tintManager.setStatusBarTintColor(Mojian.colors[paper]);
@@ -594,7 +594,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             nsvContent.setBackgroundColor(Mojian.colors[paper]);
             llContent.setBackgroundColor(Mojian.colors[paper]);
             //设置StatusBar&ToolBar颜色
-            if (android.os.Build.MANUFACTURER.toLowerCase().equals(getString(R.string.device_huawei))) {
+            if (Mojian.devices.contains(android.os.Build.MANUFACTURER.toLowerCase())) {
                 tintManager.setStatusBarTintColor(Mojian.darkColors[paper]);
             } else {
                 tintManager.setStatusBarTintColor(Mojian.colors[paper]);
