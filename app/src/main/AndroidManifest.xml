@@ -5,10 +5,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <!--<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />-->
-    <!--<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />-->
-    <!--<uses-permission android:name="android.permission.INTERNET" />-->
-    <!--<uses-permission android:name="android.permission.READ_PHONE_STATE" />-->
     <uses-permission android:name="android.permission.VIBRATE" />       <!--震动-->
 
     <application
@@ -18,8 +14,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<meta-data android:value="56fbd72be0f55a493c00288d" android:name="UMENG_APPKEY"/>-->
-        <!--<meta-data android:value="Default" android:name="UMENG_CHANNEL"/>-->
         <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,7 +35,6 @@
         <activity android:name=".Activity.PatternSetActivity" />
         <activity android:name=".Activity.PatternConfirmActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
-        <!--<receiver android:name=".BroadcastReceiver.FeedbackReceiver" />-->
     </application>
 
 </manifest>

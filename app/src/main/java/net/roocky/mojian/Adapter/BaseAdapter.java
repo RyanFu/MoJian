@@ -94,8 +94,12 @@ public abstract class BaseAdapter extends RecyclerView.Adapter<BaseAdapter.ViewH
             holder.tvDate.setText(Mojian.numbers[month] + " · " + Mojian.numbers[day - 1]);
         }
         String strContent = ImageSpanUtil.getString(baseList.get(baseList.size() - position - 1).getContent()).toString();
-        if (strContent.equals("")) {            //如果便笺内只有图片，则需在卡片上显示“图片”
-            strContent = Mojian.context.getString(R.string.show_image_only);
+        if (strContent.equals("")) {            //如果便笺内只有图片或什么也没有
+            if (baseList.get(baseList.size() - position - 1).getContent().equals("")) {
+                strContent = "";        //在卡片上显示“”
+            } else {
+                strContent = Mojian.context.getString(R.string.show_image_only);        //在卡片上显示“图片”
+            }
         }
         holder.tvContent.setText(strContent);
         //绑定监听事件
