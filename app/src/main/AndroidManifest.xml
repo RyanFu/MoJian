@@ -36,7 +36,8 @@
         <activity android:name=".Activity.PatternConfirmActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
         <!--桌面小部件-->
-        <receiver android:name=".AppWidget.AddProvider" >
+        <receiver android:name=".AppWidget.AddProvider"
+            android:label="@string/widget_new">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

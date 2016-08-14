@@ -529,7 +529,11 @@ public class MainActivity extends BaseActivity implements
             slidingMenu.showContent();
         } else {
             if (fragmentId != FRAGMENT_NOTE && fragmentId != FRAGMENT_DIARY) {  //若点击返回键时不在便笺或日记Fragment，需要先返回至便笺Fragment
-                itemSelected(R.id.btn_note);
+                if (preferences.getInt("launchFragment", 0) == 0) {
+                    itemSelected(R.id.btn_note);
+                } else {
+                    itemSelected(R.id.btn_diary);
+                }
             } else {
                 Mojian.isLocked = true;     //应用退出后需要将日记设定为锁定状态
                 editor.putInt("launchFragment", fragmentId).apply();    //标记退出应用时所在的Fragment，下次启动时打开上次退出时的Fragment
@@ -537,36 +541,4 @@ public class MainActivity extends BaseActivity implements
             }
         }
     }
-
-    //反馈消息未读数目成功获取后需要发出一条Notification
-//    @Override
-//    public void onSuccess(Object... objects) {
-//        if ((int)objects[0] > 0) {
-//            //创建Notification的跳转Intent
-//            Intent intentNotify = new Intent(this, FeedbackReceiver.class);
-//            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-//                    this,
-//                    0,
-//                    intentNotify,
-//                    PendingIntent.FLAG_UPDATE_CURRENT);
-//            //创建Notification
-//            Notification notification = new NotificationCompat.Builder(this)
-//                    .setContentIntent(pendingIntent)
-//                    .setSmallIcon(R.drawable.small_icon)
-//                    .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_launcher))
-//                    .setContentTitle(getString(R.string.app_name))
-//                    .setContentText(getString(R.string.feedback_notify, (int)objects[0]))
-//                    .setAutoCancel(true)
-//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-//                    .build();
-//            notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-//            //发出Notification
-//            NotificationManager manager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-//            manager.notify(0, notification);
-//        }
-//    }
-//    @Override
-//    public void onError(int i, String s) {}
-//    @Override
-//    public void onProgress(int i) {}
 }
