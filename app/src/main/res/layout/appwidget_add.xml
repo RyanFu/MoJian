@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_corner_white">
+    <ImageView
+        android:id="@+id/btn_note"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/img_note"/>
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="match_parent"
+        android:src="@drawable/img_pen" />
+    <ImageView
+        android:id="@+id/btn_diary"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:src="@drawable/img_diary"/>
+</LinearLayout>
