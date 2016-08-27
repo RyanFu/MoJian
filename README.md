@@ -18,9 +18,8 @@
 
 ## 部分截图：
 
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/a.jpg)
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/b.jpg)
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/c.jpg)
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/d.jpg)
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/e.jpg)
-![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/f.jpg)
+![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/a.png)
+![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/b.png)
+![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/c.png)
+![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/d.png)
+![image](https://raw.githubusercontent.com/xroocky/MoJian/master/Screenshots/e.png)
