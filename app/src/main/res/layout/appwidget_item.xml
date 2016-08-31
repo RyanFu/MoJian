@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <!-- 顶部日期 & 天气 & 心情展示-->
+    <RelativeLayout
+        android:id="@+id/rl_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/iv_weather"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
+        <LinearLayout
+            android:id="@+id/ll_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_toRightOf="@id/iv_weather"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp">
+            <TextView
+                android:id="@+id/tv_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@android:color/black"
+                android:paddingTop="5dp"
+                android:paddingBottom="7dp"/>
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:background="@color/grey_400"/>-->
+            <TextView
+                android:id="@+id/tv_month_day"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="21sp"
+                android:textColor="@android:color/black"
+                android:paddingTop="7dp"
+                android:paddingBottom="5dp"/>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_weather_icon"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+    <!-- 内容展示-->
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:textColorLink="@color/link_text"
+        android:padding="10dp"
+        android:textIsSelectable="true"
+        android:lineSpacingExtra="10dp"
+        android:autoLink="all" />
+    <ImageView
+        android:id="@+id/iv_bottom"
+        android:layout_width="140dp"
+        android:layout_height="150dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/bottom_mei" />
+</LinearLayout>

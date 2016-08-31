@@ -36,6 +36,7 @@
         <activity android:name=".Activity.PatternConfirmActivity" />
         <receiver android:name=".BroadcastReceiver.RemindReceiver" />
         <!--桌面小部件-->
+        <!--新建-->
         <receiver android:name=".AppWidget.AddProvider"
             android:label="@string/widget_new">
             <intent-filter>
@@ -44,6 +45,21 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info_add" />
         </receiver>
+        <!--显示单篇-->
+        <receiver android:name=".AppWidget.ItemProvider"
+            android:label="@string/widget_item">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_info_item" />
+        </receiver>
+        <!--桌面小部件配置-->
+        <activity android:name=".APPWidgetConfigure.ItemAppWidgetConfigure">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/>
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

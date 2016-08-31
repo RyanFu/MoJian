@@ -92,8 +92,10 @@
 
     <string name="show_image_only">图片</string>
 
-    <!--小部件名称-->
+    <!--小部件-->
     <string name="widget_new">新建</string>
+    <string name="widget_item">便笺</string>
+    <string name="configure_choose">选择一篇</string>
 
     <!--需要处理状态栏的设备-->
     <string-array name="devices">
