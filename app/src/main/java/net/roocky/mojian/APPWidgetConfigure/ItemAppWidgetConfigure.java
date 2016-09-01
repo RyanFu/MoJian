@@ -24,6 +24,7 @@ import butterknife.ButterKnife;
 
 /**
  * Created by Roocky on 2016/8/20 0020.
+ * 小部件配置（选择笔记）
  */
 public class ItemAppWidgetConfigure extends AppCompatActivity {
     @Bind(R.id.toolbar)

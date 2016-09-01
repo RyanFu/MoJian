@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import net.roocky.mojian.AppWidget.ItemProvider;
 import net.roocky.mojian.BroadcastReceiver.RemindReceiver;
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.Mojian;
@@ -740,6 +741,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 values.put("background", background);
                 values.put("paper", paper);
                 database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                Intent intent = new Intent(this, ItemProvider.class);
+                intent.putExtra("content", etContent.getText().toString());
+                sendBroadcast(intent);
                 super.onBackPressed();
             } else {
                 if (!tvContent.getText().toString().equals(etContent.getText().toString()) ||
