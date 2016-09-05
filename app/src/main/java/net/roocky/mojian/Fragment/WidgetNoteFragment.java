@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import net.roocky.mojian.APPWidgetConfigure.ItemAppWidgetConfigure;
 import net.roocky.mojian.Activity.ViewActivity;
+import net.roocky.mojian.Const;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.SharePreferencesUtil;
 
 /**
  * Created by Roocky on 2016/8/20 0020.
@@ -21,10 +23,13 @@ public class WidgetNoteFragment extends NoteFragment {
     @Override
     public void onItemClick(View view, int position) {
         Activity activity = getActivity();
+        //存储AppWidget ID
+        SharePreferencesUtil.getInstance(getContext(), Const.appWidgetIdShareP)
+                .putInt((view.findViewById(R.id.cv_item)).getTag(R.id.tag_id).toString(), ItemAppWidgetConfigure.getAppWidgetId());
         //设置小部件外观（纸张颜色、背景图片）
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getActivity());
         RemoteViews remoteViews = new RemoteViews(getActivity().getPackageName(), R.layout.appwidget_item);
-        remoteViews.setInt(R.id.ll_content, "setBackgroundColor", Mojian.colors[(Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_paper)]);
+        remoteViews.setInt(R.id.ll_main, "setBackgroundColor", Mojian.colors[(Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_paper)]);
         remoteViews.setImageViewResource(R.id.iv_bottom, Mojian.backgrounds[(Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_background)]);
         remoteViews.setTextViewText(R.id.tv_content, (String)view.findViewById(R.id.cv_item).getTag(R.id.tag_content));
         //绑定点击跳转事件

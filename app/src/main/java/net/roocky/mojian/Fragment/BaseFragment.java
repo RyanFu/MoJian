@@ -13,11 +13,13 @@ import android.widget.TextView;
 
 import net.roocky.mojian.Activity.ViewActivity;
 import net.roocky.mojian.Adapter.BaseAdapter;
+import net.roocky.mojian.Const;
 import net.roocky.mojian.Model.Diary;
 import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.SDKVersion;
+import net.roocky.mojian.Util.SharePreferencesUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,7 @@ public class BaseFragment extends Fragment implements BaseAdapter.OnItemClickLis
             intent.putExtra("paper", (Integer)view.findViewById(R.id.cv_item).getTag(R.id.tag_paper));
             if (view.findViewById(R.id.tv_remind) != null) {    //判断当前的Fragment是diary还是note
                 intent.putExtra("from", "note");
+                intent.putExtra("appwidget_id", SharePreferencesUtil.getInstance(getContext(), Const.appWidgetIdShareP).getInt(idSelect, Const.invalidId));
                 intent.putExtra("remind", ((TextView) (view.findViewById(R.id.tv_remind))).getText().toString());
             } else {
                 intent.putExtra("from", "diary");

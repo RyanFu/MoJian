@@ -13,8 +13,11 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import net.roocky.mojian.Activity.ViewActivity;
+import net.roocky.mojian.AppWidget.ItemProvider;
+import net.roocky.mojian.Const;
 import net.roocky.mojian.Database.DatabaseHelper;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.SharePreferencesUtil;
 
 /**
  * Created by roocky on 04/03.
@@ -51,6 +54,14 @@ public class RemindReceiver extends BroadcastReceiver {
         //发出Notification
         NotificationManager manager = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(requestCode, notification);
+        //发出广播清除小部件显示的提醒内容
+        Intent intentWidget = new Intent(ItemProvider.ACTION_EDIT);
+        intentWidget.putExtra("appwidget_id", SharePreferencesUtil.getInstance(context, Const.appWidgetIdShareP).getInt(intent.getStringExtra("id"), Const.invalidId));
+        intentWidget.putExtra("content", intent.getStringExtra("content"));
+        intentWidget.putExtra("background", intent.getIntExtra("background", 0));
+        intentWidget.putExtra("paper", intent.getIntExtra("paper", 0));
+        intentWidget.putExtra("remind", "");
+        context.sendBroadcast(intentWidget);
         //将便笺的提醒时间设置为空
         DatabaseHelper databaseHelper;
         SQLiteDatabase database;

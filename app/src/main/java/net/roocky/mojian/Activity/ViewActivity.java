@@ -767,7 +767,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         //更新桌面小部件
-        if (from.equals(Const.note)) {
+        if (from.equals(Const.note) && intent.getIntExtra("appwidget_id", Const.invalidId) != Const.invalidId) {
             Intent intentWidget = new Intent(ItemProvider.ACTION_EDIT);
             intentWidget.putExtra("appwidget_id", intent.getIntExtra("appwidget_id", Const.invalidId));
             intentWidget.putExtra("content", isEdit ? etContent.getText().toString() : tvContent.getText().toString());

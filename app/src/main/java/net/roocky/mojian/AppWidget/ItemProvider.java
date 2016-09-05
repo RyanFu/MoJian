@@ -16,6 +16,10 @@ import net.roocky.mojian.Activity.ViewActivity;
 import net.roocky.mojian.Const;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
+import net.roocky.mojian.Util.MapUtil;
+import net.roocky.mojian.Util.SharePreferencesUtil;
+
+import java.util.Map;
 
 /**
  * Created by Roocky on 2016/8/20 0020.
@@ -26,10 +30,13 @@ public class ItemProvider extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION_EDIT)) {
+        super.onReceive(context, intent);
+
+        if (intent.getAction().equals(ACTION_EDIT) &&
+                intent.getIntExtra("appwidget_id", Const.invalidId) != Const.invalidId) {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_item);
             remoteViews.setTextViewText(R.id.tv_content, intent.getStringExtra("content"));
-            remoteViews.setInt(R.id.ll_content, "setBackgroundColor", Mojian.colors[intent.getIntExtra("paper", 0)]);
+            remoteViews.setInt(R.id.ll_main, "setBackgroundColor", Mojian.colors[intent.getIntExtra("paper", 0)]);
             remoteViews.setImageViewResource(R.id.iv_bottom, Mojian.backgrounds[intent.getIntExtra("background", 0)]);
             if (!intent.getStringExtra("remind").equals("")) {
                 remoteViews.setViewVisibility(R.id.tv_remind, View.VISIBLE);
@@ -40,5 +47,14 @@ public class ItemProvider extends AppWidgetProvider {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             appWidgetManager.updateAppWidget(intent.getIntExtra("appwidget_id", Const.invalidId), remoteViews);
         }
+    }
+
+    @Override
+    public void onDeleted(Context context, int[] appWidgetIds) {
+        //查找appWidgetId对应的ID
+        Map<String, Integer> idMap = (Map<String, Integer>) SharePreferencesUtil.getInstance(context, Const.appWidgetIdShareP).getAll();
+        int id = Integer.parseInt(MapUtil.getKeyByValue(idMap, appWidgetIds[0]));
+        //从SharePreference中移除该appwidget的id
+        SharePreferencesUtil.getInstance(context, Const.appWidgetIdShareP).remove(String.valueOf(id));
     }
 }

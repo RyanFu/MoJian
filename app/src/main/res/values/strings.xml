@@ -164,4 +164,5 @@
     <item type="id" name="tag_background" />
     <item type="id" name="tag_paper" />
     <item type="id" name="tag_weather" />
+    <item type="id" name="tag_appwidget_id" />
 </resources>
