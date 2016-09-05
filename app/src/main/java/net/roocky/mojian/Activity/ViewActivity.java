@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,7 +31,6 @@ import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -53,7 +51,9 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import net.roocky.mojian.AppWidget.ItemProvider;
 import net.roocky.mojian.BroadcastReceiver.RemindReceiver;
+import net.roocky.mojian.Const;
 import net.roocky.mojian.Database.DatabaseHelper;
+import net.roocky.mojian.Model.Note;
 import net.roocky.mojian.Mojian;
 import net.roocky.mojian.R;
 import net.roocky.mojian.Util.BitmapUtil;
@@ -66,6 +66,7 @@ import net.roocky.mojian.Widget.SelectDialog;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -150,9 +151,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             R.drawable.weather_clouds_with_rain,
             R.drawable.weather_clouds_with_snow
     };
+    private String id;
+    private String from;
+    private int appwidgetId;
     private int background = 0;     //标识当前背景图片
     private int paper = 0;          //标识当前纸张
-    private String from;
+    private String content;
     private SystemBarTintManager tintManager;
 
     private final int SELECT_IMAGE = 0;
@@ -193,14 +197,41 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        initStatusBar(getIntent().getIntExtra("paper", 0));
-        initTheme(getIntent().getIntExtra("paper", 0));
+        initData();
+        initStatusBar(paper);
+        initTheme(paper);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view);
         ButterKnife.bind(this);
 
         initView();
         setListener();
+    }
+
+    public void initData() {
+        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 3);
+        database = databaseHelper.getWritableDatabase();
+
+        intent = getIntent();
+        id = intent.getStringExtra("id");
+        from = intent.getStringExtra("from");
+        appwidgetId = intent.getIntExtra("appwidget_id", Const.invalidId);
+        if (appwidgetId != Const.invalidId) {       //来自小部件
+            List<Note> notes = (List<Note>)DatabaseHelper.query(
+                    database,
+                    Const.note,
+                    new String[]{"id", "year", "month", "day", "content", "background", "paper", "remind"},
+                    "id=?",
+                    new String[]{id});
+            background = notes.get(0).getBackground();
+            paper = notes.get(0).getPaper();
+            content = notes.get(0).getContent();
+            intent.putExtra("remind", notes.get(0).getRemind() == null ? "" : notes.get(0).getRemind());
+        } else {        //来自fragment
+            background = intent.getIntExtra("background", 0);
+            paper = intent.getIntExtra("paper", 0);
+            content = intent.getStringExtra("content");
+        }
     }
 
     //设置透明状态栏
@@ -221,12 +252,6 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     private void initView() {
         preferences = getSharedPreferences("mojian", MODE_PRIVATE);
         editor = preferences.edit();
-        intent = getIntent();
-        from = intent.getStringExtra("from");
-        background = intent.getIntExtra("background", 0);
-        paper = intent.getIntExtra("paper", 0);
-        databaseHelper = new DatabaseHelper(this, "Mojian.db", null, 3);
-        database = databaseHelper.getWritableDatabase();
 
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -245,23 +270,29 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             public void run() {
                 Message message = new Message();
                 message.what = INIT_CONTENT;
-                message.obj = ImageSpanUtil.str2spanStrBuilder(intent.getStringExtra("content"));
+                message.obj = ImageSpanUtil.str2spanStrBuilder(content);
                 handler.sendMessage(message);
             }
         }).run();
-        if (from.equals("diary")) {
-            rlHeader.setVisibility(View.VISIBLE);
-            //设置顶部日期&天气展示
-            ivWeather.setImageResource(weathers[intent.getIntExtra("weather", 0)]);
-            tvYear.setText(getResources().getStringArray(R.array.year_array)[intent.getIntExtra("year", 2016) - 2010]);
-            tvMonthDay.setText(getString(R.string.diary_month_day,
-                    getResources().getStringArray(R.array.number_array)[intent.getIntExtra("month", 0)],
-                    getResources().getStringArray(R.array.number_array)[intent.getIntExtra("day", 1) - 1]));
-            ivWeatherIcon.setImageResource(weatherIcons[intent.getIntExtra("weather", 0)]);
-        } else if (!intent.getStringExtra("remind").equals("")) {
-            //设置提醒语句
-            tvRemind.setVisibility(View.VISIBLE);
-            tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
+        switch (from) {
+            case Const.diary:
+                rlHeader.setVisibility(View.VISIBLE);
+                //设置顶部日期&天气展示
+                ivWeather.setImageResource(weathers[intent.getIntExtra("weather", 0)]);
+                tvYear.setText(getResources().getStringArray(R.array.year_array)[intent.getIntExtra("year", 2016) - 2010]);
+                tvMonthDay.setText(getString(R.string.diary_month_day,
+                        getResources().getStringArray(R.array.number_array)[intent.getIntExtra("month", 0)],
+                        getResources().getStringArray(R.array.number_array)[intent.getIntExtra("day", 1) - 1]));
+                ivWeatherIcon.setImageResource(weatherIcons[intent.getIntExtra("weather", 0)]);
+                break;
+            case Const.note:
+                if (!intent.getStringExtra("remind").equals("")) {
+                    tvRemind.setVisibility(View.VISIBLE);
+                    tvRemind.setText(getString(R.string.note_remind, intent.getStringExtra("remind")));
+                }
+                break;
+            default:
+                break;
         }
         ivBackground.setImageResource(Mojian.backgrounds[background]);
         ivBottom.setImageResource(Mojian.backgrounds[background]);
@@ -277,17 +308,17 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_view, menu);
-        if (from.equals("note")) {    //便笺需设置提醒
+        if (from.equals(Const.note)) {    //便笺需设置提醒
             menu.findItem(R.id.action_remind).setVisible(true);
         }
         if (isEdit) {
-            if (from.equals("diary")) {
+            if (from.equals(Const.diary)) {
                 menu.findItem(R.id.action_date).setVisible(true);       //修改日期
             }
             menu.findItem(R.id.action_background).setVisible(true);       //修改背景
             menu.findItem(R.id.action_paper).setVisible(true);
         } else {
-            if (from.equals("diary")) {
+            if (from.equals(Const.diary)) {
                 menu.findItem(R.id.action_date).setVisible(false);
             }
             menu.findItem(R.id.action_background).setVisible(false);
@@ -303,12 +334,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         Window window;
         switch (item.getItemId()) {
             case android.R.id.home:     //返回箭头
-                if (from.equals("note") && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
+                if (from.equals(Const.note) && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
                     values.put("background", background);
                     values.put("paper", paper);
-                    database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                    database.update(Const.note, values, "id = ?", new String[]{id});
                 }
                 finish();
                 break;
@@ -337,7 +368,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                 datePicker.show();
                 break;
             case R.id.action_delete:    //删除
-                if (from.equals("diary")) {
+                if (from.equals(Const.diary)) {
                     dialogDiary = new AlertDialog.Builder(this)
                             .setTitle("删除")
                             .setMessage("确定删除该日记吗？")
@@ -402,7 +433,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
                     PendingIntent pendingIntent = PendingIntent.getBroadcast(
                             this,       //Context
-                            Integer.parseInt(intent.getStringExtra("id")),      //requestCode
+                            Integer.parseInt(id),      //requestCode
                             new Intent(this, RemindReceiver.class),     //Intent
                             PendingIntent.FLAG_UPDATE_CURRENT);     //Flag
                     alarmManager.cancel(pendingIntent);
@@ -413,9 +444,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     ContentValues values = new ContentValues();
                     String string = null;
                     values.put("remind", string);       //清空该便笺的remind
-                    database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                    database.update(Const.note, values, "id = ?", new String[]{id});
 
                     hasRemind = false;
+                    intent.putExtra("remind", "");
                 } else {
                     remindPicker = new DatePickerDialog(
                             this,
@@ -490,7 +522,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 } else {            //切换至编辑状态
                     isEdit = true;
-                    if (from.equals("diary")) {    //日记编辑状态需要改变Navigation图标
+                    if (from.equals(Const.diary)) {    //日记编辑状态需要改变Navigation图标
                         toolbar.setNavigationIcon(R.mipmap.ic_done_black_24dp);
                         toolbar.setNavigationOnClickListener(this);
                     }
@@ -511,10 +543,10 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     values.put("content", etContent.getText().toString());
                     values.put("background", background);
                     values.put("paper", paper);
-                    if (from.equals("diary")) {
-                        database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                    if (from.equals(Const.diary)) {
+                        database.update(Const.diary, values, "id = ?", new String[]{id});
                     } else {
-                        database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                        database.update(Const.note, values, "id = ?", new String[]{id});
                     }
 
                     toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_black_24dp);
@@ -565,16 +597,16 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(DialogInterface dialog, int which) {
         if (dialog.equals(dialogDiary)) {   //删除日记
-            database.delete("diary", "id = ?", new String[]{intent.getStringExtra("id")});
+            database.delete(Const.diary, "id = ?", new String[]{id});
         } else if (dialog.equals(dialogNote)){                            //删除便笺
-            database.delete("note", "id = ?", new String[]{intent.getStringExtra("id")});
+            database.delete(Const.note, "id = ?", new String[]{id});
         } else {                //是否保存修改
             if (which == DialogInterface.BUTTON_POSITIVE) {
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
                 values.put("paper", paper);
-                database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
+                database.update(Const.diary, values, "id = ?", new String[]{id});
             }
         }
         finish();
@@ -608,7 +640,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     //便笺提醒选择器设置监听
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        if (from.equals("note")) {      //便笺设置提醒
+        if (from.equals(Const.note)) {      //便笺设置提醒
             yearRemind = year;
             monthRemind = monthOfYear;
             dayRemind = dayOfMonth;
@@ -625,7 +657,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             values.put("year", year);
             values.put("month", monthOfYear);
             values.put("day", dayOfMonth);
-            database.update("diary", values, "id = ?", new String[]{intent.getStringExtra("id")});
+            database.update(Const.diary, values, "id = ?", new String[]{id});
             tvYear.setText(getResources().getStringArray(R.array.year_array)[year - 2010]);
             tvMonthDay.setText(getString(R.string.diary_month_day,
                     getResources().getStringArray(R.array.number_array)[monthOfYear],
@@ -635,7 +667,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfHour) {
-        String requestCode = intent.getStringExtra("id");
+        String requestCode = id;
 
         int month = monthRemind + 1;
         String hour = String.valueOf(hourOfDay);
@@ -655,11 +687,12 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                         + hour
                         + " : "
                         + minute;
+        intent.putExtra("remind", strRemind);   //用于在小部件显示提醒信息
         tvRemind.setVisibility(View.VISIBLE);
         tvRemind.setText(getString(R.string.note_remind, strRemind));
         ContentValues values = new ContentValues();
         values.put("remind", strRemind);
-        database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});   //更新数据库中便笺提醒时间
+        database.update(Const.note, values, "id = ?", new String[]{id});   //更新数据库中便笺提醒时间
         //设置提醒时间
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -670,9 +703,9 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         calendar.set(Calendar.MINUTE, minuteOfHour);
 
         Intent intentReceiver = new Intent(this, RemindReceiver.class);
-        intentReceiver.putExtra("from", "note");
+        intentReceiver.putExtra("from", Const.note);
         intentReceiver.putExtra("id", requestCode);
-        intentReceiver.putExtra("content", intent.getStringExtra("content"));
+        intentReceiver.putExtra("content", content);
         intentReceiver.putExtra("background", background);
         intentReceiver.putExtra("paper", paper);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
@@ -721,7 +754,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     protected void onResume() {
         super.onResume();
 //        MobclickAgent.onResume(this);
-        if (from.equals("note") && intent.getStringExtra("remind").equals("")) {
+        if (from.equals(Const.note) && intent.getStringExtra("remind").equals("")) {
             tvRemind.setVisibility(View.GONE);       //隐藏提醒语句
         }
     }
@@ -729,21 +762,28 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
-//        MobclickAgent.onPause(this);
     }
 
     @Override
     public void onBackPressed() {
+        //更新桌面小部件
+        if (from.equals(Const.note)) {
+            Intent intentWidget = new Intent(ItemProvider.ACTION_EDIT);
+            intentWidget.putExtra("appwidget_id", intent.getIntExtra("appwidget_id", Const.invalidId));
+            intentWidget.putExtra("content", isEdit ? etContent.getText().toString() : tvContent.getText().toString());
+            intentWidget.putExtra("background", background);
+            intentWidget.putExtra("paper", paper);
+            intentWidget.putExtra("remind", intent.getStringExtra("remind"));
+            sendBroadcast(intentWidget);
+        }
+        //保存修改的数据
         if (isEdit) {
-            if (from.equals("note")) {
+            if (from.equals(Const.note)) {
                 ContentValues values = new ContentValues();
                 values.put("content", etContent.getText().toString());
                 values.put("background", background);
                 values.put("paper", paper);
-                database.update("note", values, "id = ?", new String[]{intent.getStringExtra("id")});
-                Intent intent = new Intent(this, ItemProvider.class);
-                intent.putExtra("content", etContent.getText().toString());
-                sendBroadcast(intent);
+                database.update(Const.note, values, "id = ?", new String[]{id});
                 super.onBackPressed();
             } else {
                 if (!tvContent.getText().toString().equals(etContent.getText().toString()) ||

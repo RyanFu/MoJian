@@ -50,6 +50,7 @@
             android:label="@string/widget_item">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="roocky.intent.action.EDIT" />
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info_item" />

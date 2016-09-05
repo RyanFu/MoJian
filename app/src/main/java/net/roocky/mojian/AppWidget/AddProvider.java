@@ -31,7 +31,7 @@ public class AddProvider extends AppWidgetProvider {
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.appwidget_add);
             remoteViews.setOnClickPendingIntent(R.id.btn_note, pendingIntentNote);
             remoteViews.setOnClickPendingIntent(R.id.btn_diary, pendingIntentDiary);
-
+            //更新
             appWidgetManager.updateAppWidget(appWidgetIds[i], remoteViews);
         }
     }
