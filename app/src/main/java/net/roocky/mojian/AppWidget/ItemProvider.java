@@ -53,8 +53,10 @@ public class ItemProvider extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         //查找appWidgetId对应的ID
         Map<String, Integer> idMap = (Map<String, Integer>) SharePreferencesUtil.getInstance(context, Const.appWidgetIdShareP).getAll();
-        int id = Integer.parseInt(MapUtil.getKeyByValue(idMap, appWidgetIds[0]));
-        //从SharePreference中移除该appwidget的id
-        SharePreferencesUtil.getInstance(context, Const.appWidgetIdShareP).remove(String.valueOf(id));
+        if (MapUtil.getKeyByValue(idMap, appWidgetIds[0]) != null) {
+            int id = Integer.parseInt(MapUtil.getKeyByValue(idMap, appWidgetIds[0]));
+            //从SharePreference中移除该appwidget的id
+            SharePreferencesUtil.getInstance(context, Const.appWidgetIdShareP).remove(String.valueOf(id));
+        }
     }
 }
