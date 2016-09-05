@@ -334,6 +334,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
         Window window;
         switch (item.getItemId()) {
             case android.R.id.home:     //返回箭头
+                updateAppWidget();
                 if (from.equals(Const.note) && isEdit) {//便笺的编辑状态并未修改Navigation图标，所以需要在此处保存
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
@@ -537,7 +538,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
                     SoftInput.show(etContent);  //显示软键盘
                 }
                 break;
-            default:       //toolbar保存点击事件
+            default:       //toolbar保存点击事件(日记)
                 if (isEdit) {
                     ContentValues values = new ContentValues();
                     values.put("content", etContent.getText().toString());
@@ -767,15 +768,7 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onBackPressed() {
         //更新桌面小部件
-        if (from.equals(Const.note) && intent.getIntExtra("appwidget_id", Const.invalidId) != Const.invalidId) {
-            Intent intentWidget = new Intent(ItemProvider.ACTION_EDIT);
-            intentWidget.putExtra("appwidget_id", intent.getIntExtra("appwidget_id", Const.invalidId));
-            intentWidget.putExtra("content", isEdit ? etContent.getText().toString() : tvContent.getText().toString());
-            intentWidget.putExtra("background", background);
-            intentWidget.putExtra("paper", paper);
-            intentWidget.putExtra("remind", intent.getStringExtra("remind"));
-            sendBroadcast(intentWidget);
-        }
+        updateAppWidget();
         //保存修改的数据
         if (isEdit) {
             if (from.equals(Const.note)) {
@@ -812,6 +805,19 @@ public class ViewActivity extends AppCompatActivity implements View.OnClickListe
             clMain.getViewTreeObserver().removeOnGlobalLayoutListener(this);        //防止内存泄漏
         } else {
             clMain.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        }
+    }
+
+    //更新桌面小部件
+    public void updateAppWidget() {
+        if (from.equals(Const.note) && intent.getIntExtra("appwidget_id", Const.invalidId) != Const.invalidId) {
+            Intent intentWidget = new Intent(ItemProvider.ACTION_EDIT);
+            intentWidget.putExtra("appwidget_id", intent.getIntExtra("appwidget_id", Const.invalidId));
+            intentWidget.putExtra("content", isEdit ? etContent.getText().toString() : tvContent.getText().toString());
+            intentWidget.putExtra("background", background);
+            intentWidget.putExtra("paper", paper);
+            intentWidget.putExtra("remind", intent.getStringExtra("remind"));
+            sendBroadcast(intentWidget);
         }
     }
 }

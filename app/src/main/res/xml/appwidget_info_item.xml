@@ -2,6 +2,7 @@
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
     android:minWidth="250dp"
     android:minHeight="250dp"
+    android:previewImage="@drawable/pre_appwidget_item"
     android:initialLayout="@layout/appwidget_item"
     android:configure="net.roocky.mojian.APPWidgetConfigure.ItemAppWidgetConfigure"
     android:resizeMode="horizontal|vertical">
